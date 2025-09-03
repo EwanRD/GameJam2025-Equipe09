@@ -7,7 +7,10 @@ class Game:
         pygame.display.set_caption("TOMB BOUND")
         self.clock = pygame.time.Clock()
         self.running = True
-
+        self.bg_image = pygame.transform.scale(
+            pygame.image.load("assets/mapgamejam.png").convert(),
+            (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT)
+        )
     def run(self):
         while self.running:
             self.handle_events()
@@ -24,5 +27,5 @@ class Game:
         pass  # Logique du jeu
 
     def draw(self):
-        self.screen.fill(settings.BLACK)
+        self.screen.blit(self.bg_image, (0, 0))
         pygame.display.flip()
