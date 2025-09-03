@@ -9,11 +9,14 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_LEFT]and not keys[pygame.K_DOWN] or keys[pygame.K_LEFT] and not keys[pygame.K_UP]:
             self.rect.x -= 5
-        if keys[pygame.K_RIGHT]:
+        if keys[pygame.K_RIGHT] and not keys[pygame.K_DOWN] or keys[pygame.K_RIGHT] and not keys[pygame.K_UP]:
             self.rect.x += 5
-        if keys[pygame.K_UP]:
+        if keys[pygame.K_UP] and not keys[pygame.K_LEFT] or keys[pygame.K_UP] and not keys[pygame.K_RIGHT]:
             self.rect.y -= 5
-        if keys[pygame.K_DOWN]:
+        if keys[pygame.K_DOWN] and not keys[pygame.K_LEFT] or keys[pygame.K_DOWN] and not keys[pygame.K_RIGHT]:
             self.rect.y += 5
+        if keys[pygame.K_RIGHT] and keys[pygame.K_DOWN]:
+            self.rect.x -= 2
+            self.rect.y += 2
