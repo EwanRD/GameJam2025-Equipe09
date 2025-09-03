@@ -3,8 +3,9 @@ import pygame
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.image = pygame.Surface((32, 32))
-        self.image.fill((0, 255, 0))  # carré vert temporaire
+        self.image = pygame.Surface((64, 64), pygame.SRCALPHA)
+        self.playerSprite = pygame.image.load("assets/sprites/Player/devant.png").convert_alpha()
+        self.image.blit(self.playerSprite, (0, 0))
         self.rect = self.image.get_rect(topleft=(x, y))
 
     def update(self):
