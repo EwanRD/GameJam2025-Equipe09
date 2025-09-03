@@ -1,5 +1,6 @@
 import pygame
 import settings
+from src.player import Player
 
 class Game:
     def __init__(self):
@@ -11,6 +12,10 @@ class Game:
             pygame.image.load("assets/mapgamejam.png").convert(),
             (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT)
         )
+        self.all_sprites = pygame.sprite.Group()
+        self.player = Player(100, 100)
+        self.all_sprites.add(self.player)
+    
     def run(self):
         while self.running:
             self.handle_events()
@@ -24,8 +29,9 @@ class Game:
                 self.running = False
 
     def update(self):
-        pass  # Logique du jeu
-
+        self.all_sprites.update()
+        
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))
+        self.all_sprites.draw(self.screen)
         pygame.display.flip()
