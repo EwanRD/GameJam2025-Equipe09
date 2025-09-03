@@ -25,10 +25,10 @@ class Enemy(pygame.sprite.Sprite):
   
     def update(self):
         if self.human.rect.x > self.rect.x :
-            self.rect.x += 1
+            self.rect.x += 4
         if self.human.rect.x < self.rect.x :
-            self.rect.x -= 1
+            self.rect.x -= 4
         if self.human.rect.y > self.rect.y :
-            self.rect.y += 1
+            self.rect.y += 4
         if self.human.rect.y < self.rect.y :
-            self.rect.y -= 1
+            self.rect.y -= 4
