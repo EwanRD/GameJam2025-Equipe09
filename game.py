@@ -1,6 +1,7 @@
 import pygame
 import settings
 from src.player import Player
+from src.enemy import Enemy
 
 class Game:
     def __init__(self):
@@ -20,6 +21,8 @@ class Game:
         # Joueur
         self.player = Player(100, 100, self.projectiles)
         self.all_sprites.add(self.player)
+        self.enemy = Enemy(50, 50, self.player)
+        self.all_sprites.add(self.enemy)
     
     def run(self):
         while self.running:
