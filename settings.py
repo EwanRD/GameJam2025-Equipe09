@@ -1,6 +1,6 @@
 # Paramètres globaux
-SCREEN_WIDTH = 1024
-SCREEN_HEIGHT = 1024
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 900
 FPS = 60
 
 # Couleurs
