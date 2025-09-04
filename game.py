@@ -30,7 +30,7 @@ class Game:
         self.projectiles = pygame.sprite.Group()
 
         # Joueur
-        self.player = Player(500, 500, self.projectiles)
+        self.player = Player(625, 410, self.projectiles)
         self.all_sprites.add(self.player)
     def run(self):
         while self.running:
