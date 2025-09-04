@@ -67,7 +67,7 @@ class Game:
         remaining = max(0, total_time - elapsed)
         minutes = remaining // 60
         seconds = remaining % 60
-        timer_text = self.font.render(f"Time: {minutes:02d}:{seconds:02d}", True, (255, 255, 255))
-        self.screen.blit(timer_text, (settings.SCREEN_WIDTH - 200, 20))
+        timer_text = self.font.render(f"{minutes:02d}:{seconds:02d}", True, (255, 255, 255))
+        self.screen.blit(timer_text, (settings.SCREEN_WIDTH / 2, 20))
 
         pygame.display.flip()

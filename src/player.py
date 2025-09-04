@@ -59,6 +59,8 @@ class Player(Entity):
         velocity = (8, 0)
         damage = 1
         arrow = Arrow(position, velocity, damage)
+        shoot_sound = pygame.mixer.Sound("assets/sounds/shoot.ogg")
+        shoot_sound.play()
         self.projectiles_group.add(arrow) 
 
     def take_damage(self):
