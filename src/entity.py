@@ -6,7 +6,9 @@ class Entity(pygame.sprite.Sprite):
         self.sprites = sprites
         self.direction = "down"
         self.image = self.sprites[self.direction][0]
+        # Réduire la hitbox de l'entity
         self.rect = self.image.get_rect(topleft=(x, y))
+        self.rect.inflate_ip(-25, -25)  # Réduit la hitbox de 8 pixels en largeur et hauteur
 
         # Animation
         self.speed = speed

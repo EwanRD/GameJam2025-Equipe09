@@ -1,4 +1,5 @@
 import pygame
+import random
 import settings
 import time
 from src.player import Player
@@ -18,6 +19,7 @@ class Game:
         self.heart_empty = pygame.image.load("assets/sprites/UI/Heart/coeurvide.png").convert_alpha()
         self.font = pygame.font.SysFont(None, 48)
         self.start_time = time.time()
+        self.spawn_zones = [(682,15), (1242,420), (562,855), (6, 419)]
         pygame.mixer.music.load("assets/sounds/crypt_loop.wav")
         pygame.mixer.music.set_volume(0.3)
         pygame.mixer.music.play(-1)
@@ -30,15 +32,17 @@ class Game:
         # Joueur
         self.player = Player(500, 500, self.projectiles)
         self.all_sprites.add(self.player)
-        self.skeleton = Skeleton(50, 50, self.player)
-        self.all_sprites.add(self.skeleton)
-    
     def run(self):
         while self.running:
             self.handle_events()
             self.update()
             self.draw()
             self.clock.tick(settings.FPS)
+            if int(time.time() - self.start_time) % 15 == 0:
+                if not hasattr(self, 'last_spawn') or self.last_spawn != int(time.time() // 15):
+                    self.spawn_enemies(3)
+                    self.last_spawn = int(time.time() // 15)
+
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -48,6 +52,16 @@ class Game:
     def update(self):
         self.all_sprites.update()
         self.projectiles.update()
+
+        # Enemy spawn logic (non-blocking)
+        if hasattr(self, 'enemies_to_spawn') and self.enemies_to_spawn > 0:
+            if time.time() >= self.next_spawn_time:
+                spawn_x, spawn_y = random.choice(self.spawn_zones)
+                enemy = Skeleton(spawn_x, spawn_y, self.player)
+                self.all_sprites.add(enemy)
+                self.enemies_to_spawn -= 1
+                self.next_spawn_time = time.time() + self.spawn_cooldown
+
 
         for projectile in self.projectiles:
             for enemy in self.all_sprites:
@@ -78,7 +92,6 @@ class Game:
                     self.__init__()  # restart the game
                     self.run()
 
-
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))
         self.all_sprites.draw(self.screen)
@@ -100,4 +113,16 @@ class Game:
         timer_text = self.font.render(f"{minutes:02d}:{seconds:02d}", True, (255, 255, 255))
         self.screen.blit(timer_text, (settings.SCREEN_WIDTH / 2, 20))
 
+        # DEBUG COORDONNÉES
+        player_pos = self.player.rect.center
+        pos_text = self.font.render(f"X: {player_pos[0]}  Y: {player_pos[1]}", True, (255, 255, 0))
+        self.screen.blit(pos_text, (20, settings.SCREEN_HEIGHT - 60))
+
+
         pygame.display.flip()
+
+    def spawn_enemies(self, count, cooldown=0.3):
+        self.spawned = 0
+        self.next_spawn_time = time.time()
+        self.enemies_to_spawn = count
+        self.spawn_cooldown = cooldown
