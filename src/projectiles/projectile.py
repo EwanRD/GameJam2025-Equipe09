@@ -3,7 +3,7 @@ import pygame
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, position, velocity, damage):
         super().__init__()
-        self.position = pygame.Vector2(position)  # position plus simple à manipuler
+        self.position = pygame.Vector2(position)  
         self.velocity = pygame.Vector2(velocity)
         self.damage = damage
 
@@ -13,6 +13,5 @@ class Projectile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=position)
 
     def update(self, dt=1):
-        """Met à jour la position du projectile."""
         self.position += self.velocity * dt
         self.rect.topleft = self.position
