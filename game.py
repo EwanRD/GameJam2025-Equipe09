@@ -18,7 +18,9 @@ class Game:
         self.heart_empty = pygame.image.load("assets/sprites/UI/Heart/coeurvide.png").convert_alpha()
         self.font = pygame.font.SysFont(None, 48)
         self.start_time = time.time()
-
+        pygame.mixer.music.load("assets/sounds/crypt_loop.wav")
+        pygame.mixer.music.set_volume(0.3)
+        pygame.mixer.music.play(-1)
 
 
         # Groupes
