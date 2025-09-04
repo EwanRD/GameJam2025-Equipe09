@@ -2,7 +2,7 @@ import pygame
 from src.projectiles.projectile import Projectile
 
 class Arrow(Projectile):
-    def __init__(self, position, velocity, damage,sprite):
+    def __init__(self, position, velocity, damage, sprite):
         super().__init__(position, velocity, damage)
         self.image = pygame.image.load(sprite).convert_alpha()
         self.rect = self.image.get_rect(topleft=position)
@@ -12,3 +12,7 @@ class Arrow(Projectile):
         hit_sound = pygame.mixer.Sound("assets/sounds/hurt.mp3")
         hit_sound.set_volume(1)
         hit_sound.play()
+
+    def update(self, dt=2):
+        self.position += self.velocity * dt
+        self.rect.topleft = self.position
