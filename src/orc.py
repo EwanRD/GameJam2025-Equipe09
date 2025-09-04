@@ -2,7 +2,7 @@ import pygame
 from .enemy import Ennemi
 
 class Orc(Ennemi):
-    def __init__(self, x, y, human):
+    def __init__(self, x, y, human, walls):
         self.human = human
         self.health = 3
 
@@ -28,7 +28,7 @@ class Orc(Ennemi):
             ],
         }
 
-        super().__init__(x, y, sprites, speed=2)
+        super().__init__(x, y, sprites, walls, speed=2)
 
     def update(self):
         """Suit directement le joueur associé"""
