@@ -1,5 +1,6 @@
 import pygame
 
+
 class Entity(pygame.sprite.Sprite):
     def __init__(self, x, y, sprites, speed=3):
         super().__init__()
@@ -16,6 +17,9 @@ class Entity(pygame.sprite.Sprite):
         self.anim_timer = 0
         self.anim_speed = 10
 
+        # Groupe de murs (assigné depuis l’extérieur ou une sous-classe)
+        self.walls = None  
+
     def move(self, dx, dy, direction=None):
         moving = dx != 0 or dy != 0
 
@@ -24,10 +28,27 @@ class Entity(pygame.sprite.Sprite):
             dx *= 0.7
             dy *= 0.7
 
+        # --- Déplacement X ---
         self.rect.x += dx
-        self.rect.y += dy
+        if self.walls:
+            for mur in self.walls:
+                if self.rect.colliderect(mur.rect):
+                    if dx > 0:  # droite
+                        self.rect.right = mur.rect.left
+                    if dx < 0:  # gauche
+                        self.rect.left = mur.rect.right
 
-        # Déterminer la direction
+        # --- Déplacement Y ---
+        self.rect.y += dy
+        if self.walls:
+            for mur in self.walls:
+                if self.rect.colliderect(mur.rect):
+                    if dy > 0:  # bas
+                        self.rect.bottom = mur.rect.top
+                    if dy < 0:  # haut
+                        self.rect.top = mur.rect.bottom
+
+        # --- Direction ---
         if direction:
             self.direction = direction
         else:
@@ -36,7 +57,7 @@ class Entity(pygame.sprite.Sprite):
             elif dy > 0: self.direction = "down"
             elif dy < 0: self.direction = "up"
 
-        # Animation
+        # --- Animation ---
         if moving:
             self.anim_timer += 1
             if self.anim_timer >= self.anim_speed:

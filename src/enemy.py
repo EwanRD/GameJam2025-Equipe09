@@ -2,8 +2,9 @@ import pygame
 from .entity import Entity
 
 class Ennemi(Entity):
-    def __init__(self, x, y, sprites, speed=3):
+    def __init__(self, x, y, sprites, walls, speed=3):
         super().__init__(x, y, sprites, speed)
+        self.walls = walls
 
     def update(self, player_pos):
         """IA par défaut : suit le joueur"""

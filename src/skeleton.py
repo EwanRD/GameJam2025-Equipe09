@@ -2,7 +2,7 @@ import pygame
 from .enemy import Ennemi
 
 class Skeleton(Ennemi):
-    def __init__(self, x, y, human):
+    def __init__(self, x, y, human, walls):
         self.human = human
         self.health = 2
 
@@ -28,7 +28,7 @@ class Skeleton(Ennemi):
             ],
         }
 
-        super().__init__(x, y, sprites, speed=3)
+        super().__init__(x, y, sprites, walls, speed=3)
 
     def update(self):
         """Suit directement le joueur associé"""

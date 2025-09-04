@@ -7,7 +7,7 @@ import time
 from src.projectiles.arrow import Arrow
 
 class Player(Entity):
-    def __init__(self, x, y, projectiles_group):
+    def __init__(self, x, y, projectiles_group, walls):
         sprites = {
             "down": [
                 pygame.image.load("assets/sprites/Player/devant.png").convert_alpha(),
@@ -37,6 +37,7 @@ class Player(Entity):
         self.health = PLAYER_HEALTH
         self.projectile_direction = DIRECTION.B.value
         self.projectile_sprite = ARROW_DIRECTION.B.value
+        self.walls = walls
 
     def update(self):
         keys = pygame.key.get_pressed()
