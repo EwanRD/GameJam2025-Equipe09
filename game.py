@@ -49,13 +49,19 @@ class Game:
         self.all_sprites.update()
         self.projectiles.update()
 
+        for projectile in self.projectiles:
+            for enemy in self.all_sprites:
+                if enemy != self.player and projectile.rect.colliderect(enemy.rect):
+                    projectile.on_hit(enemy)
+                    projectile.kill()  
+
+
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))
         self.all_sprites.draw(self.screen)
         self.projectiles.draw(self.screen)
 
         # --- HUD ---
-        # Affiche les cœurs (pleins pour les vies restantes, vides pour les vies perdues)
         total_lives = 3
         for i in range(total_lives):
             if i < self.player.health:
@@ -63,8 +69,7 @@ class Game:
             else:
                 self.screen.blit(self.heart_empty, (0 + i * 70, 10))
 
-        # Affiche le timer (compte à rebours 5 min)
-        total_time = 300  # 5 minutes en secondes
+        total_time = 300 
         elapsed = int(time.time() - self.start_time)
         remaining = max(0, total_time - elapsed)
         minutes = remaining // 60

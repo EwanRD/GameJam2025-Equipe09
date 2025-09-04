@@ -8,5 +8,4 @@ class Arrow(Projectile):
         self.rect = self.image.get_rect(topleft=position)
 
     def on_hit(self, target):
-        # Comportement spécifique si la flèche touche quelque chose
-        pass
+        target.take_damage()

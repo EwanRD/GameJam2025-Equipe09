@@ -4,6 +4,7 @@ from .enemy import Ennemi
 class Skeleton(Ennemi):
     def __init__(self, x, y, human):
         self.human = human
+        self.health = 2
 
         sprites = {
             "down": [
@@ -33,3 +34,8 @@ class Skeleton(Ennemi):
         """Suit directement le joueur associé"""
         player_pos = (self.human.rect.x, self.human.rect.y)
         super().update(player_pos)
+
+    def take_damage(self):
+        self.health -= 1
+        if self.health <= 0:
+            self.kill()
