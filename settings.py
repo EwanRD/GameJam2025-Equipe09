@@ -31,14 +31,14 @@ class DIRECTION(Enum):
     BD = (PROJ_DIAG_SPEED, PROJ_DIAG_SPEED)    # Bas-Droite
 
 class ARROW_DIRECTION(Enum):
-    H  = "assets/sprites/Arrow/flechehaut.png"           # Haut
-    B  = "assets/sprites/Arrow/flechebas.png"           # Bas
-    G  = "assets/sprites/Arrow/flechegauche.png"        # Gauche
-    D  = "assets/sprites/Arrow/flechedroite.png"        # Droite
-    HG = "assets/sprites/Arrow/flechehautgauche.png"     # Haut-Gauche
-    HD = "assets/sprites/Arrow/flechehautdroite.png"     # Haut-Droite
-    BG =  "assets/sprites/Arrow/flechebasgauche.png"    # Bas-Gauche
-    BD = "assets/sprites/Arrow/flechebasdroite.png"     # Bas-Droite
+    H  = "assets/sprites/Projectiles/Arrow/flechehaut.png"           # Haut
+    B  = "assets/sprites/Projectiles/Arrow/flechebas.png"           # Bas
+    G  = "assets/sprites/Projectiles/Arrow/flechegauche.png"        # Gauche
+    D  = "assets/sprites/Projectiles/Arrow/flechedroite.png"        # Droite
+    HG = "assets/sprites/Projectiles/Arrow/flechehautgauche.png"     # Haut-Gauche
+    HD = "assets/sprites/Projectiles/Arrow/flechehautdroite.png"     # Haut-Droite
+    BG =  "assets/sprites/Projectiles/Arrow/flechebasgauche.png"    # Bas-Gauche
+    BD = "assets/sprites/Projectiles/Arrow/flechebasdroite.png"     # Bas-Droite
 
 
 

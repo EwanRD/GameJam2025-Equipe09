@@ -4,6 +4,9 @@ import settings
 import time
 from src.player import Player
 from src.skeleton import Skeleton
+from src.orc import Orc
+from src.ghost import Ghost
+
 
 class Game:
     def __init__(self):
@@ -30,7 +33,7 @@ class Game:
         self.projectiles = pygame.sprite.Group()
 
         # Joueur
-        self.player = Player(500, 500, self.projectiles)
+        self.player = Player(625, 410, self.projectiles)
         self.all_sprites.add(self.player)
     def run(self):
         while self.running:
@@ -57,7 +60,8 @@ class Game:
         if hasattr(self, 'enemies_to_spawn') and self.enemies_to_spawn > 0:
             if time.time() >= self.next_spawn_time:
                 spawn_x, spawn_y = random.choice(self.spawn_zones)
-                enemy = Skeleton(spawn_x, spawn_y, self.player)
+                enemy_type = random.choice([Orc, Skeleton, Ghost])
+                enemy = enemy_type(spawn_x, spawn_y, self.player)
                 self.all_sprites.add(enemy)
                 self.enemies_to_spawn -= 1
                 self.next_spawn_time = time.time() + self.spawn_cooldown
