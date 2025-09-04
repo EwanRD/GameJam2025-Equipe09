@@ -1,7 +1,7 @@
 import pygame
 import settings
 from src.player import Player
-from src.enemy import Enemy
+from src.skeleton import Skeleton
 
 class Game:
     def __init__(self):
@@ -21,8 +21,8 @@ class Game:
         # Joueur
         self.player = Player(100, 100, self.projectiles)
         self.all_sprites.add(self.player)
-        self.enemy = Enemy(50, 50, self.player)
-        self.all_sprites.add(self.enemy)
+        self.skeleton = Skeleton(50, 50, self.player)
+        self.all_sprites.add(self.skeleton)
     
     def run(self):
         while self.running:
