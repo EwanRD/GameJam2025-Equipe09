@@ -4,6 +4,7 @@ import settings
 import time
 from src.player import Player
 from src.skeleton import Skeleton
+from src.walls import Wall
 from src.orc import Orc
 from src.ghost import Ghost
 
@@ -30,10 +31,73 @@ class Game:
 
         # Groupes
         self.all_sprites = pygame.sprite.Group()
+        self.wall_list_player = pygame.sprite.Group()
+        self.wall_list_enemy = pygame.sprite.Group() # Liste de murs différente pour les ennemis qui rentre par les ouvertures
         self.projectiles = pygame.sprite.Group()
 
+        # Murs
+        # Mur à gauche : Haut
+        wall = Wall(0,0,30,299)
+        self.wall_list_player.add(wall)
+        self.wall_list_enemy.add(wall)
+        self.all_sprites.add(wall)
+        # Ouverture à gauche
+        wall = Wall(0,299,10,300)
+        self.wall_list_player.add(wall)
+        self.all_sprites.add(wall)
+        # Mur à gauche : Bas
+        wall = Wall(0,599,30,settings.SCREEN_HEIGHT-30)
+        self.wall_list_player.add(wall)
+        self.wall_list_enemy.add(wall)
+        self.all_sprites.add(wall)
+
+        # Mur du haut : Gauche
+        wall = Wall(0,0,568,85)
+        self.wall_list_player.add(wall)
+        self.wall_list_enemy.add(wall)
+        self.all_sprites.add(wall)
+        # Ouverture du haut
+        wall = Wall(568,0,286,10)
+        self.wall_list_player.add(wall)
+        self.all_sprites.add(wall)
+        # Mur du haut : Droite
+        wall = Wall(854,0,settings.SCREEN_WIDTH,85)
+        self.wall_list_player.add(wall)
+        self.wall_list_enemy.add(wall)
+        self.all_sprites.add(wall)
+
+        # Mur à droite : Haut
+        wall = Wall (settings.SCREEN_WIDTH-30,0,30,299)
+        self.wall_list_player.add(wall)
+        self.wall_list_enemy.add(wall)
+        self.all_sprites.add(wall)
+        # Ouverture à droite
+        wall = Wall (settings.SCREEN_WIDTH-10,299,10,300)
+        self.wall_list_player.add(wall)
+        self.all_sprites.add(wall)
+        # Mur à droite : Bas
+        wall = Wall (settings.SCREEN_WIDTH-30,599,30,settings.SCREEN_HEIGHT)
+        self.wall_list_player.add(wall)
+        self.wall_list_enemy.add(wall)
+        self.all_sprites.add(wall)
+
+        # Mur du bas : Gauche
+        wall = Wall (0,settings.SCREEN_HEIGHT-30,426,30)
+        self.wall_list_player.add(wall)
+        self.wall_list_enemy.add(wall)
+        self.all_sprites.add(wall)
+        # Ouverture du bas
+        wall = Wall (426,settings.SCREEN_HEIGHT-10,286,10)
+        self.wall_list_player.add(wall)
+        self.all_sprites.add(wall)
+        # Mur du bas : Droite
+        wall = Wall (712,settings.SCREEN_HEIGHT-30,settings.SCREEN_WIDTH,30)
+        self.wall_list_player.add(wall)
+        self.wall_list_enemy.add(wall)
+        self.all_sprites.add(wall)
+
         # Joueur
-        self.player = Player(625, 410, self.projectiles)
+        self.player = Player(625, 410, self.projectiles, self.wall_list_player)
         self.all_sprites.add(self.player)
     def run(self):
         while self.running:
@@ -61,7 +125,7 @@ class Game:
             if time.time() >= self.next_spawn_time:
                 spawn_x, spawn_y = random.choice(self.spawn_zones)
                 enemy_type = random.choice([Orc, Skeleton, Ghost])
-                enemy = enemy_type(spawn_x, spawn_y, self.player)
+                enemy = enemy_type(spawn_x, spawn_y, self.player, self.wall_list_enemy)
                 self.all_sprites.add(enemy)
                 self.enemies_to_spawn -= 1
                 self.next_spawn_time = time.time() + self.spawn_cooldown
