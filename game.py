@@ -87,16 +87,37 @@ class Game:
         # Joueur
         self.player = Player(625, 410, self.projectiles, self.wall_list_player)
         self.all_sprites.add(self.player)
+
+        self.wave = 1
+        self.wave_start_time = time.time()
+        self.wave_interval = 10  # secondes entre chaque vague
+        self.wave_enemy_count = 3
+        self.wave_types = [Skeleton]  # types d'ennemis pour la première vague
+
     def run(self):
         while self.running:
             self.handle_events()
             self.update()
             self.draw()
             self.clock.tick(settings.FPS)
-            if int(time.time() - self.start_time) % 15 == 0:
-                if not hasattr(self, 'last_spawn') or self.last_spawn != int(time.time() // 15):
-                    self.spawn_enemies(3)
-                    self.last_spawn = int(time.time() // 15)
+            # Gestion des vagues
+            # Démarre la première vague au lancement du jeu
+            if self.wave == 1 and not hasattr(self, 'enemies_to_spawn'):
+                self.spawn_enemies(self.wave_enemy_count)
+            elif time.time() - self.wave_start_time > self.wave_interval:
+                self.wave += 1
+                if self.wave_interval < 20: 
+                    self.wave_interval += 5
+                self.wave_start_time = time.time()
+                # Augmente le nombre d'ennemis à chaque vague
+                if self.wave_enemy_count < 8:
+                    self.wave_enemy_count += self.wave
+                # Ajoute des types d'ennemis au fil des vagues
+                if self.wave == 2 and Orc not in self.wave_types:
+                    self.wave_types.append(Orc)
+                if self.wave == 3 and Ghost not in self.wave_types:
+                    self.wave_types.append(Ghost)
+                self.spawn_enemies(self.wave_enemy_count)
 
 
     def handle_events(self):
@@ -113,7 +134,7 @@ class Game:
         if hasattr(self, 'enemies_to_spawn') and self.enemies_to_spawn > 0:
             if time.time() >= self.next_spawn_time:
                 spawn_x, spawn_y = random.choice(self.spawn_zones)
-                enemy_type = random.choice([Orc, Skeleton, Ghost])
+                enemy_type = random.choice(self.wave_types)
                 enemy = enemy_type(spawn_x, spawn_y, self.player, self.wall_list_enemy)
                 self.all_sprites.add(enemy)
                 self.enemies_to_spawn -= 1
