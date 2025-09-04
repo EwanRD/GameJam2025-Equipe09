@@ -1,3 +1,7 @@
 __pycache__/
 **/__pycache__/
+<<<<<<< HEAD
 *.pyc
+=======
+*.pyc
+>>>>>>> 2fe5955 (e)
