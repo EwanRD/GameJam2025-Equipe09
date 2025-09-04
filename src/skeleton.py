@@ -39,3 +39,6 @@ class Skeleton(Ennemi):
         self.health -= 1
         if self.health <= 0:
             self.kill()
+            death_sound = pygame.mixer.Sound("assets/sounds/skeleton_death.mp3")
+            death_sound.set_volume(1)
+            death_sound.play()

@@ -54,6 +54,29 @@ class Game:
                 if enemy != self.player and projectile.rect.colliderect(enemy.rect):
                     projectile.on_hit(enemy)
                     projectile.kill()  
+        
+        for enemy in self.all_sprites:
+            if enemy != self.player and self.player.rect.colliderect(enemy.rect):
+                self.player.take_damage()
+                # Knockback effect: push enemy away from player (stronger knockback)
+                dx = enemy.rect.x - self.player.rect.x
+                dy = enemy.rect.y - self.player.rect.y
+                distance = max(1, (dx ** 2 + dy ** 2) ** 0.5)
+                knockback_strength = 80  # increased knockback
+                knockback_x = int(knockback_strength * dx / distance)
+                knockback_y = int(knockback_strength * dy / distance)
+                enemy.move(knockback_x, knockback_y)
+                hurt_sound = pygame.mixer.Sound("assets/sounds/hurt.mp3")
+                hurt_sound.set_volume(1)
+                hurt_sound.play()
+                if self.player.health <= 0:
+                    pygame.mixer.music.stop()
+                    game_over_sound = pygame.mixer.Sound("assets/sounds/GameOver.wav")
+                    game_over_sound.set_volume(1)
+                    game_over_sound.play()
+                    pygame.time.delay(5000)
+                    self.__init__()  # restart the game
+                    self.run()
 
 
     def draw(self):
