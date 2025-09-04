@@ -27,7 +27,7 @@ class Skeleton(Ennemi):
             ],
         }
 
-        super().__init__(x, y, sprites, speed=4)
+        super().__init__(x, y, sprites, speed=3)
 
     def update(self):
         """Suit directement le joueur associé"""
