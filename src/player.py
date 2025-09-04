@@ -32,6 +32,8 @@ class Player(Entity):
         self.projectiles_group = projectiles_group
         self.last_shot_time = 0
         self.shoot_cooldown = 0.5
+        self.health = 3
+
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -57,4 +59,10 @@ class Player(Entity):
         velocity = (8, 0)
         damage = 1
         arrow = Arrow(position, velocity, damage)
-        self.projectiles_group.add(arrow)
+        self.projectiles_group.add(arrow) 
+
+    def take_damage(self):
+        self.health -= 1
+        if self.health <= 0:
+            self.kill()
+            print("Player has died")
