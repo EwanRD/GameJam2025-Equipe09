@@ -40,61 +40,49 @@ class Game:
         wall = Wall(0,0,30,299)
         self.wall_list_player.add(wall)
         self.wall_list_enemy.add(wall)
-        self.all_sprites.add(wall)
         # Ouverture à gauche
         wall = Wall(0,299,10,300)
         self.wall_list_player.add(wall)
-        self.all_sprites.add(wall)
         # Mur à gauche : Bas
         wall = Wall(0,599,30,settings.SCREEN_HEIGHT-30)
         self.wall_list_player.add(wall)
         self.wall_list_enemy.add(wall)
-        self.all_sprites.add(wall)
 
         # Mur du haut : Gauche
         wall = Wall(0,0,568,85)
         self.wall_list_player.add(wall)
         self.wall_list_enemy.add(wall)
-        self.all_sprites.add(wall)
         # Ouverture du haut
         wall = Wall(568,0,286,10)
         self.wall_list_player.add(wall)
-        self.all_sprites.add(wall)
         # Mur du haut : Droite
         wall = Wall(854,0,settings.SCREEN_WIDTH,85)
         self.wall_list_player.add(wall)
         self.wall_list_enemy.add(wall)
-        self.all_sprites.add(wall)
 
         # Mur à droite : Haut
-        wall = Wall (settings.SCREEN_WIDTH-30,0,30,299)
+        wall = Wall (settings.SCREEN_WIDTH-55,0,55,299)
         self.wall_list_player.add(wall)
         self.wall_list_enemy.add(wall)
-        self.all_sprites.add(wall)
         # Ouverture à droite
-        wall = Wall (settings.SCREEN_WIDTH-10,299,10,300)
+        wall = Wall (settings.SCREEN_WIDTH-35,299,35,300)
         self.wall_list_player.add(wall)
-        self.all_sprites.add(wall)
         # Mur à droite : Bas
-        wall = Wall (settings.SCREEN_WIDTH-30,599,30,settings.SCREEN_HEIGHT)
+        wall = Wall (settings.SCREEN_WIDTH-55,599,55,settings.SCREEN_HEIGHT)
         self.wall_list_player.add(wall)
         self.wall_list_enemy.add(wall)
-        self.all_sprites.add(wall)
 
         # Mur du bas : Gauche
-        wall = Wall (0,settings.SCREEN_HEIGHT-30,426,30)
+        wall = Wall (0,settings.SCREEN_HEIGHT-60,426,60)
         self.wall_list_player.add(wall)
         self.wall_list_enemy.add(wall)
-        self.all_sprites.add(wall)
         # Ouverture du bas
-        wall = Wall (426,settings.SCREEN_HEIGHT-10,286,10)
+        wall = Wall (426,settings.SCREEN_HEIGHT-40,286,40)
         self.wall_list_player.add(wall)
-        self.all_sprites.add(wall)
         # Mur du bas : Droite
-        wall = Wall (712,settings.SCREEN_HEIGHT-30,settings.SCREEN_WIDTH,30)
+        wall = Wall (712,settings.SCREEN_HEIGHT-60,settings.SCREEN_WIDTH,60)
         self.wall_list_player.add(wall)
         self.wall_list_enemy.add(wall)
-        self.all_sprites.add(wall)
 
         # Joueur
         self.player = Player(625, 410, self.projectiles, self.wall_list_player)
@@ -119,6 +107,7 @@ class Game:
     def update(self):
         self.all_sprites.update()
         self.projectiles.update()
+        self.wall_list_player.update()
 
         # Enemy spawn logic (non-blocking)
         if hasattr(self, 'enemies_to_spawn') and self.enemies_to_spawn > 0:

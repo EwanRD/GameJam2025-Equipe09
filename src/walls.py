@@ -5,7 +5,6 @@ class Wall(pygame.sprite.Sprite):
         super().__init__()
   
         self.image = pygame.Surface([width, height])
-        self.image.fill((0,0,255))
   
         self.rect = self.image.get_rect()
         self.rect.y = y
