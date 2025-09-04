@@ -28,7 +28,7 @@ class Orc(Ennemi):
             ],
         }
 
-        super().__init__(x, y, sprites, speed=2.5)
+        super().__init__(x, y, sprites, speed=2)
 
     def update(self):
         """Suit directement le joueur associé"""
