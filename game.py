@@ -29,8 +29,9 @@ class Game:
         # --- Groupes ---
         self.all_sprites = pygame.sprite.Group()
         self.wall_list_player = pygame.sprite.Group()
-        self.wall_list_enemy = pygame.sprite.Group()  # Liste de murs différente pour les ennemis
-        self.projectiles = pygame.sprite.Group()
+        self.wall_list_enemy = pygame.sprite.Group() # Liste de murs différente pour les ennemis qui rentre par les ouvertures
+        self.player_projectiles = pygame.sprite.Group()
+        self.enemy_projectiles = pygame.sprite.Group()
 
         # --- Joueur ---
         self.player = Player(625, 410, self.projectiles, self.wall_list_player)
@@ -100,6 +101,9 @@ class Game:
         self.wall_list_player.add(wall)
         self.wall_list_enemy.add(wall)
 
+        # Joueur
+        self.player = Player(625, 410, self.player_projectiles, self.wall_list_player)
+        self.all_sprites.add(self.player)
 
 
 
@@ -113,49 +117,61 @@ class Game:
 
     def update(self):
         self.all_sprites.update()
-        self.projectiles.update()
+        self.player_projectiles.update()
+        self.enemy_projectiles.update()
         self.wall_list_player.update()
 
         # --- Enemy spawn logic (non-blocking) ---
         if hasattr(self, 'enemies_to_spawn') and self.enemies_to_spawn > 0:
             if time.time() >= self.next_spawn_time:
                 spawn_x, spawn_y = random.choice(self.spawn_zones)
-                enemy_type = random.choice(self.current_wave_types)
-                enemy = enemy_type(spawn_x, spawn_y, self.player, self.wall_list_enemy, self.all_sprites)
-                enemy.set_player(self.player)  # Associer le joueur à l'ennemi
+                enemy_type = random.choice(self.wave_types)
+                if enemy_type == Ghost :
+                    enemy = enemy_type(spawn_x, spawn_y, self.player, self.enemy_projectiles, self.wall_list_enemy, self.all_sprites)
+                else :
+                    enemy = enemy_type(spawn_x, spawn_y, self.player, self.wall_list_enemy, self.all_sprites)
+                # IMPORTANT: Donner la référence du joueur à l'ennemi
+                enemy.set_player(self.player)
                 self.all_sprites.add(enemy)
                 self.enemies_to_spawn -= 1
                 self.next_spawn_time = time.time() + self.spawn_cooldown
 
-        # --- Projectiles hit enemies ---
-        for projectile in self.projectiles:
+        # Collisions projectiles-ennemis
+        for projectile in self.player_projectiles:
+
             for enemy in self.all_sprites:
                 if enemy != self.player and isinstance(enemy, Ennemi) and projectile.rect.colliderect(enemy.rect):
                     projectile.on_hit(enemy)
                     projectile.kill()
 
-        # --- Player collision with enemies ---
-        for enemy in self.all_sprites:
-            if enemy != self.player and not isinstance(enemy, Item) and not self.player.is_invincible() and self.player.rect.colliderect(enemy.rect):
-                self.player.take_damage()
-                dx = enemy.rect.x - self.player.rect.x
-                dy = enemy.rect.y - self.player.rect.y
-                distance = max(1, (dx ** 2 + dy ** 2) ** 0.5)
-                knockback_strength = 80
-                knockback_x = int(knockback_strength * dx / distance)
-                knockback_y = int(knockback_strength * dy / distance)
-                enemy.move(knockback_x, knockback_y)
-                hurt_sound = pygame.mixer.Sound("assets/sounds/hurt.mp3")
-                hurt_sound.set_volume(1)
-                hurt_sound.play()
-                if self.player.health <= 0:
-                    pygame.mixer.music.stop()
-                    game_over_sound = pygame.mixer.Sound("assets/sounds/GameOver.wav")
-                    game_over_sound.set_volume(1)
-                    game_over_sound.play()
-                    pygame.time.delay(5000)
-                    self.__init__()
-                    self.run()
+        for projectile in self.enemy_projectiles:
+            for player in self.all_sprites:
+                if isinstance(player, Player) and projectile.rect.colliderect(player.rect):
+                    projectile.on_hit(player)
+                    projectile.kill()
+        
+        if self.player.invisibility.can_take_damage():
+            for enemy in self.all_sprites:
+                if enemy != self.player and isinstance(enemy, Ennemi) and self.player.rect.colliderect(enemy.rect):
+                    self.player.take_damage()
+                    dx = enemy.rect.x - self.player.rect.x
+                    dy = enemy.rect.y - self.player.rect.y
+                    distance = max(1, (dx ** 2 + dy ** 2) ** 0.5)
+                    knockback_strength = 80
+                    knockback_x = int(knockback_strength * dx / distance)
+                    knockback_y = int(knockback_strength * dy / distance)
+                    enemy.move(knockback_x, knockback_y)
+                    hurt_sound = pygame.mixer.Sound("assets/sounds/hurt.mp3")
+                    hurt_sound.set_volume(1)
+                    hurt_sound.play()
+                    if self.player.health <= 0:
+                        pygame.mixer.music.stop()
+                        game_over_sound = pygame.mixer.Sound("assets/sounds/GameOver.wav")
+                        game_over_sound.set_volume(1)
+                        game_over_sound.play()
+                        pygame.time.delay(5000)
+                        self.__init__()  # restart the game
+                        self.run()
 
         # Collisions avec les items
         for sprite in self.all_sprites:
@@ -197,6 +213,10 @@ class Game:
 
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))
+        self.all_sprites.draw(self.screen)
+        self.player_projectiles.draw(self.screen)
+        self.enemy_projectiles.draw(self.screen)
+
 
         # Dessiner tous les sprites avec gestion de l'invisibilité et du clignotement
         for sprite in self.all_sprites:
@@ -220,8 +240,6 @@ class Game:
         for sprite in self.all_sprites:
             if isinstance(sprite, Item) and hasattr(sprite, "visible") and sprite.visible:
                 self.screen.blit(sprite.image, sprite.rect)
-
-        self.projectiles.draw(self.screen)
 
         # --- HUD ---
         total_lives = 3

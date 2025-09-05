@@ -42,13 +42,13 @@ class Player(Entity):
         self.projectile_damage = 1
         self.damage_boost_count = 0
         self.invisibility = Pouvoir(self)
-        
+
         # Invincibilité temporaire après dégâts
         self.invincible_after_damage = False
         self.invincibility_end_time = 0
         self.invincibility_duration = 2.0
         self.blink_timer = 0
-        self.blink_interval = 0.1 
+        self.blink_interval = 0.1
         self.visible = True
 
     def update(self):
@@ -60,13 +60,14 @@ class Player(Entity):
         # Gestion de l'invincibilité temporaire
         if self.invincible_after_damage and time.time() > self.invincibility_end_time:
             self.invincible_after_damage = False
-            self.visible = True 
+            self.visible = True
 
         # Gestion du clignotement pendant l'invincibilité
-        if self.invincible_after_damage:
-            if time.time() - self.blink_timer > self.blink_interval:
-                self.visible = not self.visible
-                self.blink_timer = time.time()
+        if self.invincible_after_damage and time.time() - self.blink_timer > self.blink_interval:
+            self.visible = not self.visible
+            self.blink_timer = time.time()
+            print(time.time() - self.blink_timer)
+            print(self.blink_interval)
 
         # Boost de vitesse temporaire
         if self.speed_boost_end and time.time() > self.speed_boost_end:
@@ -122,7 +123,7 @@ class Player(Entity):
         self.move(dx, dy)
 
     def shoot(self):
-        arrow = Arrow(self.rect.center, self.projectile_direction, self.projectile_damage, self.projectile_sprite, self)
+        arrow = Arrow(self.rect.center, self.projectile_direction, PLAYER_DOMMAGE,self.projectile_sprite,self)
         shoot_sound = pygame.mixer.Sound("assets/sounds/shoot.ogg")
         shoot_sound.set_volume(1)
         shoot_sound.play()
@@ -132,13 +133,14 @@ class Player(Entity):
         # Si invisible ou invincible temporairement, ne pas prendre de dégâts
         if not self.invisibility.can_take_damage() or self.invincible_after_damage:
             return
-            
+
         self.health -= 1
-        
+
         # Activer l'invincibilité temporaire après avoir pris des dégâts
         self.invincible_after_damage = True
         self.invincibility_end_time = time.time() + self.invincibility_duration
-        
+        self.visible = True
+
         if self.health <= 0:
             self.kill()
             print("Player has died")
