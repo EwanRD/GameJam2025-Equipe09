@@ -34,7 +34,7 @@ class Game:
         self.enemy_projectiles = pygame.sprite.Group()
 
         # --- Joueur ---
-        self.player = Player(625, 410, self.projectiles, self.wall_list_player)
+        self.player = Player(625, 410, self.player_projectiles, self.wall_list_player)
         self.all_sprites.add(self.player)
 
         # --- Initialisation des vagues ---
@@ -42,7 +42,7 @@ class Game:
         self.wave_start_time = time.time()
         self.wave_interval = 10  # secondes entre chaque vague
         self.wave_enemy_count = 3
-        self.wave_types = [Skeleton, Orc, Ghost]  # tous types d'ennemis dès le début
+        self.wave_types = [Skeleton]  # tous types d'ennemis dès le début
 
         # Spawn initial après avoir créé le joueur et les groupes
         self.spawn_enemies(self.wave_enemy_count)
@@ -100,12 +100,6 @@ class Game:
         wall = Wall (712,settings.SCREEN_HEIGHT-60,settings.SCREEN_WIDTH,60)
         self.wall_list_player.add(wall)
         self.wall_list_enemy.add(wall)
-
-        # Joueur
-        self.player = Player(625, 410, self.player_projectiles, self.wall_list_player)
-        self.all_sprites.add(self.player)
-
-
 
     def handle_events(self, events):
         for event in events:
@@ -192,13 +186,13 @@ class Game:
                 if self.wave == 1:
                     self.wave_enemy_count = 3            
                     self.player.add_kill()
-                    self.current_wave_types = [Skeleton]
+                    self.wave_types = [Skeleton]
                 elif self.wave == 2:
                     self.wave_enemy_count = 5
-                    self.current_wave_types = [Skeleton, Orc]
+                    self.wave_types = [Skeleton, Orc]
                 else:
                     self.wave_enemy_count = 8
-                    self.current_wave_types = [Skeleton, Orc, Ghost]
+                    self.wave_types = [Skeleton, Orc, Ghost]
 
                 self.spawn_enemies(self.wave_enemy_count)
                 self.wave += 1  # passe à la vague suivante
@@ -274,11 +268,14 @@ class Game:
 
         # Définir les types d'ennemis selon la vague
         if self.wave == 1:
-            self.current_wave_types = [Skeleton]
+            self.wave_types = [Skeleton]
         elif self.wave == 2:
-            self.current_wave_types = [Skeleton, Orc]
+            self.wave_types = [Skeleton, Orc]
         else:  # vague 3 et suivantes
-            self.current_wave_types = [Skeleton, Orc, Ghost]
+            self.wave_types = [Skeleton, Orc, Ghost]
 
     def reset(self):
+        if self.all_sprites:
+            for sprite in self.all_sprites:
+                sprite.kill()
         self.__init__()
