@@ -1,3 +1,4 @@
+
 from enum import Enum
 import math
 
@@ -7,9 +8,13 @@ SCREEN_HEIGHT = 900
 FPS = 60
 TOTAL_TIME = 300
 
-# Couleurs
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
+COLORS = {
+    "brown": (139, 69, 19),
+    "white": (240, 240, 240),
+    "button": (60, 60, 80),
+    "hover": (100, 100, 160),
+    "overlay": (0, 0, 0, 100)  # pour les menus avec overlay, alpha moins noir
+}
 
 # map
 SPAWN_ZONE =  [(682,15), (1242,420), (562,855), (6, 419)]
@@ -73,3 +78,4 @@ FIRST_WAVE =1
 WAVE_INTERVAL = 10
 ENEMY_COUNT = 3
 MAX_ENEMY_COUNT = 8
+
