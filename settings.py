@@ -9,6 +9,7 @@ FPS = 60
 TOTAL_TIME = 300
 
 COLORS = {
+    "black": (0, 0, 0),
     "brown": (139, 69, 19),
     "white": (240, 240, 240),
     "button": (60, 60, 80),
@@ -30,7 +31,7 @@ PLAYER_HEALTH = 3
 PLAYER_DOMMAGE = 1
 PLAYER_COULDOWN = 0.5
 
-# enemy
+## enemy
 
 #skeleton
 SKELETON_HEALTH = 2
@@ -40,6 +41,7 @@ ORC_HEALTH = 3
 
 # ghost
 GHOST_HEALTH = 1
+GHOST_COULDOWN = 1.5
 
 ## Attribut globale des projectiles
 
@@ -47,7 +49,7 @@ GHOST_HEALTH = 1
 ARROW_SPEED = 5
 ARROW_DIAG_SPEED = ARROW_SPEED / math.sqrt(2)
 
-# la liste des différent affichage d'une flèche 
+# la liste des différent affichage d'une flèche
 
 class ARROW_DIRECTION(Enum):
     H  = "assets/sprites/Projectiles/Arrow/flechehaut.png"          # Haut

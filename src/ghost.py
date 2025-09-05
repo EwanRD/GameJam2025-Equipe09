@@ -1,4 +1,6 @@
 import pygame
+
+import settings
 from sprites import GHOST_SPRITES
 from settings import GHOST_HEALTH
 from .enemy import Ennemi
@@ -12,15 +14,14 @@ class Ghost(Ennemi):
     def __init__(self, x, y, human, projectiles, walls, all_sprites):
         self.human = human
         self.health = GHOST_HEALTH
-        self.health = 1
         self.projectiles_group = projectiles
         self.last_shot_time = 0
-        self.shoot_cooldown = PLAYER_COULDOWN
+        self.shoot_cooldown = settings.GHOST_COULDOWN
         self.projectiles_direction = 0,0
         sprites = GHOST_SPRITES
         super().__init__(x, y, sprites, walls, speed=4, all_sprites=all_sprites)
 
-    def get_direction_vector(self, src_x, src_y, dst_x, dst_y, speed=PROJ_SPEED):
+    def get_direction_vector(self, src_x, src_y, dst_x, dst_y, speed=settings.PROJ_SPEED):
         dx = dst_x - src_x
         dy = dst_y - src_y
         distance = math.hypot(dx, dy)
@@ -42,7 +43,7 @@ class Ghost(Ennemi):
                 self.last_shot_time = current_time
 
     def shoot(self):
-        fireball = Fireball(self.rect.center, self.projectiles_direction, PLAYER_DOMMAGE)
+        fireball = Fireball(self.rect.center, self.projectiles_direction, settings.PLAYER_DOMMAGE)
         shoot_sound = pygame.mixer.Sound("assets/sounds/shoot.ogg")
         shoot_sound.set_volume(1)
         shoot_sound.play()

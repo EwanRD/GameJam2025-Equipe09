@@ -13,6 +13,6 @@ class Fireball(Projectile):
         hit_sound.set_volume(1)
         hit_sound.play()
 
-    def update(self, dt=2):
+    def update(self, dt=1):
         self.position += self.velocity * dt
         self.rect.topleft = self.position
