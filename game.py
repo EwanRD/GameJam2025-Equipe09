@@ -135,7 +135,7 @@ class Game:
 
         # --- Player collision with enemies ---
         for enemy in self.all_sprites:
-            if enemy != self.player and self.player.rect.colliderect(enemy.rect):
+            if enemy != self.player and not isinstance(enemy, Item) and self.player.rect.colliderect(enemy.rect):
                 self.player.take_damage()
                 dx = enemy.rect.x - self.player.rect.x
                 dy = enemy.rect.y - self.player.rect.y
