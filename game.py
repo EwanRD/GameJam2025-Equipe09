@@ -180,14 +180,21 @@ class Game:
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))
         
-        # Dessiner tous les sprites avec gestion de l'invisibilité
+        # Dessiner tous les sprites avec gestion de l'invisibilité et du clignotement
         for sprite in self.all_sprites:
             if not isinstance(sprite, Item):
-                # Si c'est le joueur et qu'il est invisible, le rendre semi-transparent
-                if sprite == self.player and self.player.invisibility.invisible:
-                    temp_surface = sprite.image.copy()
-                    temp_surface.set_alpha(128)  # 50% de transparence
-                    self.screen.blit(temp_surface, sprite.rect)
+                # Si c'est le joueur
+                if sprite == self.player:
+                    # Clignotement pendant l'invincibilité après dégâts
+                    if self.player.invincible_after_damage and not self.player.visible:
+                        continue
+                    # Invisibilité du pouvoir
+                    elif self.player.invisibility.invisible:
+                        temp_surface = sprite.image.copy()
+                        temp_surface.set_alpha(128)  # 50% de transparence
+                        self.screen.blit(temp_surface, sprite.rect)
+                    else:
+                        self.screen.blit(sprite.image, sprite.rect)
                 else:
                     self.screen.blit(sprite.image, sprite.rect)
         

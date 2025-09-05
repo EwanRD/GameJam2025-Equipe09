@@ -42,12 +42,31 @@ class Player(Entity):
         self.projectile_damage = 1
         self.damage_boost_count = 0
         self.invisibility = Pouvoir(self)
+        
+        # Invincibilité temporaire après dégâts
+        self.invincible_after_damage = False
+        self.invincibility_end_time = 0
+        self.invincibility_duration = 1.0
+        self.blink_timer = 0
+        self.blink_interval = 0.1 
+        self.visible = True
 
     def update(self):
         keys = pygame.key.get_pressed()
         dx, dy = 0, 0
 
         self.invisibility.update(keys)
+
+        # Gestion de l'invincibilité temporaire
+        if self.invincible_after_damage and time.time() > self.invincibility_end_time:
+            self.invincible_after_damage = False
+            self.visible = True 
+
+        # Gestion du clignotement pendant l'invincibilité
+        if self.invincible_after_damage:
+            if time.time() - self.blink_timer > self.blink_interval:
+                self.visible = not self.visible
+                self.blink_timer = time.time()
 
         # Boost de vitesse temporaire
         if self.speed_boost_end and time.time() > self.speed_boost_end:
@@ -110,11 +129,16 @@ class Player(Entity):
         self.projectiles_group.add(arrow)
 
     def take_damage(self):
-        # Si invisible, ne pas prendre de dégâts
-        if not self.invisibility.can_take_damage():
+        # Si invisible ou invincible temporairement, ne pas prendre de dégâts
+        if not self.invisibility.can_take_damage() or self.invincible_after_damage:
             return
-
+            
         self.health -= 1
+        
+        # Activer l'invincibilité temporaire après avoir pris des dégâts
+        self.invincible_after_damage = True
+        self.invincibility_end_time = time.time() + self.invincibility_duration
+        
         if self.health <= 0:
             self.kill()
             print("Player has died")
@@ -122,3 +146,7 @@ class Player(Entity):
     def add_kill(self):
         """Méthode pour ajouter un kill depuis l'extérieur"""
         self.invisibility.add_kill()
+
+    def is_invincible(self):
+        """Méthode utilitaire pour vérifier si le joueur est invincible"""
+        return not self.invisibility.can_take_damage() or self.invincible_after_damage
