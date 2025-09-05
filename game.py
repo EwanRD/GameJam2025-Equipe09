@@ -5,7 +5,7 @@ import time
 from src.player import Player
 from src.enemy import Ennemi
 from src.skeleton import Skeleton
-from src.item import Item  
+from src.item import Item
 from src.walls import Wall
 from src.orc import Orc
 from src.ghost import Ghost
@@ -33,7 +33,8 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
         self.wall_list_player = pygame.sprite.Group()
         self.wall_list_enemy = pygame.sprite.Group() # Liste de murs différente pour les ennemis qui rentre par les ouvertures
-        self.projectiles = pygame.sprite.Group()
+        self.player_projectiles = pygame.sprite.Group()
+        self.enemy_projectiles = pygame.sprite.Group()
 
         # Murs
         # Mur à gauche : Haut
@@ -85,7 +86,7 @@ class Game:
         self.wall_list_enemy.add(wall)
 
         # Joueur
-        self.player = Player(625, 410, self.projectiles, self.wall_list_player)
+        self.player = Player(625, 410, self.player_projectiles, self.wall_list_player)
         self.all_sprites.add(self.player)
 
         self.wave = 1
@@ -126,7 +127,8 @@ class Game:
 
     def update(self):
         self.all_sprites.update()
-        self.projectiles.update()
+        self.player_projectiles.update()
+        self.enemy_projectiles.update()
         self.wall_list_player.update()
 
         # Enemy spawn logic (non-blocking)
@@ -134,6 +136,10 @@ class Game:
             if time.time() >= self.next_spawn_time:
                 spawn_x, spawn_y = random.choice(self.spawn_zones)
                 enemy_type = random.choice(self.wave_types)
+                if enemy_type == Ghost :
+                    enemy = enemy_type(spawn_x, spawn_y, self.player, self.enemy_projectiles, self.wall_list_enemy)
+                else :
+                    enemy = enemy_type(spawn_x, spawn_y, self.player, self.wall_list_enemy)
                 enemy = enemy_type(spawn_x, spawn_y, self.player, self.wall_list_enemy, self.all_sprites)
                 # IMPORTANT: Donner la référence du joueur à l'ennemi
                 enemy.set_player(self.player)
@@ -142,13 +148,19 @@ class Game:
                 self.next_spawn_time = time.time() + self.spawn_cooldown
 
         # Collisions projectiles-ennemis
-        for projectile in self.projectiles:
+        for projectile in self.player_projectiles:
             for enemy in self.all_sprites:
                 if enemy != self.player and isinstance(enemy, Ennemi) and projectile.rect.colliderect(enemy.rect):
                     projectile.on_hit(enemy)
                     projectile.kill()
+
+        for projectile in self.enemy_projectiles:
+            for player in self.all_sprites:
+                if isinstance(player, Player) and projectile.rect.colliderect(player.rect):
+                    projectile.on_hit(player)
+                    projectile.kill()
         
-        if self.player.invisibility.can_take_damage(): 
+        if self.player.invisibility.can_take_damage():
             for enemy in self.all_sprites:
                 if enemy != self.player and isinstance(enemy, Ennemi) and self.player.rect.colliderect(enemy.rect):
                     self.player.take_damage()
@@ -179,7 +191,10 @@ class Game:
 
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))
-        
+        self.all_sprites.draw(self.screen)
+        self.player_projectiles.draw(self.screen)
+        self.enemy_projectiles.draw(self.screen)
+
         # Dessiner tous les sprites avec gestion de l'invisibilité et du clignotement
         for sprite in self.all_sprites:
             if not isinstance(sprite, Item):
@@ -197,12 +212,12 @@ class Game:
                         self.screen.blit(sprite.image, sprite.rect)
                 else:
                     self.screen.blit(sprite.image, sprite.rect)
-        
+
         # Dessiner les items visibles
         for sprite in self.all_sprites:
             if isinstance(sprite, Item) and hasattr(sprite, "visible") and sprite.visible:
                 self.screen.blit(sprite.image, sprite.rect)
-        
+
         self.projectiles.draw(self.screen)
 
         # --- HUD ---
@@ -214,16 +229,16 @@ class Game:
                 self.screen.blit(self.heart_empty, (0 + i * 70, 10))
 
         # Timer
-        total_time = 300 
+        total_time = 300
         elapsed = int(time.time() - self.start_time)
         remaining = max(0, total_time - elapsed)
         minutes = remaining // 60
         seconds = remaining % 60
         timer_text = self.font.render(f"{minutes:02d}:{seconds:02d}", True, (255, 255, 255))
         self.screen.blit(timer_text, (settings.SCREEN_WIDTH // 2, 20))
-        
+
         self.player.invisibility.draw_power_bar(self.screen, 10, 100)
-        
+
         player_pos = self.player.rect.center
         pos_text = self.font.render(f"X: {player_pos[0]}  Y: {player_pos[1]}", True, (255, 255, 0))
         self.screen.blit(pos_text, (20, settings.SCREEN_HEIGHT - 60))
