@@ -63,10 +63,11 @@ class Player(Entity):
             self.visible = True
 
         # Gestion du clignotement pendant l'invincibilité
-        if self.invincible_after_damage:
-            if time.time() - self.blink_timer > self.blink_interval:
-                self.visible = not self.visible
-                self.blink_timer = time.time()
+        if self.invincible_after_damage and time.time() - self.blink_timer > self.blink_interval:
+            self.visible = not self.visible
+            self.blink_timer = time.time()
+            print(time.time() - self.blink_timer)
+            print(self.blink_interval)
 
         # Boost de vitesse temporaire
         if self.speed_boost_end and time.time() > self.speed_boost_end:
@@ -122,7 +123,7 @@ class Player(Entity):
         self.move(dx, dy)
 
     def shoot(self):
-        arrow = Arrow(self.rect.center, self.projectile_direction, PLAYER_DOMMAGE,self.projectile_sprite)
+        arrow = Arrow(self.rect.center, self.projectile_direction, PLAYER_DOMMAGE,self.projectile_sprite,self)
         shoot_sound = pygame.mixer.Sound("assets/sounds/shoot.ogg")
         shoot_sound.set_volume(1)
         shoot_sound.play()
@@ -138,6 +139,7 @@ class Player(Entity):
         # Activer l'invincibilité temporaire après avoir pris des dégâts
         self.invincible_after_damage = True
         self.invincibility_end_time = time.time() + self.invincibility_duration
+        self.visible = True
 
         if self.health <= 0:
             self.kill()

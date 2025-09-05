@@ -137,10 +137,9 @@ class Game:
                 spawn_x, spawn_y = random.choice(self.spawn_zones)
                 enemy_type = random.choice(self.wave_types)
                 if enemy_type == Ghost :
-                    enemy = enemy_type(spawn_x, spawn_y, self.player, self.enemy_projectiles, self.wall_list_enemy)
+                    enemy = enemy_type(spawn_x, spawn_y, self.player, self.enemy_projectiles, self.wall_list_enemy, self.all_sprites)
                 else :
-                    enemy = enemy_type(spawn_x, spawn_y, self.player, self.wall_list_enemy)
-                enemy = enemy_type(spawn_x, spawn_y, self.player, self.wall_list_enemy, self.all_sprites)
+                    enemy = enemy_type(spawn_x, spawn_y, self.player, self.wall_list_enemy, self.all_sprites)
                 # IMPORTANT: Donner la référence du joueur à l'ennemi
                 enemy.set_player(self.player)
                 self.all_sprites.add(enemy)
