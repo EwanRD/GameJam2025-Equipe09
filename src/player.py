@@ -46,7 +46,7 @@ class Player(Entity):
         # Invincibilité temporaire après dégâts
         self.invincible_after_damage = False
         self.invincibility_end_time = 0
-        self.invincibility_duration = 1.0
+        self.invincibility_duration = 2.0
         self.blink_timer = 0
         self.blink_interval = 0.1 
         self.visible = True
