@@ -18,7 +18,7 @@ class Player(Entity):
         self.projectile_direction = settings.DIRECTION.B.value
         self.projectile_sprite = settings.ARROW_DIRECTION.B.value
         self.walls = walls
-        self.speed = PLAYER_SPEED
+        self.speed = settings.PLAYER_SPEED
         self.speed_boost_end = 0
         self.projectile_damage = 1
         self.damage_boost_count = 0
@@ -51,7 +51,7 @@ class Player(Entity):
 
         # Boost de vitesse temporaire
         if self.speed_boost_end and time.time() > self.speed_boost_end:
-            self.speed = PLAYER_SPEED
+            self.speed = settings.PLAYER_SPEED
             self.speed_boost_end = 0
 
         # Mouvement horizontal
