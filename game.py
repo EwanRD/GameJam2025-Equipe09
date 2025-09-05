@@ -3,11 +3,12 @@ import random
 import settings
 import time
 from src.player import Player
+from src.enemy import Ennemi
 from src.skeleton import Skeleton
+from src.item import Item  
 from src.walls import Wall
 from src.orc import Orc
 from src.ghost import Ghost
-
 
 class Game:
     def __init__(self):
@@ -27,7 +28,6 @@ class Game:
         pygame.mixer.music.load("assets/sounds/crypt_loop.wav")
         pygame.mixer.music.set_volume(0.3)
         pygame.mixer.music.play(-1)
-
 
         # Groupes
         self.all_sprites = pygame.sprite.Group()
@@ -119,7 +119,6 @@ class Game:
                     self.wave_types.append(Ghost)
                 self.spawn_enemies(self.wave_enemy_count)
 
-
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -135,44 +134,75 @@ class Game:
             if time.time() >= self.next_spawn_time:
                 spawn_x, spawn_y = random.choice(self.spawn_zones)
                 enemy_type = random.choice(self.wave_types)
-                enemy = enemy_type(spawn_x, spawn_y, self.player, self.wall_list_enemy)
+                enemy = enemy_type(spawn_x, spawn_y, self.player, self.wall_list_enemy, self.all_sprites)
+                # IMPORTANT: Donner la référence du joueur à l'ennemi
+                enemy.set_player(self.player)
                 self.all_sprites.add(enemy)
                 self.enemies_to_spawn -= 1
                 self.next_spawn_time = time.time() + self.spawn_cooldown
 
-
+        # Collisions projectiles-ennemis
         for projectile in self.projectiles:
             for enemy in self.all_sprites:
-                if enemy != self.player and projectile.rect.colliderect(enemy.rect):
+                if enemy != self.player and isinstance(enemy, Ennemi) and projectile.rect.colliderect(enemy.rect):
                     projectile.on_hit(enemy)
-                    projectile.kill()  
+                    projectile.kill()
         
-        for enemy in self.all_sprites:
-            if enemy != self.player and self.player.rect.colliderect(enemy.rect):
-                self.player.take_damage()
-                # Knockback effect: push enemy away from player (stronger knockback)
-                dx = enemy.rect.x - self.player.rect.x
-                dy = enemy.rect.y - self.player.rect.y
-                distance = max(1, (dx ** 2 + dy ** 2) ** 0.5)
-                knockback_strength = 80  # increased knockback
-                knockback_x = int(knockback_strength * dx / distance)
-                knockback_y = int(knockback_strength * dy / distance)
-                enemy.move(knockback_x, knockback_y)
-                hurt_sound = pygame.mixer.Sound("assets/sounds/hurt.mp3")
-                hurt_sound.set_volume(1)
-                hurt_sound.play()
-                if self.player.health <= 0:
-                    pygame.mixer.music.stop()
-                    game_over_sound = pygame.mixer.Sound("assets/sounds/GameOver.wav")
-                    game_over_sound.set_volume(1)
-                    game_over_sound.play()
-                    pygame.time.delay(5000)
-                    self.__init__()  # restart the game
-                    self.run()
+        if self.player.invisibility.can_take_damage(): 
+            for enemy in self.all_sprites:
+                if enemy != self.player and isinstance(enemy, Ennemi) and self.player.rect.colliderect(enemy.rect):
+                    self.player.take_damage()
+                    dx = enemy.rect.x - self.player.rect.x
+                    dy = enemy.rect.y - self.player.rect.y
+                    distance = max(1, (dx ** 2 + dy ** 2) ** 0.5)
+                    knockback_strength = 80
+                    knockback_x = int(knockback_strength * dx / distance)
+                    knockback_y = int(knockback_strength * dy / distance)
+                    enemy.move(knockback_x, knockback_y)
+                    hurt_sound = pygame.mixer.Sound("assets/sounds/hurt.mp3")
+                    hurt_sound.set_volume(1)
+                    hurt_sound.play()
+                    if self.player.health <= 0:
+                        pygame.mixer.music.stop()
+                        game_over_sound = pygame.mixer.Sound("assets/sounds/GameOver.wav")
+                        game_over_sound.set_volume(1)
+                        game_over_sound.play()
+                        pygame.time.delay(5000)
+                        self.__init__()  # restart the game
+                        self.run()
+
+        # Collisions avec les items
+        for sprite in self.all_sprites:
+            if isinstance(sprite, Item) and self.player.rect.colliderect(sprite.rect):
+                sprite.apply_effect(self.player)
+                sprite.kill()
 
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))
-        self.all_sprites.draw(self.screen)
+        
+        # Dessiner tous les sprites avec gestion de l'invisibilité et du clignotement
+        for sprite in self.all_sprites:
+            if not isinstance(sprite, Item):
+                # Si c'est le joueur
+                if sprite == self.player:
+                    # Clignotement pendant l'invincibilité après dégâts
+                    if self.player.invincible_after_damage and not self.player.visible:
+                        continue
+                    # Invisibilité du pouvoir
+                    elif self.player.invisibility.invisible:
+                        temp_surface = sprite.image.copy()
+                        temp_surface.set_alpha(128)  # 50% de transparence
+                        self.screen.blit(temp_surface, sprite.rect)
+                    else:
+                        self.screen.blit(sprite.image, sprite.rect)
+                else:
+                    self.screen.blit(sprite.image, sprite.rect)
+        
+        # Dessiner les items visibles
+        for sprite in self.all_sprites:
+            if isinstance(sprite, Item) and hasattr(sprite, "visible") and sprite.visible:
+                self.screen.blit(sprite.image, sprite.rect)
+        
         self.projectiles.draw(self.screen)
 
         # --- HUD ---
@@ -183,19 +213,20 @@ class Game:
             else:
                 self.screen.blit(self.heart_empty, (0 + i * 70, 10))
 
+        # Timer
         total_time = 300 
         elapsed = int(time.time() - self.start_time)
         remaining = max(0, total_time - elapsed)
         minutes = remaining // 60
         seconds = remaining % 60
         timer_text = self.font.render(f"{minutes:02d}:{seconds:02d}", True, (255, 255, 255))
-        self.screen.blit(timer_text, (settings.SCREEN_WIDTH / 2, 20))
-
-        # DEBUG COORDONNÉES
+        self.screen.blit(timer_text, (settings.SCREEN_WIDTH // 2, 20))
+        
+        self.player.invisibility.draw_power_bar(self.screen, 10, 100)
+        
         player_pos = self.player.rect.center
         pos_text = self.font.render(f"X: {player_pos[0]}  Y: {player_pos[1]}", True, (255, 255, 0))
         self.screen.blit(pos_text, (20, settings.SCREEN_HEIGHT - 60))
-
 
         pygame.display.flip()
 
