@@ -71,6 +71,7 @@ class Ennemi(Entity):
         # Ajouter un kill au compteur du joueur
         if self.player:
             self.player.add_kill()
+            print(f"Kills: {self.player.invisibility.kill_count}/10")
         self.kill()
         if self.all_sprites and random.random() < 0.3:  # 30% de chance de drop un item
             item_type = random.choice(["heart", "speed", "damage"])

@@ -1,3 +1,4 @@
+
 from enum import Enum
 import math
 
@@ -6,9 +7,13 @@ SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 900
 FPS = 60
 
-# Couleurs
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
+COLORS = {
+    "brown": (139, 69, 19),
+    "white": (240, 240, 240),
+    "button": (60, 60, 80),
+    "hover": (100, 100, 160),
+    "overlay": (0, 0, 0, 100)  # pour les menus avec overlay, alpha moins noir
+}
 
 # player attributes
 PLAYER_SPEED = 5
@@ -39,6 +44,5 @@ class ARROW_DIRECTION(Enum):
     HD = "assets/sprites/Projectiles/Arrow/flechehautdroite.png"     # Haut-Droite
     BG =  "assets/sprites/Projectiles/Arrow/flechebasgauche.png"    # Bas-Gauche
     BD = "assets/sprites/Projectiles/Arrow/flechebasdroite.png"     # Bas-Droite
-
 
 

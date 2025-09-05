@@ -24,17 +24,33 @@ class Game:
         self.heart_empty = pygame.image.load("assets/sprites/UI/Heart/coeurvide.png").convert_alpha()
         self.font = pygame.font.SysFont(None, 48)
         self.start_time = time.time()
-        self.spawn_zones = [(682,15), (1242,420), (562,855), (6, 419)]
-        pygame.mixer.music.load("assets/sounds/crypt_loop.wav")
-        pygame.mixer.music.set_volume(0.3)
-        pygame.mixer.music.play(-1)
+        self.spawn_zones = [(682, 15), (1242, 420), (562, 855), (6, 419)]
 
-        # Groupes
+        # --- Groupes ---
         self.all_sprites = pygame.sprite.Group()
         self.wall_list_player = pygame.sprite.Group()
         self.wall_list_enemy = pygame.sprite.Group() # Liste de murs différente pour les ennemis qui rentre par les ouvertures
         self.player_projectiles = pygame.sprite.Group()
         self.enemy_projectiles = pygame.sprite.Group()
+
+        # --- Joueur ---
+        self.player = Player(625, 410, self.projectiles, self.wall_list_player)
+        self.all_sprites.add(self.player)
+
+        # --- Initialisation des vagues ---
+        self.wave = 1
+        self.wave_start_time = time.time()
+        self.wave_interval = 10  # secondes entre chaque vague
+        self.wave_enemy_count = 3
+        self.wave_types = [Skeleton, Orc, Ghost]  # tous types d'ennemis dès le début
+
+        # Spawn initial après avoir créé le joueur et les groupes
+        self.spawn_enemies(self.wave_enemy_count)
+
+        # --- Musique ---
+        pygame.mixer.music.load("assets/sounds/crypt_loop.wav")
+        pygame.mixer.music.set_volume(0.3)
+        pygame.mixer.music.play(-1)
 
         # Murs
         # Mur à gauche : Haut
@@ -89,41 +105,15 @@ class Game:
         self.player = Player(625, 410, self.player_projectiles, self.wall_list_player)
         self.all_sprites.add(self.player)
 
-        self.wave = 1
-        self.wave_start_time = time.time()
-        self.wave_interval = 10  # secondes entre chaque vague
-        self.wave_enemy_count = 3
-        self.wave_types = [Skeleton]  # types d'ennemis pour la première vague
 
-    def run(self):
-        while self.running:
-            self.handle_events()
-            self.update()
-            self.draw()
-            self.clock.tick(settings.FPS)
-            # Gestion des vagues
-            # Démarre la première vague au lancement du jeu
-            if self.wave == 1 and not hasattr(self, 'enemies_to_spawn'):
-                self.spawn_enemies(self.wave_enemy_count)
-            elif time.time() - self.wave_start_time > self.wave_interval:
-                self.wave += 1
-                if self.wave_interval < 20: 
-                    self.wave_interval += 5
-                self.wave_start_time = time.time()
-                # Augmente le nombre d'ennemis à chaque vague
-                if self.wave_enemy_count < 8:
-                    self.wave_enemy_count += self.wave
-                # Ajoute des types d'ennemis au fil des vagues
-                if self.wave == 2 and Orc not in self.wave_types:
-                    self.wave_types.append(Orc)
-                if self.wave == 3 and Ghost not in self.wave_types:
-                    self.wave_types.append(Ghost)
-                self.spawn_enemies(self.wave_enemy_count)
 
-    def handle_events(self):
-        for event in pygame.event.get():
+    def handle_events(self, events):
+        for event in events:
             if event.type == pygame.QUIT:
                 self.running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.running = False
 
     def update(self):
         self.all_sprites.update()
@@ -131,7 +121,7 @@ class Game:
         self.enemy_projectiles.update()
         self.wall_list_player.update()
 
-        # Enemy spawn logic (non-blocking)
+        # --- Enemy spawn logic (non-blocking) ---
         if hasattr(self, 'enemies_to_spawn') and self.enemies_to_spawn > 0:
             if time.time() >= self.next_spawn_time:
                 spawn_x, spawn_y = random.choice(self.spawn_zones)
@@ -148,6 +138,7 @@ class Game:
 
         # Collisions projectiles-ennemis
         for projectile in self.player_projectiles:
+
             for enemy in self.all_sprites:
                 if enemy != self.player and isinstance(enemy, Ennemi) and projectile.rect.colliderect(enemy.rect):
                     projectile.on_hit(enemy)
@@ -188,11 +179,44 @@ class Game:
                 sprite.apply_effect(self.player)
                 sprite.kill()
 
+        # --- Gestion des vagues ---
+        enemies_alive = any(isinstance(s, (Skeleton, Orc, Ghost)) for s in self.all_sprites)
+        total_time = 300
+        elapsed = int(time.time() - self.start_time)
+        remaining = max(0, total_time - elapsed)
+
+        if remaining > 0:
+            if not enemies_alive and (not hasattr(self, 'enemies_to_spawn') or self.enemies_to_spawn == 0):
+                self.wave_start_time = time.time()
+                # Définir les types et nombres selon la vague
+                if self.wave == 1:
+                    self.wave_enemy_count = 3            
+                    self.player.add_kill()
+                    self.current_wave_types = [Skeleton]
+                elif self.wave == 2:
+                    self.wave_enemy_count = 5
+                    self.current_wave_types = [Skeleton, Orc]
+                else:
+                    self.wave_enemy_count = 8
+                    self.current_wave_types = [Skeleton, Orc, Ghost]
+
+                self.spawn_enemies(self.wave_enemy_count)
+                self.wave += 1  # passe à la vague suivante
+
+    def run(self):
+        while self.running:
+            events = pygame.event.get()
+            self.handle_events(events)
+            self.update()
+            self.draw()
+            self.clock.tick(settings.FPS)
+
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))
         self.all_sprites.draw(self.screen)
         self.player_projectiles.draw(self.screen)
         self.enemy_projectiles.draw(self.screen)
+
 
         # Dessiner tous les sprites avec gestion de l'invisibilité et du clignotement
         for sprite in self.all_sprites:
@@ -225,7 +249,6 @@ class Game:
             else:
                 self.screen.blit(self.heart_empty, (0 + i * 70, 10))
 
-        # Timer
         total_time = 300
         elapsed = int(time.time() - self.start_time)
         remaining = max(0, total_time - elapsed)
@@ -240,6 +263,7 @@ class Game:
         pos_text = self.font.render(f"X: {player_pos[0]}  Y: {player_pos[1]}", True, (255, 255, 0))
         self.screen.blit(pos_text, (20, settings.SCREEN_HEIGHT - 60))
 
+
         pygame.display.flip()
 
     def spawn_enemies(self, count, cooldown=0.3):
@@ -247,3 +271,14 @@ class Game:
         self.next_spawn_time = time.time()
         self.enemies_to_spawn = count
         self.spawn_cooldown = cooldown
+
+        # Définir les types d'ennemis selon la vague
+        if self.wave == 1:
+            self.current_wave_types = [Skeleton]
+        elif self.wave == 2:
+            self.current_wave_types = [Skeleton, Orc]
+        else:  # vague 3 et suivantes
+            self.current_wave_types = [Skeleton, Orc, Ghost]
+
+    def reset(self):
+        self.__init__()
