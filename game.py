@@ -122,6 +122,7 @@ class Game:
                 spawn_x, spawn_y = random.choice(self.spawn_zones)
                 enemy_type = random.choice(self.current_wave_types)
                 enemy = enemy_type(spawn_x, spawn_y, self.player, self.wall_list_enemy, self.all_sprites)
+                enemy.set_player(self.player)  # Associer le joueur à l'ennemi
                 self.all_sprites.add(enemy)
                 self.enemies_to_spawn -= 1
                 self.next_spawn_time = time.time() + self.spawn_cooldown
@@ -135,7 +136,7 @@ class Game:
 
         # --- Player collision with enemies ---
         for enemy in self.all_sprites:
-            if enemy != self.player and not isinstance(enemy, Item) and self.player.rect.colliderect(enemy.rect):
+            if enemy != self.player and not isinstance(enemy, Item) and not self.player.is_invincible() and self.player.rect.colliderect(enemy.rect):
                 self.player.take_damage()
                 dx = enemy.rect.x - self.player.rect.x
                 dy = enemy.rect.y - self.player.rect.y
@@ -173,7 +174,8 @@ class Game:
                 self.wave_start_time = time.time()
                 # Définir les types et nombres selon la vague
                 if self.wave == 1:
-                    self.wave_enemy_count = 3
+                    self.wave_enemy_count = 3            
+                    self.player.add_kill()
                     self.current_wave_types = [Skeleton]
                 elif self.wave == 2:
                     self.wave_enemy_count = 5
