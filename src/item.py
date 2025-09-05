@@ -33,4 +33,5 @@ class Item(pygame.sprite.Sprite):
         elif self.item_type == "damage":
             if player.projectile_damage < 3:
                 player.projectile_damage = 3
-        player.damage_boost_count += 3
+            if player.damage_boost_count <= 0:
+                player.damage_boost_count = 3
