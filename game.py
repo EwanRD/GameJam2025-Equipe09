@@ -218,8 +218,6 @@ class Game:
             if isinstance(sprite, Item) and hasattr(sprite, "visible") and sprite.visible:
                 self.screen.blit(sprite.image, sprite.rect)
 
-        self.projectiles.draw(self.screen)
-
         # --- HUD ---
         total_lives = 3
         for i in range(total_lives):
