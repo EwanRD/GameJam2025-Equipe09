@@ -1,6 +1,6 @@
 import pygame
-
-from settings import PLAYER_DOMMAGE, PLAYER_COULDOWN, PROJ_SPEED
+from sprites import GHOST_SPRITES
+from settings import GHOST_HEALTH
 from .enemy import Ennemi
 import math
 import time
@@ -11,33 +11,13 @@ from .projectiles.fireball import Fireball
 class Ghost(Ennemi):
     def __init__(self, x, y, human, projectiles, walls, all_sprites):
         self.human = human
+        self.health = GHOST_HEALTH
         self.health = 1
         self.projectiles_group = projectiles
         self.last_shot_time = 0
         self.shoot_cooldown = PLAYER_COULDOWN
         self.projectiles_direction = 0,0
-        sprites = {
-            "down": [
-                pygame.image.load("assets/sprites/Enemies/Ghost/devant.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Ghost/devantmarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Ghost/devantmarche2.png").convert_alpha(),
-            ],
-            "up": [
-                pygame.image.load("assets/sprites/Enemies/Ghost/derriere.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Ghost/derrieremarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Ghost/derrieremarche2.png").convert_alpha(),
-            ],            "left": [
-                pygame.image.load("assets/sprites/Enemies/Ghost/gauche.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Ghost/gauchemarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Ghost/gauchemarche2.png").convert_alpha(),
-            ],
-            "right": [
-                pygame.image.load("assets/sprites/Enemies/Ghost/droite.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Ghost/droitemarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Ghost/droitemarche2.png").convert_alpha(),
-            ],
-        }
-
+        sprites = GHOST_SPRITES
         super().__init__(x, y, sprites, walls, speed=4, all_sprites=all_sprites)
 
     def get_direction_vector(self, src_x, src_y, dst_x, dst_y, speed=PROJ_SPEED):
@@ -71,6 +51,7 @@ class Ghost(Ennemi):
     def take_damage(self, amount=1):
         self.health -= amount
         if self.health <= 0:
+            # TODO
             # death_sound = pygame.mixer.Sound("assets/sounds/orc_death.mp3")
             # death_sound.set_volume(1)
             # death_sound.play()

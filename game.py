@@ -1,6 +1,7 @@
 import pygame
 import random
 import settings
+import sprites 
 import time
 from src.player import Player
 from src.enemy import Ennemi
@@ -16,15 +17,19 @@ class Game:
         pygame.display.set_caption("TOMB BOUND")
         self.clock = pygame.time.Clock()
         self.running = True
-        self.bg_image = pygame.transform.scale(
-            pygame.image.load("assets/mapgamejam.png").convert(),
+        self.bg_image = pygame.transform.scale(sprites.MAP,
             (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT)
         )
-        self.heart_full = pygame.image.load("assets/sprites/UI/Heart/coeurplein.png").convert_alpha()
-        self.heart_empty = pygame.image.load("assets/sprites/UI/Heart/coeurvide.png").convert_alpha()
+        self.heart_full = sprites.HEART_EMPTY
+        self.heart_empty =sprites.HEART_FULL
         self.font = pygame.font.SysFont(None, 48)
         self.start_time = time.time()
-        self.spawn_zones = [(682, 15), (1242, 420), (562, 855), (6, 419)]
+        self.spawn_zones = settings.SPAWN_ZONE
+        # TODO
+        pygame.mixer.music.load(sprites.BACKGROUND_MUSIC)
+        pygame.mixer.music.set_volume(0.3)
+        pygame.mixer.music.play(-1)
+
 
         # --- Groupes ---
         self.all_sprites = pygame.sprite.Group()
@@ -101,8 +106,44 @@ class Game:
         self.wall_list_player.add(wall)
         self.wall_list_enemy.add(wall)
 
-    def handle_events(self, events):
-        for event in events:
+        # Joueur
+        self.player = Player(625, 410, self.projectiles, self.wall_list_player)
+        self.all_sprites.add(self.player)
+
+        self.wave = settings.FIRST_WAVE
+        self.wave_start_time = time.time()
+        self.wave_interval = settings.WAVE_INTERVAL  # secondes entre chaque vague
+        self.wave_enemy_count = settings.ENEMY_COUNT
+        self.wave_types = [Skeleton]  # types d'ennemis pour la première vague
+
+    def run(self):
+        while self.running:
+            self.handle_events()
+            self.update()
+            self.draw()
+            self.clock.tick(settings.FPS)
+            # Gestion des vagues
+            # Démarre la première vague au lancement du jeu
+            if self.wave == 1 and not hasattr(self, 'enemies_to_spawn'):
+                self.spawn_enemies(self.wave_enemy_count)
+            elif time.time() - self.wave_start_time > self.wave_interval:
+                self.wave += 1
+                if self.wave_interval < 20: 
+                    self.wave_interval += 5
+                self.wave_start_time = time.time()
+                # Augmente le nombre d'ennemis à chaque vague
+                if self.wave_enemy_count < settings.ENEMY_COUNT:
+                    self.wave_enemy_count += self.wave
+                # Ajoute des types d'ennemis au fil des vagues
+                if self.wave == 2 and Orc not in self.wave_types:
+                    self.wave_types.append(Orc)
+                if self.wave == 3 and Ghost not in self.wave_types:
+                    self.wave_types.append(Ghost)
+                self.spawn_enemies(self.wave_enemy_count)
+
+    def handle_events(self):
+        for event in pygame.event.get():
+
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
@@ -155,12 +196,14 @@ class Game:
                     knockback_x = int(knockback_strength * dx / distance)
                     knockback_y = int(knockback_strength * dy / distance)
                     enemy.move(knockback_x, knockback_y)
-                    hurt_sound = pygame.mixer.Sound("assets/sounds/hurt.mp3")
+                    # TODO
+                    hurt_sound = sprites.HURT_SOUND
                     hurt_sound.set_volume(1)
                     hurt_sound.play()
                     if self.player.health <= 0:
                         pygame.mixer.music.stop()
-                        game_over_sound = pygame.mixer.Sound("assets/sounds/GameOver.wav")
+                        # TODO
+                        game_over_sound = sprites.GAMEOVER_SOUND
                         game_over_sound.set_volume(1)
                         game_over_sound.play()
                         pygame.time.delay(5000)
@@ -243,7 +286,8 @@ class Game:
             else:
                 self.screen.blit(self.heart_empty, (0 + i * 70, 10))
 
-        total_time = 300
+        total_time = settings.TOTAL_TIME 
+
         elapsed = int(time.time() - self.start_time)
         remaining = max(0, total_time - elapsed)
         minutes = remaining // 60
