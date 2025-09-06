@@ -1,5 +1,5 @@
 import pygame
-from sprites import HIT_SOUND
+import sprites
 from src.projectiles.projectile import Projectile
 
 class Arrow(Projectile):
@@ -15,7 +15,7 @@ class Arrow(Projectile):
         else:
             target.take_damage(1)
         # TODO
-        hit_sound = HIT_SOUND
+        hit_sound = sprites.HIT_SOUND
         hit_sound.set_volume(1)
         hit_sound.play()
         if hasattr(self.shooter, "damage_boost_count") and self.shooter.damage_boost_count > 0:

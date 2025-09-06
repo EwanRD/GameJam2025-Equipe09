@@ -17,6 +17,9 @@ class Game:
         pygame.display.set_caption("TOMB BOUND")
         # Charger tous les sprites maintenant que la fenêtre est prête
         sprites.load_sprites()
+        print("=== AFTER LOAD_SPRITES ===")
+        print(f"SKELETON_SPRITES loaded: {bool(sprites.SKELETON_SPRITES)}")
+        print(f"SKELETON_SPRITES keys: {list(sprites.SKELETON_SPRITES.keys())}")
         self.clock = pygame.time.Clock()
         self.running = True
         self.bg_image = pygame.transform.scale(sprites.MAP,

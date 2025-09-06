@@ -1,7 +1,7 @@
 import pygame
 import settings
 from .utils import get_direction_vector
-from sprites import GHOST_SPRITES
+import sprites 
 from .enemy import Ennemi
 import math
 import time
@@ -17,7 +17,7 @@ class Ghost(Ennemi):
         self.shoot_cooldown = settings.GHOST_COULDOWN
         self.projectiles_direction = (0, 0)
 
-        super().__init__(x, y, GHOST_SPRITES, walls, speed=4, all_sprites=all_sprites)
+        super().__init__(x, y, sprites.GHOST_SPRITES, walls, speed=4, all_sprites=all_sprites)
 
         # Place self.health after super().__init__ to avoid overwriting
         self.health = settings.GHOST_HEALTH
@@ -26,7 +26,7 @@ class Ghost(Ennemi):
 
 
     def update(self):
-        self.projectiles_direction = utils.get_direction_vector(
+        self.projectiles_direction = get_direction_vector(
             self.rect.x, self.rect.y, self.human.rect.x, self.human.rect.y, settings.FIREBALL_SPEED
         )
 
