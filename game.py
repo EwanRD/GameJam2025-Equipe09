@@ -183,7 +183,7 @@ class Game:
                 if isinstance(player, Player) and projectile.rect.colliderect(player.rect):
                     projectile.on_hit(player)
                     projectile.kill()
-        
+
         if self.player.invisibility.can_take_damage():
             for enemy in self.all_sprites:
                 if enemy != self.player and isinstance(enemy, Ennemi) and self.player.rect.colliderect(enemy.rect):
@@ -199,9 +199,25 @@ class Game:
                     if self.player.health <= 0:
                         pygame.mixer.music.stop()
                         play_sound(sprites.GAMEOVER_SOUND)
-                        pygame.time.delay(5000)
-                        self.__init__()  # restart the game
-                        self.run()
+                        return "game_over"
+
+        # --- Player collision with enemies ---
+        for enemy in self.all_sprites:
+            if enemy != self.player and not isinstance(enemy, Item) and self.player.rect.colliderect(enemy.rect):
+                self.player.take_damage()
+                dx = enemy.rect.x - self.player.rect.x
+                dy = enemy.rect.y - self.player.rect.y
+                distance = max(1, (dx ** 2 + dy ** 2) ** 0.5)
+                knockback_strength = 80
+                knockback_x = int(knockback_strength * dx / distance)
+                knockback_y = int(knockback_strength * dy / distance)
+                enemy.move(knockback_x, knockback_y)
+                hurt_sound = pygame.mixer.Sound("assets/sounds/hurt.mp3")
+                hurt_sound.set_volume(1)
+                hurt_sound.play()
+                if self.player.health <= 0:
+                    pygame.mixer.music.stop()
+                    return "game_over"
 
         # Collisions avec les items
         for sprite in self.all_sprites:
@@ -220,7 +236,7 @@ class Game:
                 self.wave_start_time = time.time()
                 # Définir les types et nombres selon la vague
                 if self.wave == 1:
-                    self.wave_enemy_count = 3            
+                    self.wave_enemy_count = 3
                     self.player.add_kill()
                     self.wave_types = [Skeleton]
                 elif self.wave == 2:
@@ -237,9 +253,12 @@ class Game:
         while self.running:
             events = pygame.event.get()
             self.handle_events(events)
-            self.update()
+            result = self.update()
+            if result == "game_over":
+                return "game_over"
             self.draw()
             self.clock.tick(settings.FPS)
+        return None
 
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))

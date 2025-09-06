@@ -14,7 +14,7 @@ COLORS = {
     "white": (240, 240, 240),
     "button": (60, 60, 80),
     "hover": (100, 100, 160),
-    "overlay": (0, 0, 0, 100)  # pour les menus avec overlay, alpha moins noir
+    "overlay": (0, 0, 0)  # pour les menus avec overlay, alpha moins noir
 }
 
 # map
