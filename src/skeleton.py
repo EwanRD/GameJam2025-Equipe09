@@ -1,6 +1,6 @@
 import pygame
 import sprites
-import utils
+from .utils import play_sound
 from settings import SKELETON_HEALTH
 from .enemy import Ennemi
 

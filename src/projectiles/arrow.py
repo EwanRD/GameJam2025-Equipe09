@@ -1,6 +1,6 @@
 import pygame
 import sprites
-import utils
+from src.utils import play_sound
 from src.projectiles.projectile import Projectile
 
 class Arrow(Projectile):

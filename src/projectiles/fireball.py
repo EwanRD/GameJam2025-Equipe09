@@ -1,6 +1,6 @@
 import pygame
 import sprites
-import utils
+from ..utils import play_sound
 from src.projectiles.projectile import Projectile
 
 class Fireball(Projectile):

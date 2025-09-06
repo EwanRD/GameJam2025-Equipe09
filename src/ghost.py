@@ -44,4 +44,5 @@ class Ghost(Ennemi):
     def take_damage(self, amount=1):
         self.health -= amount
         if self.health <= 0:
+            # TODO sfx death du ghost
             self.die()

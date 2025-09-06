@@ -1,7 +1,7 @@
 import pygame
 from settings import ORC_HEALTH
 import sprites
-import utils
+from .utils import play_sound
 from .enemy import Ennemi
 
 

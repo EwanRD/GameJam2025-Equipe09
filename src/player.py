@@ -1,5 +1,5 @@
 import pygame
-import utils
+from .utils import play_sound
 import settings 
 import sprites 
 from .entity import Entity

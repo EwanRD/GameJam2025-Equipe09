@@ -4,17 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ccbc09c9-569c-478b-aadb-41e493ae74ef" name="Changes" comment="!fix">
+    <list default="true" id="ccbc09c9-569c-478b-aadb-41e493ae74ef" name="Changes" comment="feat use play_sound from utils to play a sound">
+      <change afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites.py" beforeDir="false" afterPath="$PROJECT_DIR$/sprites.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/boss.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/boss.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ghost.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ghost.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/orc.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/orc.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/player.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/projectiles/arrow.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/projectiles/arrow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/projectiles/fireball.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/projectiles/fireball.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/skeleton.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/skeleton.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +145,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757164772532</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="feat use play_sound from utils to play a sound">
+      <option name="closed" value="true" />
+      <created>1757166770357</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1757166770357</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -186,6 +194,7 @@
     <MESSAGE value="fix add import" />
     <MESSAGE value="fixdouble player" />
     <MESSAGE value="!fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="!fix" />
+    <MESSAGE value="feat use play_sound from utils to play a sound" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat use play_sound from utils to play a sound" />
   </component>
 </project>

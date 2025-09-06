@@ -3,7 +3,7 @@ import random
 import settings
 import sprites 
 import time
-import utils
+from src.utils import play_sound
 from src.player import Player
 from src.enemy import Ennemi
 from src.skeleton import Skeleton
