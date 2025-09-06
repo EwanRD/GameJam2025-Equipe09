@@ -1,4 +1,6 @@
 import pygame
+import time
+import random
 from .entity import Entity
 
 
