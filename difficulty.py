@@ -25,28 +25,24 @@ class Difficulty:
         self.buttons = [
             {
                 'text': 'FACILE',
-                'description': 'Plus de dégâts (2), vie normale (3)',
                 'rect': pygame.Rect(screen_width // 2 - button_width // 2, easy_y, button_width, button_height),
                 'difficulty': 'easy',
                 'hovered': False
             },
             {
                 'text': 'NORMAL',
-                'description': 'Équilibré - dégâts (1), vie (3)',
                 'rect': pygame.Rect(screen_width // 2 - button_width // 2, normal_y, button_width, button_height),
                 'difficulty': 'normal',
                 'hovered': False
             },
             {
                 'text': 'DIFFICILE',
-                'description': 'Un défi mortel - une seule vie (1) !',
                 'rect': pygame.Rect(screen_width // 2 - button_width // 2, hard_y, button_width, button_height),
                 'difficulty': 'hard',
                 'hovered': False
             },
             {
                 'text': 'RETOUR',
-                'description': 'Revenir au menu principal',
                 'rect': pygame.Rect(screen_width // 2 - button_width // 2, back_y, button_width, button_height),
                 'difficulty': 'back',
                 'hovered': False
