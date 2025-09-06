@@ -26,12 +26,15 @@ class Item(pygame.sprite.Sprite):
 
     def apply_effect(self, player):
         if self.item_type == "heart":
-            player.health = min(player.health + 1, 3)
+            if player.health < player.max_health:
+                player.health = min(player.health + 1, player.max_health)
+                return True
+            return False 
         elif self.item_type == "speed":
             player.speed += 2
             player.speed_boost_end = time.time() + 5
         elif self.item_type == "damage":
             if player.projectile_damage < 3:
-                player.projectile_damage = 3
+                player.projectile_damage = 5
             if player.damage_boost_count <= 0:
                 player.damage_boost_count = 3

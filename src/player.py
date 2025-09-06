@@ -13,16 +13,20 @@ class Player(Entity):
         super().__init__(x, y, sprite, settings.PLAYER_SPEED)
         self.projectiles_group = projectiles_group
         self.last_shot_time = 0
-        self.shoot_cooldown = settings.PLAYER_COULDOWN
-        self.health = settings.PLAYER_HEALTH
-        self.projectile_direction = settings.DIRECTION.B.value
-        self.projectile_sprite = settings.ARROW_DIRECTION.B.value
         self.walls = walls
         self.speed = settings.PLAYER_SPEED
         self.speed_boost_end = 0
-        self.projectile_damage = 1
+        self.projectile_direction = settings.DIRECTION.B.value
+        self.projectile_sprite = settings.ARROW_DIRECTION.B.value
         self.damage_boost_count = 0
         self.invisibility = Pouvoir(self)
+
+        # Utiliser les stats de difficulté
+        player_stats = settings.get_current_player_stats()
+        self.health = player_stats['health']
+        self.max_health = player_stats['health']  # Nouveau : HP maximum selon la difficulté
+        self.projectile_damage = player_stats['damage']
+        self.shoot_cooldown = player_stats['cooldown']
 
         # Invincibilité temporaire après dégâts
         self.invincible_after_damage = False
@@ -39,14 +43,16 @@ class Player(Entity):
         self.invisibility.update(keys)
 
         # Gestion de l'invincibilité temporaire
-        if self.invincible_after_damage and time.time() > self.invincibility_end_time:
-            self.invincible_after_damage = False
-            self.visible = True
-
-        # Gestion du clignotement pendant l'invincibilité
-        if self.invincible_after_damage and time.time() - self.blink_timer > self.blink_interval:
-            self.visible = not self.visible
-            self.blink_timer = time.time()
+        if self.invincible_after_damage:
+            if time.time() > self.invincibility_end_time:
+                # Fin de l'invincibilité
+                self.invincible_after_damage = False
+                self.visible = True
+            else:
+                # Gestion du clignotement pendant l'invincibilité
+                if time.time() - self.blink_timer > self.blink_interval:
+                    self.visible = not self.visible
+                    self.blink_timer = time.time()
 
         # Boost de vitesse temporaire
         if self.speed_boost_end and time.time() > self.speed_boost_end:

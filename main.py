@@ -1,10 +1,12 @@
 import pygame
 import sys
 import time
-from settings import SCREEN_WIDTH, SCREEN_HEIGHT, COLORS, FPS
+from settings import SCREEN_WIDTH, SCREEN_HEIGHT, COLORS, FPS, DIFFICULTY_LEVEL, set_difficulty
 from menu import Menu, QuitPopup
 from credits import Credits
 from game import Game
+from difficulty import Difficulty
+from tutoriel import Tutoriel
 
 def main():
     pygame.init()
@@ -27,12 +29,15 @@ def main():
     ]
     cinematic_index = 0
     cinematic_played = False
-
+    tutorial_played = False 
+    
     # Game Over image
     game_over_img = pygame.image.load("assets/images/Game_Over.png")
     game_over_img = pygame.transform.scale(game_over_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
     # États
+    STATE_DIFFICULTY = "difficulty"
+    STATE_TUTORIAL = "tutorial"
     STATE_MENU = "menu"
     STATE_GAME_OVER = "game_over"
     STATE_CINEMATIC = "cinematic"
@@ -53,6 +58,36 @@ def main():
     # Credits
     credits_screen = Credits(screen, pygame.font.Font("assets/the_centurion/The Centurion .ttf", 78), button_font, COLORS, lambda: set_state(STATE_MENU), credits_bg)
 
+    # Tutoriel
+    def on_tutorial_complete():
+        nonlocal tutorial_played
+        tutorial_played = True
+        start_game()
+
+    tutoriel = Tutoriel(screen, title_font, button_font, COLORS, background, on_tutorial_complete)
+
+    # Menu de difficulté (modifié)
+    def on_difficulty_selected(difficulty):
+        nonlocal tutorial_played
+        if difficulty == 'back':
+            set_state(STATE_MENU)
+        else:
+            # Définir la difficulté selon le choix
+            if difficulty == 'easy':
+                set_difficulty(DIFFICULTY_LEVEL.EASY)
+            elif difficulty == 'normal':
+                set_difficulty(DIFFICULTY_LEVEL.NORMAL)
+            elif difficulty == 'hard':
+                set_difficulty(DIFFICULTY_LEVEL.HARD)
+            
+            # Vérifier si on doit montrer le tutoriel
+            if not tutorial_played:
+                set_state(STATE_TUTORIAL)
+            else:
+                start_game()
+
+    difficulty = Difficulty(screen, title_font, button_font, COLORS, background, on_difficulty_selected)
+
     # Fonctions pour changer d'état
     def set_state(new_state):
         nonlocal state, cinematic_index
@@ -62,6 +97,7 @@ def main():
             cinematic_index = 0
         if new_state == STATE_CREDITS:
             credits_screen.reset()
+
         if new_state == STATE_GAME and old_state == STATE_MENU:
             game.__init__()
 
@@ -72,6 +108,9 @@ def main():
             set_state(STATE_CINEMATIC)
         else:
             set_state(STATE_GAME)
+
+    def show_difficulty():
+        set_state(STATE_DIFFICULTY)
 
     def show_credits():
         set_state(STATE_CREDITS)
@@ -94,8 +133,9 @@ def main():
         quit_popup = QuitPopup(screen, button_font, COLORS, origin, on_yes, on_no)
         state = STATE_QUIT
 
-    # Ajouter boutons menu principal
-    main_menu.add_button("Jouer", (SCREEN_WIDTH // 2, 400), (240, 70), start_game)
+    # Ajouter boutons
+    main_menu.add_button("Jouer", (SCREEN_WIDTH // 2, 400), (240, 70), show_difficulty)  
+
     main_menu.add_button("Crédits", (SCREEN_WIDTH // 2, 500), (240, 70), show_credits)
     main_menu.add_button("Quitter", (SCREEN_WIDTH // 2, 600), (240, 70), ask_quit)
 
@@ -142,6 +182,10 @@ def main():
                         set_state(STATE_PAUSE)
                     elif state == STATE_PAUSE:
                         set_state(STATE_GAME)
+                    elif state == STATE_DIFFICULTY:
+                        set_state(STATE_MENU)
+                    elif state == STATE_TUTORIAL:
+                        tutoriel.skip_tutorial()
 
         # Gestion des états
         if state == STATE_CINEMATIC:
@@ -156,7 +200,16 @@ def main():
             main_menu.handle_events(events)
             main_menu.draw()
 
+        elif state == STATE_DIFFICULTY:
+            difficulty.handle_events(events)
+            difficulty.draw()
+
+        elif state == STATE_TUTORIAL: 
+            tutoriel.handle_events(events)
+            tutoriel.draw()
+
         elif state == STATE_GAME:
+
             game.handle_events(events)
             result = game.update()
             if result == "game_over":
