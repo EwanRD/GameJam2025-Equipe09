@@ -126,7 +126,7 @@ def main():
             main_menu.draw()
 
         elif state == STATE_GAME:
-            game.handle_events(events)
+            game.handle_events( )
             game.update()
             game.draw()
 

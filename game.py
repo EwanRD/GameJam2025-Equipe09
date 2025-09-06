@@ -15,6 +15,8 @@ class Game:
     def __init__(self):
         self.screen = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
         pygame.display.set_caption("TOMB BOUND")
+        # Charger tous les sprites maintenant que la fenêtre est prête
+        sprites.load_sprites()
         self.clock = pygame.time.Clock()
         self.running = True
         self.bg_image = pygame.transform.scale(sprites.MAP,
@@ -107,7 +109,7 @@ class Game:
         self.wall_list_enemy.add(wall)
 
         # Joueur
-        self.player = Player(625, 410, self.projectiles, self.wall_list_player)
+        self.player = Player(625, 410, self.player_projectiles, self.wall_list_player)
         self.all_sprites.add(self.player)
 
         self.wave = settings.FIRST_WAVE
@@ -305,6 +307,8 @@ class Game:
         pygame.display.flip()
 
     def spawn_enemies(self, count, cooldown=0.3):
+        import sprites  # Assure que sprites.load_sprites() a déjà été appelé
+
         self.spawned = 0
         self.next_spawn_time = time.time()
         self.enemies_to_spawn = count
@@ -315,8 +319,23 @@ class Game:
             self.wave_types = [Skeleton]
         elif self.wave == 2:
             self.wave_types = [Skeleton, Orc]
-        else:  # vague 3 et suivantes
+        else:
             self.wave_types = [Skeleton, Orc, Ghost]
+
+        # Filtrer les types d'ennemis dont les sprites sont chargés
+        valid_wave_types = []
+        for enemy_type in self.wave_types:
+            sprite_attr = f"{enemy_type.__name__.upper()}_SPRITES"
+            enemy_sprites = getattr(sprites, sprite_attr, None)
+            if enemy_sprites and "down" in enemy_sprites:
+                valid_wave_types.append(enemy_type)
+            else:
+                print(f"Warning: {enemy_type.__name__} sprites not loaded or missing 'down', skipping this type")
+
+        self.wave_types = valid_wave_types
+
+        if not self.wave_types:
+            print("Error: No valid enemy types to spawn! Make sure sprites are loaded.")
 
     def reset(self):
         if self.all_sprites:
