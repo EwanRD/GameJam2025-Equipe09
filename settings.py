@@ -71,7 +71,7 @@ PLAYER_HEALTH = 3
 PLAYER_DOMMAGE = 1
 PLAYER_COULDOWN = 0.5
 
-## enemy
+# enemy
 #skeleton
 SKELETON_HEALTH = 2
 # orc

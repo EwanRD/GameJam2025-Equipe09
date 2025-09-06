@@ -2,7 +2,7 @@ import pygame
 import time
 import random
 import sprites
-import utils
+from .utils import play_sound
 from .entity import Entity
 
 

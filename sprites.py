@@ -1,4 +1,5 @@
 import pygame
+from settings import SCREEN_WIDTH, SCREEN_HEIGHT
 
 # Déclarations vides (seront remplies par load_sprites)
 PLAYER_SPRITES = {}
@@ -6,6 +7,7 @@ SKELETON_SPRITES = {}
 ORC_SPRITES = {}
 GHOST_SPRITES = {}
 BOSS_SPRITES = {}
+CINEMATIC_IMAGES = []
 FIREBALL_SPRITE = None
 
 MAP = None
@@ -14,6 +16,8 @@ HEART_EMPTY = None
 
 # Sons (chargés directement, pas besoin de display.init pour ça)
 BACKGROUND_MUSIC = "assets/sounds/crypt_loop.wav"
+BACKGROUND_IMAGE = None
+CREDIT_BACKGROUND = None
 
 HURT_SOUND = None
 GAMEOVER_SOUND = None
@@ -22,13 +26,17 @@ SHOOT_SOUND = None
 DEATH_SOUND = None
 HIT_SOUND = None
 FIREBALL_HIT_SOUND = None
-FIREBALL__SOUND = None
+FIREBALL_SOUND = None
 
+TITLE_FONT = None
+BUTTON_FONT = None
 
 def load_sprites():
-    global PLAYER_SPRITES, SKELETON_SPRITES, ORC_SPRITES, GHOST_SPRITES
+    global PLAYER_SPRITES, SKELETON_SPRITES, ORC_SPRITES, GHOST_SPRITES, BOSS_SPRITES,\
+        CINEMATIC_IMAGES, FIREBALL_SPRITE, BACKGROUND_IMAGE, CREDIT_BACKGROUND
     global MAP, HEART_FULL, HEART_EMPTY
-    global HURT_SOUND, GAMEOVER_SOUND, ORC_DEATH, SHOOT_SOUND, DEATH_SOUND, HIT_SOUND
+    global HURT_SOUND, GAMEOVER_SOUND, ORC_DEATH, SHOOT_SOUND, DEATH_SOUND, HIT_SOUND, FIREBALL_SOUND, FIREBALL_HIT_SOUND
+    global TITLE_FONT, BUTTON_FONT
 
     # --- Joueur ---
     PLAYER_SPRITES = {
@@ -149,8 +157,16 @@ def load_sprites():
         ],
     }
 
+    CINEMATIC_IMAGES =  [
+        pygame.transform.scale(pygame.image.load("assets/images/cinematique1.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)),
+        pygame.transform.scale(pygame.image.load("assets/images/cinematique2.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)),
+        pygame.transform.scale(pygame.image.load("assets/images/cinematique3.png"), (SCREEN_WIDTH, SCREEN_HEIGHT))
+    ]
+
     FIREBALL_SPRITE = pygame.image.load("assets/sprites/Projectiles/Ghost_burst/ghost_burst.png").convert_alpha()
 
+    BACKGROUND_IMAGE = pygame.transform.scale(pygame.image.load("assets/images/screen.png"), (SCREEN_WIDTH, SCREEN_HEIGHT))
+    CREDIT_BACKGROUND = pygame.transform.scale(pygame.image.load("assets/images/credits.png"), (SCREEN_WIDTH, SCREEN_HEIGHT))
     # --- Images UI ---
     MAP = pygame.image.load("assets/mapgamejam.png").convert()
     HEART_FULL = pygame.image.load("assets/sprites/UI/Heart/coeurplein.png").convert_alpha()
@@ -165,3 +181,7 @@ def load_sprites():
     HIT_SOUND = pygame.mixer.Sound("assets/sounds/hurt.mp3")
     FIREBALL_SOUND = pygame.mixer.Sound("assets/sounds/shoot.ogg")
     FIREBALL_HIT_SOUND = pygame.mixer.Sound("assets/sounds/hurt.mp3")
+
+    # -- Font --
+    TITLE_FONT = pygame.font.Font("assets/the_centurion/The Centurion .ttf", 78)
+    BUTTON_FONT = pygame.font.SysFont("Arial", 32)
