@@ -3,14 +3,15 @@ from settings import ORC_HEALTH
 from sprites import ORC_SPRITES, ORC_DEATH
 from .enemy import Ennemi
 
+
 class Orc(Ennemi):
     def __init__(self, x, y, human, walls, all_sprites):
         self.human = human
+
+        super().__init__(x, y, ORC_SPRITES, walls, speed=2, all_sprites=all_sprites)
+
+        # Place health après super().__init__ pour éviter un overwrite
         self.health = ORC_HEALTH
-
-        sprites = ORC_SPRITES
-
-        super().__init__(x, y, sprites, walls, speed=2, all_sprites=all_sprites)
 
     def update(self):
         """Suit directement le joueur associé"""
@@ -20,10 +21,9 @@ class Orc(Ennemi):
     def take_damage(self, amount=1):
         self.health -= amount
         if self.health <= 0:
-            self.kill()
-            # TODO
+            # Jouer le son de mort avant la destruction
             death_sound = ORC_DEATH
             death_sound.set_volume(1)
             death_sound.play()
-            self.die()
 
+            self.die()

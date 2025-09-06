@@ -9,12 +9,12 @@ from .pouvoir import Pouvoir
 
 class Player(Entity):
     def __init__(self, x, y, projectiles_group, walls):
-        sprites = sprites.PLAYER_SPRITES
-        super().__init__(x, y, sprites, settings.PLAYER_SPEED)
+        sprite = sprites.PLAYER_SPRITES
+        super().__init__(x, y, sprite, settings.PLAYER_SPEED)
         self.projectiles_group = projectiles_group
         self.last_shot_time = 0
         self.shoot_cooldown = settings.PLAYER_COULDOWN
-        self.health = settings.vPLAYER_HEALTH
+        self.health = settings.PLAYER_HEALTH
         self.projectile_direction = settings.DIRECTION.B.value
         self.projectile_sprite = settings.ARROW_DIRECTION.B.value
         self.walls = walls
