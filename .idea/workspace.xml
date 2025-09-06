@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ccbc09c9-569c-478b-aadb-41e493ae74ef" name="Changes" comment="" />
+    <list default="true" id="ccbc09c9-569c-478b-aadb-41e493ae74ef" name="Changes" comment="feat: add screen game over">
+      <change afterPath="$PROJECT_DIR$/assets/images/Game_Over.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/cinematique2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/cinematique2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/cinematique3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/cinematique3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/jpeg(3)" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/credits.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/settings.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,6 +29,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;mn-manohisoa&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://mn-manohisoa@github.com/EwanRD/GameJam2025-Equipe09.git&quot;,
+    &quot;accountId&quot;: &quot;5f3f9a9a-af1a-4059-bc34-e8a6e279acdb&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -28,15 +49,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.main.executor": "Run",
-    "Python.menu.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "last_opened_file_path": "/home/mn-manohisoa/PycharmProjects/GameJam2025-Equipe09"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.menu.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Manou&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/mn-manohisoa/PycharmProjects/GameJam2025-Equipe09&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.intellij.pycharm.community.ide.impl.configuration.PythonContentEntriesConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="GameJam2025-Equipe09" />
@@ -82,6 +105,32 @@
       <option name="presentableId" value="Default" />
       <updated>1756996534904</updated>
     </task>
+    <task id="LOCAL-00001" summary="feat: add screens and cinematic">
+      <option name="closed" value="true" />
+      <created>1757074380522</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1757074380522</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: add screens and cinematic" />
+    <MESSAGE value="fix: fix double player&#10;&#10;fix: fix double player" />
+    <MESSAGE value="feat: add screen game over" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add screen game over" />
   </component>
 </project>
