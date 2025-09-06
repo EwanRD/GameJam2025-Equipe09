@@ -1,6 +1,7 @@
 import pygame
 from settings import ORC_HEALTH
 import sprites
+import utils
 from .enemy import Ennemi
 
 
@@ -22,8 +23,5 @@ class Orc(Ennemi):
         self.health -= amount
         if self.health <= 0:
             # Jouer le son de mort avant la destruction
-            death_sound = sprites.ORC_DEATH
-            death_sound.set_volume(1)
-            death_sound.play()
-
+            play_sound(sprites.ORC_DEATH)
             self.die()

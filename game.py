@@ -3,6 +3,7 @@ import random
 import settings
 import sprites 
 import time
+import utils
 from src.player import Player
 from src.enemy import Ennemi
 from src.skeleton import Skeleton
@@ -10,6 +11,7 @@ from src.item import Item
 from src.walls import Wall
 from src.orc import Orc
 from src.ghost import Ghost
+
 
 class Game:
     def __init__(self):
@@ -22,12 +24,11 @@ class Game:
         self.bg_image = pygame.transform.scale(sprites.MAP,
             (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT)
         )
-        self.heart_full = sprites.HEART_EMPTY
-        self.heart_empty =sprites.HEART_FULL
+        self.heart_full = sprites.HEART_FULL
+        self.heart_empty =sprites.HEART_EMPTY
         self.font = pygame.font.SysFont(None, 48)
         self.start_time = time.time()
         self.spawn_zones = settings.SPAWN_ZONE
-        # TODO
         pygame.mixer.music.load(sprites.BACKGROUND_MUSIC)
         pygame.mixer.music.set_volume(0.3)
         pygame.mixer.music.play(-1)
@@ -194,16 +195,10 @@ class Game:
                     knockback_x = int(knockback_strength * dx / distance)
                     knockback_y = int(knockback_strength * dy / distance)
                     enemy.move(knockback_x, knockback_y)
-                    # TODO
-                    hurt_sound = sprites.HURT_SOUND
-                    hurt_sound.set_volume(1)
-                    hurt_sound.play()
+                    play_sound(sprites.HURT_SOUND)
                     if self.player.health <= 0:
                         pygame.mixer.music.stop()
-                        # TODO
-                        game_over_sound = sprites.GAMEOVER_SOUND
-                        game_over_sound.set_volume(1)
-                        game_over_sound.play()
+                        play_sound(sprites.GAMEOVER_SOUND)
                         pygame.time.delay(5000)
                         self.__init__()  # restart the game
                         self.run()

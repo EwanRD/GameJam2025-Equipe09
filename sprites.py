@@ -5,6 +5,8 @@ PLAYER_SPRITES = {}
 SKELETON_SPRITES = {}
 ORC_SPRITES = {}
 GHOST_SPRITES = {}
+BOSS_SPRITES = {}
+FIREBALL_SPRITE = None
 
 MAP = None
 HEART_FULL = None
@@ -19,6 +21,8 @@ ORC_DEATH = None
 SHOOT_SOUND = None
 DEATH_SOUND = None
 HIT_SOUND = None
+FIREBALL_HIT_SOUND = None
+FIREBALL__SOUND = None
 
 
 def load_sprites():
@@ -122,6 +126,31 @@ def load_sprites():
         ],
     }
 
+    # --- Boss ---
+    BOSS_SPRITES = {
+        "down": [
+            pygame.image.load("assets/sprites/Enemies/Liche/devant.png").convert_alpha(),
+            pygame.image.load("assets/sprites/Enemies/Liche/devantmarche1.png").convert_alpha(),
+            pygame.image.load("assets/sprites/Enemies/Liche/devantmarche2.png").convert_alpha(),
+        ],
+        "up": [
+            pygame.image.load("assets/sprites/Enemies/Liche/derriere.png").convert_alpha(),
+            pygame.image.load("assets/sprites/Enemies/Liche/derrieremarche1.png").convert_alpha(),
+            pygame.image.load("assets/sprites/Enemies/Liche/derrieremarche2.png").convert_alpha(),
+        ],            "left": [
+            pygame.image.load("assets/sprites/Enemies/Liche/gauche.png").convert_alpha(),
+            pygame.image.load("assets/sprites/Enemies/Liche/gauchemarche1.png").convert_alpha(),
+            pygame.image.load("assets/sprites/Enemies/Liche/gauchemarche2.png").convert_alpha(),
+        ],
+        "right": [
+            pygame.image.load("assets/sprites/Enemies/Liche/droite.png").convert_alpha(),
+            pygame.image.load("assets/sprites/Enemies/Liche/droitemarche1.png").convert_alpha(),
+            pygame.image.load("assets/sprites/Enemies/Liche/droitemarche2.png").convert_alpha(),
+        ],
+    }
+
+    FIREBALL_SPRITE = pygame.image.load("assets/sprites/Projectiles/Ghost_burst/ghost_burst.png").convert_alpha()
+
     # --- Images UI ---
     MAP = pygame.image.load("assets/mapgamejam.png").convert()
     HEART_FULL = pygame.image.load("assets/sprites/UI/Heart/coeurplein.png").convert_alpha()
@@ -134,3 +163,5 @@ def load_sprites():
     SHOOT_SOUND = pygame.mixer.Sound("assets/sounds/shoot.ogg")
     DEATH_SOUND = pygame.mixer.Sound("assets/sounds/skeleton_death.mp3")
     HIT_SOUND = pygame.mixer.Sound("assets/sounds/hurt.mp3")
+    FIREBALL_SOUND = pygame.mixer.Sound("assets/sounds/shoot.ogg")
+    FIREBALL_HIT_SOUND = pygame.mixer.Sound("assets/sounds/hurt.mp3")
