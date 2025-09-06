@@ -17,16 +17,13 @@ class Game:
         pygame.display.set_caption("TOMB BOUND")
         # Charger tous les sprites maintenant que la fenêtre est prête
         sprites.load_sprites()
-        print("=== AFTER LOAD_SPRITES ===")
-        print(f"SKELETON_SPRITES loaded: {bool(sprites.SKELETON_SPRITES)}")
-        print(f"SKELETON_SPRITES keys: {list(sprites.SKELETON_SPRITES.keys())}")
         self.clock = pygame.time.Clock()
         self.running = True
         self.bg_image = pygame.transform.scale(sprites.MAP,
             (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT)
         )
-        self.heart_full = sprites.HEART_EMPTY
-        self.heart_empty =sprites.HEART_FULL
+        self.heart_full = sprites.HEART_FULL
+        self.heart_empty =sprites.HEART_EMPTY
         self.font = pygame.font.SysFont(None, 48)
         self.start_time = time.time()
         self.spawn_zones = settings.SPAWN_ZONE
@@ -110,10 +107,6 @@ class Game:
         wall = Wall (712,settings.SCREEN_HEIGHT-60,settings.SCREEN_WIDTH,60)
         self.wall_list_player.add(wall)
         self.wall_list_enemy.add(wall)
-
-        # Joueur
-        self.player = Player(625, 410, self.player_projectiles, self.wall_list_player)
-        self.all_sprites.add(self.player)
 
         self.wave = settings.FIRST_WAVE
         self.wave_start_time = time.time()
@@ -248,7 +241,8 @@ class Game:
     def run(self):
         while self.running:
             events = pygame.event.get()
-            self.handle_events(events)
+            print(events)
+            self.handle_events(events[0])
             self.update()
             self.draw()
             self.clock.tick(settings.FPS)
@@ -284,8 +278,9 @@ class Game:
                 self.screen.blit(sprite.image, sprite.rect)
 
         # --- HUD ---
-        total_lives = 3
-        for i in range(total_lives):
+       # Utiliser les HP maximum du joueur selon la difficulté
+        max_hearts = self.player.max_health
+        for i in range(max_hearts):
             if i < self.player.health:
                 self.screen.blit(self.heart_full, (0 + i * 70, 10))
             else:

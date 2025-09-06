@@ -1,5 +1,4 @@
 import pygame
-
 import settings 
 import sprites 
 from .entity import Entity
@@ -13,16 +12,20 @@ class Player(Entity):
         super().__init__(x, y, sprite, settings.PLAYER_SPEED)
         self.projectiles_group = projectiles_group
         self.last_shot_time = 0
-        self.shoot_cooldown = settings.PLAYER_COULDOWN
-        self.health = settings.PLAYER_HEALTH
-        self.projectile_direction = settings.DIRECTION.B.value
-        self.projectile_sprite = settings.ARROW_DIRECTION.B.value
         self.walls = walls
         self.speed = settings.PLAYER_SPEED
         self.speed_boost_end = 0
-        self.projectile_damage = 1
+        self.projectile_direction = settings.DIRECTION.B.value
+        self.projectile_sprite = settings.ARROW_DIRECTION.B.value
         self.damage_boost_count = 0
         self.invisibility = Pouvoir(self)
+
+        # Utiliser les stats de difficulté
+        player_stats = settings.get_current_player_stats()
+        self.health = player_stats['health']
+        self.max_health = player_stats['health']  # Nouveau : HP maximum selon la difficulté
+        self.projectile_damage = player_stats['damage']
+        self.shoot_cooldown = player_stats['cooldown']
 
         # Invincibilité temporaire après dégâts
         self.invincible_after_damage = False
@@ -47,8 +50,6 @@ class Player(Entity):
         if self.invincible_after_damage and time.time() - self.blink_timer > self.blink_interval:
             self.visible = not self.visible
             self.blink_timer = time.time()
-            print(time.time() - self.blink_timer)
-            print(self.blink_interval)
 
         # Boost de vitesse temporaire
         if self.speed_boost_end and time.time() > self.speed_boost_end:
@@ -105,8 +106,7 @@ class Player(Entity):
 
     def shoot(self):
         print(self.projectile_sprite)
-        arrow = Arrow(self.rect.center, self.projectile_direction, settings.PLAYER_DOMMAGE,self.projectile_sprite, self)
-        # TODO
+        arrow = Arrow(self.rect.center, self.projectile_direction, self.projectile_damage, self.projectile_sprite, self)
         shoot_sound = sprites.SHOOT_SOUND
         shoot_sound.set_volume(1)
         shoot_sound.play()

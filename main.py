@@ -1,10 +1,11 @@
 import pygame
 import sys
 import time
-from settings import SCREEN_WIDTH, SCREEN_HEIGHT, COLORS, FPS
+from settings import SCREEN_WIDTH, SCREEN_HEIGHT, COLORS, FPS, DIFFICULTY_LEVEL, set_difficulty
 from menu import Menu, QuitPopup
 from credits import Credits
 from game import Game
+from difficulty import Difficulty
 
 def main():
     pygame.init()
@@ -29,8 +30,9 @@ def main():
     cinematic_index = 0
     cinematic_played = False
 
-    # États
+    # États (ajout de l'état difficulté)
     STATE_MENU = "menu"
+    STATE_DIFFICULTY = "difficulty"
     STATE_CINEMATIC = "cinematic"
     STATE_GAME = "game"
     STATE_PAUSE = "pause"
@@ -48,6 +50,24 @@ def main():
 
     # Credits
     credits_screen = Credits(screen, title_font, button_font, COLORS, lambda: set_state(STATE_MENU), credits_bg)
+
+    # Menu de difficulté (nouveau)
+    def on_difficulty_selected(difficulty):
+        if difficulty == 'back':
+            set_state(STATE_MENU)
+        else:
+            # Définir la difficulté selon le choix
+            if difficulty == 'easy':
+                set_difficulty(DIFFICULTY_LEVEL.EASY)
+            elif difficulty == 'normal':
+                set_difficulty(DIFFICULTY_LEVEL.NORMAL)
+            elif difficulty == 'hard':
+                set_difficulty(DIFFICULTY_LEVEL.HARD)
+            
+            # Démarrer le jeu
+            start_game()
+
+    difficulty_menu = Difficulty(screen, title_font, button_font, COLORS, background, on_difficulty_selected)
 
     # Fonctions pour changer d'état
     def set_state(new_state):
@@ -67,6 +87,9 @@ def main():
             set_state(STATE_CINEMATIC)
         else:
             set_state(STATE_GAME)
+
+    def show_difficulty_menu():
+        set_state(STATE_DIFFICULTY)
 
     def show_credits():
         set_state(STATE_CREDITS)
@@ -89,8 +112,8 @@ def main():
         quit_popup = QuitPopup(screen, button_font, COLORS, origin, on_yes, on_no)
         state = STATE_QUIT
 
-    # Ajouter boutons
-    main_menu.add_button("Jouer", (SCREEN_WIDTH // 2, 400), (240, 70), start_game)
+    # Ajouter boutons (modifié pour aller au menu de difficulté)
+    main_menu.add_button("Jouer", (SCREEN_WIDTH // 2, 400), (240, 70), show_difficulty_menu)  # Changé ici
     main_menu.add_button("Crédits", (SCREEN_WIDTH // 2, 500), (240, 70), show_credits)
     main_menu.add_button("Quitter", (SCREEN_WIDTH // 2, 600), (240, 70), ask_quit)
 
@@ -111,6 +134,8 @@ def main():
                         set_state(STATE_PAUSE)
                     elif state == STATE_PAUSE:
                         set_state(STATE_GAME)
+                    elif state == STATE_DIFFICULTY:  # Nouveau : ESC pour revenir du menu difficulté
+                        set_state(STATE_MENU)
 
         # Gestion des états
         if state == STATE_CINEMATIC:
@@ -125,8 +150,12 @@ def main():
             main_menu.handle_events(events)
             main_menu.draw()
 
+        elif state == STATE_DIFFICULTY:  # Nouvel état
+            difficulty_menu.handle_events(events)
+            difficulty_menu.draw()
+
         elif state == STATE_GAME:
-            game.handle_events( )
+            game.handle_events()
             game.update()
             game.draw()
 
