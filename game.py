@@ -3,6 +3,7 @@ import random
 import settings
 import sprites 
 import time
+from src.utils import play_sound
 from src.player import Player
 from src.enemy import Ennemi
 from src.skeleton import Skeleton
@@ -10,6 +11,7 @@ from src.item import Item
 from src.walls import Wall
 from src.orc import Orc
 from src.ghost import Ghost
+
 
 class Game:
     def __init__(self):
@@ -27,7 +29,6 @@ class Game:
         self.font = pygame.font.SysFont(None, 48)
         self.start_time = time.time()
         self.spawn_zones = settings.SPAWN_ZONE
-        # TODO
         pygame.mixer.music.load(sprites.BACKGROUND_MUSIC)
         pygame.mixer.music.set_volume(0.3)
         pygame.mixer.music.play(-1)
@@ -182,7 +183,7 @@ class Game:
                 if isinstance(player, Player) and projectile.rect.colliderect(player.rect):
                     projectile.on_hit(player)
                     projectile.kill()
-        
+
         if self.player.invisibility.can_take_damage():
             for enemy in self.all_sprites:
                 if enemy != self.player and isinstance(enemy, Ennemi) and self.player.rect.colliderect(enemy.rect):
@@ -194,19 +195,29 @@ class Game:
                     knockback_x = int(knockback_strength * dx / distance)
                     knockback_y = int(knockback_strength * dy / distance)
                     enemy.move(knockback_x, knockback_y)
-                    # TODO
-                    hurt_sound = sprites.HURT_SOUND
-                    hurt_sound.set_volume(1)
-                    hurt_sound.play()
+                    play_sound(sprites.HURT_SOUND)
                     if self.player.health <= 0:
                         pygame.mixer.music.stop()
-                        # TODO
-                        game_over_sound = sprites.GAMEOVER_SOUND
-                        game_over_sound.set_volume(1)
-                        game_over_sound.play()
-                        pygame.time.delay(5000)
-                        self.__init__()  # restart the game
-                        self.run()
+                        play_sound(sprites.GAMEOVER_SOUND)
+                        return "game_over"
+
+        # --- Player collision with enemies ---
+        for enemy in self.all_sprites:
+            if enemy != self.player and not isinstance(enemy, Item) and self.player.rect.colliderect(enemy.rect):
+                self.player.take_damage()
+                dx = enemy.rect.x - self.player.rect.x
+                dy = enemy.rect.y - self.player.rect.y
+                distance = max(1, (dx ** 2 + dy ** 2) ** 0.5)
+                knockback_strength = 80
+                knockback_x = int(knockback_strength * dx / distance)
+                knockback_y = int(knockback_strength * dy / distance)
+                enemy.move(knockback_x, knockback_y)
+                hurt_sound = pygame.mixer.Sound("assets/sounds/hurt.mp3")
+                hurt_sound.set_volume(1)
+                hurt_sound.play()
+                if self.player.health <= 0:
+                    pygame.mixer.music.stop()
+                    return "game_over"
 
         # Collisions avec les items
         for sprite in self.all_sprites:
@@ -225,7 +236,7 @@ class Game:
                 self.wave_start_time = time.time()
                 # Définir les types et nombres selon la vague
                 if self.wave == 1:
-                    self.wave_enemy_count = 3            
+                    self.wave_enemy_count = 3
                     self.player.add_kill()
                     self.wave_types = [Skeleton]
                 elif self.wave == 2:
@@ -237,7 +248,7 @@ class Game:
 
                 self.spawn_enemies(self.wave_enemy_count)
                 self.wave += 1  # passe à la vague suivante
-                
+
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))
         

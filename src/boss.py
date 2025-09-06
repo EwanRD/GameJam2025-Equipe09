@@ -1,4 +1,8 @@
 import pygame
+import time
+import random
+import sprites
+import utils
 from .entity import Entity
 
 
@@ -7,27 +11,7 @@ class Boss(Entity):
         self.human = human
         self.health = 2
 
-        sprites = {
-            "down": [
-                pygame.image.load("assets/sprites/Enemies/Liche/devant.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Liche/devantmarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Liche/devantmarche2.png").convert_alpha(),
-            ],
-            "up": [
-                pygame.image.load("assets/sprites/Enemies/Liche/derriere.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Liche/derrieremarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Liche/derrieremarche2.png").convert_alpha(),
-            ],            "left": [
-                pygame.image.load("assets/sprites/Enemies/Liche/gauche.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Liche/gauchemarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Liche/gauchemarche2.png").convert_alpha(),
-            ],
-            "right": [
-                pygame.image.load("assets/sprites/Enemies/Liche/droite.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Liche/droitemarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Liche/droitemarche2.png").convert_alpha(),
-            ],
-        }
+        self.sprites = sprites.BOSS_SPRITES
 
         super().__init__(x, y, sprites, speed=0)
         self.spawn_time = time.time()
@@ -69,6 +53,4 @@ class Boss(Entity):
         self.health -= 1
         if self.health <= 0:
             self.kill()
-            death_sound = pygame.mixer.Sound("assets/sounds/skeleton_death.mp3")
-            death_sound.set_volume(1)
-            death_sound.play()
+            play_sound(sprites.DEATH_SOUND)

@@ -1,4 +1,5 @@
 import pygame
+from .utils import play_sound
 import settings 
 import sprites 
 from .entity import Entity
@@ -107,11 +108,8 @@ class Player(Entity):
         self.move(dx, dy)
 
     def shoot(self):
-        print(self.projectile_sprite)
-        arrow = Arrow(self.rect.center, self.projectile_direction, self.projectile_damage, self.projectile_sprite, self)
-        shoot_sound = sprites.SHOOT_SOUND
-        shoot_sound.set_volume(1)
-        shoot_sound.play()
+        arrow = Arrow(self.rect.center, self.projectile_direction, settings.PLAYER_DOMMAGE,self.projectile_sprite, self)
+        play_sound(sprites.SHOOT_SOUND)
         self.projectiles_group.add(arrow)
 
     def take_damage(self):

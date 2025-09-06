@@ -1,5 +1,4 @@
 import math
-import settings  # pour FIREBALL_SPEED
 
 def play_sound(sound, volume=1.0):
     """Play a pygame sound with a given volume"""

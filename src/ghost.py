@@ -22,9 +22,6 @@ class Ghost(Ennemi):
         # Place self.health after super().__init__ to avoid overwriting
         self.health = settings.GHOST_HEALTH
 
-    #TODO mettre dans util.py
-
-
     def update(self):
         self.projectiles_direction = get_direction_vector(
             self.rect.x, self.rect.y, self.human.rect.x, self.human.rect.y, settings.FIREBALL_SPEED
@@ -42,12 +39,10 @@ class Ghost(Ennemi):
 
     def shoot(self):
         fireball = Fireball(self.rect.center, self.projectiles_direction, settings.PLAYER_DOMMAGE)
-        shoot_sound = pygame.mixer.Sound("assets/sounds/shoot.ogg")
-        shoot_sound.set_volume(1)
-        shoot_sound.play()
         self.projectiles_group.add(fireball)
 
     def take_damage(self, amount=1):
         self.health -= amount
         if self.health <= 0:
+            # TODO sfx death du ghost
             self.die()

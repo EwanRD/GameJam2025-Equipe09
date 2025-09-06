@@ -5,7 +5,6 @@ class Entity(pygame.sprite.Sprite):
     def __init__(self, x, y, sprites, speed=3):
         super().__init__()
         self.sprites = sprites
-        print("Sprites keys:", sprites.keys())
         self.direction = "down"
         self.image = self.sprites[self.direction][0]
         # Réduire la hitbox de l'entity

@@ -1,6 +1,7 @@
 import pygame
 import sprites
 import settings
+from src.utils import play_sound
 from src.projectiles.projectile import Projectile
 
 class Arrow(Projectile):
@@ -25,12 +26,8 @@ class Arrow(Projectile):
             damage_to_deal = base_damage
             
         target.take_damage(damage_to_deal)
-        
-        # Son de toucher
-        hit_sound = sprites.HIT_SOUND
-        hit_sound.set_volume(1)
-        hit_sound.play()
-        
+        play_sound(sprites.HIT_SOUND)
+
     def update(self, dt=2):
         self.position += self.velocity * dt
         self.rect.topleft = self.position

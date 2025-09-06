@@ -13,13 +13,12 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("TOMB BOUND")
 
-    title_font = pygame.font.Font("assets/the_centurion/The Centurion .ttf", 78)
     button_font = pygame.font.SysFont("Arial", 32)
 
     # Backgrounds
     background = pygame.image.load("assets/images/screen.png")
     background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
-    credits_bg = pygame.image.load("assets/images/jpeg(3)")
+    credits_bg = pygame.image.load("assets/images/credits.png")
     credits_bg = pygame.transform.scale(credits_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
     # Cinématique
@@ -31,11 +30,16 @@ def main():
     cinematic_index = 0
     cinematic_played = False
     tutorial_played = False 
+    
+    # Game Over image
+    game_over_img = pygame.image.load("assets/images/Game_Over.png")
+    game_over_img = pygame.transform.scale(game_over_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-    # États (avec tutoriel ajouté)
-    STATE_MENU = "menu"
+    # États
     STATE_DIFFICULTY = "difficulty"
     STATE_TUTORIAL = "tutorial"
+    STATE_MENU = "menu"
+    STATE_GAME_OVER = "game_over"
     STATE_CINEMATIC = "cinematic"
     STATE_GAME = "game"
     STATE_PAUSE = "pause"
@@ -47,12 +51,12 @@ def main():
     game = Game()
 
     # Menus
-    main_menu = Menu(screen, " ", title_font, button_font, COLORS, background)
-    pause_menu = Menu(screen, "Pause", title_font, button_font, COLORS, background=None, with_overlay=True)
+    main_menu = Menu(screen, " ", pygame.font.Font("assets/the_centurion/The Centurion .ttf", 78), button_font, COLORS, background)
+    pause_menu = Menu(screen, "Pause", pygame.font.Font("assets/the_centurion/The Centurion .ttf", 78), button_font, COLORS, background=None, with_overlay=True)
     quit_popup = None
 
     # Credits
-    credits_screen = Credits(screen, title_font, button_font, COLORS, lambda: set_state(STATE_MENU), credits_bg)
+    credits_screen = Credits(screen, pygame.font.Font("assets/the_centurion/The Centurion .ttf", 78), button_font, COLORS, lambda: set_state(STATE_MENU), credits_bg)
 
     # Tutoriel
     def on_tutorial_complete():
@@ -87,13 +91,15 @@ def main():
     # Fonctions pour changer d'état
     def set_state(new_state):
         nonlocal state, cinematic_index
+        old_state = state
         state = new_state
         if new_state == STATE_CINEMATIC:
             cinematic_index = 0
         if new_state == STATE_CREDITS:
             credits_screen.reset()
-        if new_state == STATE_GAME:
-            game.__init__() 
+
+        if new_state == STATE_GAME and old_state == STATE_MENU:
+            game.__init__()
 
     def start_game():
         nonlocal cinematic_played
@@ -129,17 +135,44 @@ def main():
 
     # Ajouter boutons
     main_menu.add_button("Jouer", (SCREEN_WIDTH // 2, 400), (240, 70), show_difficulty)  
+
     main_menu.add_button("Crédits", (SCREEN_WIDTH // 2, 500), (240, 70), show_credits)
     main_menu.add_button("Quitter", (SCREEN_WIDTH // 2, 600), (240, 70), ask_quit)
 
+    # Ajouter boutons pause
     pause_menu.add_button("Continuer", (SCREEN_WIDTH // 2, 400), (240, 70), resume_game)
     pause_menu.add_button("Quitter", (SCREEN_WIDTH // 2, 500), (240, 70), ask_quit)
 
     clock = pygame.time.Clock()
     running = True
 
+    # Fonction pour dessiner un bouton stylisé avec hover
+    def draw_button(text, center, width, height, mouse_pos, callback):
+        rect = pygame.Rect(0, 0, width, height)
+        rect.center = center
+
+        # Couleur de fond
+        base_color = (50, 50, 50)
+        hover_color = (100, 100, 100)
+        color = hover_color if rect.collidepoint(mouse_pos) else base_color
+
+        pygame.draw.rect(screen, color, rect, border_radius=15)
+
+        # Texte
+        surf = button_font.render(text, True, (255, 255, 255))
+        surf_rect = surf.get_rect(center=center)
+        screen.blit(surf, surf_rect)
+
+        # Retourne True si cliqué
+        clicked = pygame.mouse.get_pressed()[0] and rect.collidepoint(mouse_pos)
+        if clicked:
+            callback()
+        return rect
+
     while running:
         events = pygame.event.get()
+        mouse_pos = pygame.mouse.get_pos()
+
         for event in events:
             if event.type == pygame.QUIT:
                 running = False
@@ -176,8 +209,11 @@ def main():
             tutoriel.draw()
 
         elif state == STATE_GAME:
-            game.handle_events()
-            game.update()
+
+            game.handle_events(events)
+            result = game.update()
+            if result == "game_over":
+                set_state(STATE_GAME_OVER)
             game.draw()
 
         elif state == STATE_PAUSE:
@@ -187,6 +223,13 @@ def main():
         elif state == STATE_CREDITS:
             credits_screen.handle_events(events)
             credits_screen.draw()
+
+        elif state == STATE_GAME_OVER:
+            screen.blit(game_over_img, (0, 0))
+            draw_button("Rejouer", (SCREEN_WIDTH//4, SCREEN_HEIGHT - 80), 200, 60, mouse_pos,
+                        lambda: (game.__init__(), set_state(STATE_GAME)))
+            draw_button("Menu", (3*SCREEN_WIDTH//4, SCREEN_HEIGHT - 80), 200, 60, mouse_pos,
+                        lambda: (game.__init__(), set_state(STATE_MENU)))
 
         elif state == STATE_QUIT and quit_popup:
             quit_popup.handle_events(events)
