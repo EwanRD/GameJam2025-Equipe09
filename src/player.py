@@ -42,14 +42,16 @@ class Player(Entity):
         self.invisibility.update(keys)
 
         # Gestion de l'invincibilité temporaire
-        if self.invincible_after_damage and time.time() > self.invincibility_end_time:
-            self.invincible_after_damage = False
-            self.visible = True
-
-        # Gestion du clignotement pendant l'invincibilité
-        if self.invincible_after_damage and time.time() - self.blink_timer > self.blink_interval:
-            self.visible = not self.visible
-            self.blink_timer = time.time()
+        if self.invincible_after_damage:
+            if time.time() > self.invincibility_end_time:
+                # Fin de l'invincibilité
+                self.invincible_after_damage = False
+                self.visible = True
+            else:
+                # Gestion du clignotement pendant l'invincibilité
+                if time.time() - self.blink_timer > self.blink_interval:
+                    self.visible = not self.visible
+                    self.blink_timer = time.time()
 
         # Boost de vitesse temporaire
         if self.speed_boost_end and time.time() > self.speed_boost_end:

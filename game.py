@@ -237,22 +237,13 @@ class Game:
 
                 self.spawn_enemies(self.wave_enemy_count)
                 self.wave += 1  # passe à la vague suivante
-
-    def run(self):
-        while self.running:
-            events = pygame.event.get()
-            print(events)
-            self.handle_events(events[0])
-            self.update()
-            self.draw()
-            self.clock.tick(settings.FPS)
-
+                
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))
-        self.all_sprites.draw(self.screen)
+        
+        
         self.player_projectiles.draw(self.screen)
         self.enemy_projectiles.draw(self.screen)
-
 
         # Dessiner tous les sprites avec gestion de l'invisibilité et du clignotement
         for sprite in self.all_sprites:
@@ -260,25 +251,31 @@ class Game:
                 # Si c'est le joueur
                 if sprite == self.player:
                     # Clignotement pendant l'invincibilité après dégâts
-                    if self.player.invincible_after_damage and not self.player.visible:
-                        continue
-                    # Invisibilité du pouvoir
+                    if self.player.invincible_after_damage:
+                        if self.player.visible:
+                            self.screen.blit(sprite.image, sprite.rect)
+                    # Invisibilité du pouvoir (transparence)
                     elif self.player.invisibility.invisible:
                         temp_surface = sprite.image.copy()
                         temp_surface.set_alpha(128)  # 50% de transparence
                         self.screen.blit(temp_surface, sprite.rect)
+                    # Affichage normal
                     else:
                         self.screen.blit(sprite.image, sprite.rect)
                 else:
+                    # Affichage normal pour tous les autres sprites (ennemis, etc.)
                     self.screen.blit(sprite.image, sprite.rect)
 
-        # Dessiner les items visibles
+        # Dessiner les items avec leur logique de clignotement
         for sprite in self.all_sprites:
-            if isinstance(sprite, Item) and hasattr(sprite, "visible") and sprite.visible:
-                self.screen.blit(sprite.image, sprite.rect)
+            if isinstance(sprite, Item):
+                if hasattr(sprite, "visible") and sprite.visible:
+                    self.screen.blit(sprite.image, sprite.rect)
+                elif not hasattr(sprite, "visible"):
+                    # Items sans logique de clignotement (affichage normal)
+                    self.screen.blit(sprite.image, sprite.rect)
 
         # --- HUD ---
-       # Utiliser les HP maximum du joueur selon la difficulté
         max_hearts = self.player.max_health
         for i in range(max_hearts):
             if i < self.player.health:
@@ -287,7 +284,6 @@ class Game:
                 self.screen.blit(self.heart_empty, (0 + i * 70, 10))
 
         total_time = settings.TOTAL_TIME 
-
         elapsed = int(time.time() - self.start_time)
         remaining = max(0, total_time - elapsed)
         minutes = remaining // 60
@@ -300,7 +296,6 @@ class Game:
         player_pos = self.player.rect.center
         pos_text = self.font.render(f"X: {player_pos[0]}  Y: {player_pos[1]}", True, (255, 255, 0))
         self.screen.blit(pos_text, (20, settings.SCREEN_HEIGHT - 60))
-
 
         pygame.display.flip()
 

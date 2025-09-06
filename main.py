@@ -6,6 +6,7 @@ from menu import Menu, QuitPopup
 from credits import Credits
 from game import Game
 from difficulty import Difficulty
+from tutoriel import Tutoriel
 
 def main():
     pygame.init()
@@ -29,10 +30,12 @@ def main():
     ]
     cinematic_index = 0
     cinematic_played = False
+    tutorial_played = False 
 
-    # États (ajout de l'état difficulté)
+    # États (avec tutoriel ajouté)
     STATE_MENU = "menu"
     STATE_DIFFICULTY = "difficulty"
+    STATE_TUTORIAL = "tutorial"
     STATE_CINEMATIC = "cinematic"
     STATE_GAME = "game"
     STATE_PAUSE = "pause"
@@ -51,8 +54,17 @@ def main():
     # Credits
     credits_screen = Credits(screen, title_font, button_font, COLORS, lambda: set_state(STATE_MENU), credits_bg)
 
-    # Menu de difficulté (nouveau)
+    # Tutoriel
+    def on_tutorial_complete():
+        nonlocal tutorial_played
+        tutorial_played = True
+        start_game()
+
+    tutoriel = Tutoriel(screen, title_font, button_font, COLORS, background, on_tutorial_complete)
+
+    # Menu de difficulté (modifié)
     def on_difficulty_selected(difficulty):
+        nonlocal tutorial_played
         if difficulty == 'back':
             set_state(STATE_MENU)
         else:
@@ -64,10 +76,13 @@ def main():
             elif difficulty == 'hard':
                 set_difficulty(DIFFICULTY_LEVEL.HARD)
             
-            # Démarrer le jeu
-            start_game()
+            # Vérifier si on doit montrer le tutoriel
+            if not tutorial_played:
+                set_state(STATE_TUTORIAL)
+            else:
+                start_game()
 
-    difficulty_menu = Difficulty(screen, title_font, button_font, COLORS, background, on_difficulty_selected)
+    difficulty = Difficulty(screen, title_font, button_font, COLORS, background, on_difficulty_selected)
 
     # Fonctions pour changer d'état
     def set_state(new_state):
@@ -78,7 +93,7 @@ def main():
         if new_state == STATE_CREDITS:
             credits_screen.reset()
         if new_state == STATE_GAME:
-            game.__init__()  # Réinitialise le jeu si on revient du menu
+            game.__init__() 
 
     def start_game():
         nonlocal cinematic_played
@@ -88,7 +103,7 @@ def main():
         else:
             set_state(STATE_GAME)
 
-    def show_difficulty_menu():
+    def show_difficulty():
         set_state(STATE_DIFFICULTY)
 
     def show_credits():
@@ -112,8 +127,8 @@ def main():
         quit_popup = QuitPopup(screen, button_font, COLORS, origin, on_yes, on_no)
         state = STATE_QUIT
 
-    # Ajouter boutons (modifié pour aller au menu de difficulté)
-    main_menu.add_button("Jouer", (SCREEN_WIDTH // 2, 400), (240, 70), show_difficulty_menu)  # Changé ici
+    # Ajouter boutons
+    main_menu.add_button("Jouer", (SCREEN_WIDTH // 2, 400), (240, 70), show_difficulty)  
     main_menu.add_button("Crédits", (SCREEN_WIDTH // 2, 500), (240, 70), show_credits)
     main_menu.add_button("Quitter", (SCREEN_WIDTH // 2, 600), (240, 70), ask_quit)
 
@@ -134,8 +149,10 @@ def main():
                         set_state(STATE_PAUSE)
                     elif state == STATE_PAUSE:
                         set_state(STATE_GAME)
-                    elif state == STATE_DIFFICULTY:  # Nouveau : ESC pour revenir du menu difficulté
+                    elif state == STATE_DIFFICULTY:
                         set_state(STATE_MENU)
+                    elif state == STATE_TUTORIAL:
+                        tutoriel.skip_tutorial()
 
         # Gestion des états
         if state == STATE_CINEMATIC:
@@ -150,9 +167,13 @@ def main():
             main_menu.handle_events(events)
             main_menu.draw()
 
-        elif state == STATE_DIFFICULTY:  # Nouvel état
-            difficulty_menu.handle_events(events)
-            difficulty_menu.draw()
+        elif state == STATE_DIFFICULTY:
+            difficulty.handle_events(events)
+            difficulty.draw()
+
+        elif state == STATE_TUTORIAL: 
+            tutoriel.handle_events(events)
+            tutoriel.draw()
 
         elif state == STATE_GAME:
             game.handle_events()
