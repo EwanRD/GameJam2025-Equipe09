@@ -56,7 +56,7 @@ class Game:
         self.spawn_enemies(self.wave_enemy_count)
 
         # --- Musique ---
-        pygame.mixer.music.load("assets/sounds/crypt_loop.wav")
+        pygame.mixer.music.load(sprites.BACKGROUND_MUSIC)
         pygame.mixer.music.set_volume(0.3)
         pygame.mixer.music.play(-1)
 
@@ -212,9 +212,7 @@ class Game:
                 knockback_x = int(knockback_strength * dx / distance)
                 knockback_y = int(knockback_strength * dy / distance)
                 enemy.move(knockback_x, knockback_y)
-                hurt_sound = pygame.mixer.Sound("assets/sounds/hurt.mp3")
-                hurt_sound.set_volume(1)
-                hurt_sound.play()
+                play_sound(sprites.HURT_SOUND)
                 if self.player.health <= 0:
                     pygame.mixer.music.stop()
                     return "game_over"
