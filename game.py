@@ -17,9 +17,6 @@ class Game:
         pygame.display.set_caption("TOMB BOUND")
         # Charger tous les sprites maintenant que la fenêtre est prête
         sprites.load_sprites()
-        print("=== AFTER LOAD_SPRITES ===")
-        print(f"SKELETON_SPRITES loaded: {bool(sprites.SKELETON_SPRITES)}")
-        print(f"SKELETON_SPRITES keys: {list(sprites.SKELETON_SPRITES.keys())}")
         self.clock = pygame.time.Clock()
         self.running = True
         self.bg_image = pygame.transform.scale(sprites.MAP,
@@ -110,10 +107,6 @@ class Game:
         wall = Wall (712,settings.SCREEN_HEIGHT-60,settings.SCREEN_WIDTH,60)
         self.wall_list_player.add(wall)
         self.wall_list_enemy.add(wall)
-
-        # Joueur
-        self.player = Player(625, 410, self.player_projectiles, self.wall_list_player)
-        self.all_sprites.add(self.player)
 
         self.wave = settings.FIRST_WAVE
         self.wave_start_time = time.time()

@@ -47,8 +47,6 @@ class Player(Entity):
         if self.invincible_after_damage and time.time() - self.blink_timer > self.blink_interval:
             self.visible = not self.visible
             self.blink_timer = time.time()
-            print(time.time() - self.blink_timer)
-            print(self.blink_interval)
 
         # Boost de vitesse temporaire
         if self.speed_boost_end and time.time() > self.speed_boost_end:
