@@ -1,5 +1,5 @@
 import pygame
-
+from .utils import play_sound
 import settings 
 import sprites 
 from .entity import Entity
@@ -9,12 +9,12 @@ from .pouvoir import Pouvoir
 
 class Player(Entity):
     def __init__(self, x, y, projectiles_group, walls):
-        sprites = sprites.PLAYER_SPRITES
-        super().__init__(x, y, sprites, settings.PLAYER_SPEED)
+        sprite = sprites.PLAYER_SPRITES
+        super().__init__(x, y, sprite, settings.PLAYER_SPEED)
         self.projectiles_group = projectiles_group
         self.last_shot_time = 0
         self.shoot_cooldown = settings.PLAYER_COULDOWN
-        self.health = settings.vPLAYER_HEALTH
+        self.health = settings.PLAYER_HEALTH
         self.projectile_direction = settings.DIRECTION.B.value
         self.projectile_sprite = settings.ARROW_DIRECTION.B.value
         self.walls = walls
@@ -47,8 +47,6 @@ class Player(Entity):
         if self.invincible_after_damage and time.time() - self.blink_timer > self.blink_interval:
             self.visible = not self.visible
             self.blink_timer = time.time()
-            print(time.time() - self.blink_timer)
-            print(self.blink_interval)
 
         # Boost de vitesse temporaire
         if self.speed_boost_end and time.time() > self.speed_boost_end:
@@ -104,12 +102,8 @@ class Player(Entity):
         self.move(dx, dy)
 
     def shoot(self):
-        print(self.projectile_sprite)
         arrow = Arrow(self.rect.center, self.projectile_direction, settings.PLAYER_DOMMAGE,self.projectile_sprite, self)
-        # TODO
-        shoot_sound = sprites.SHOOT_SOUND
-        shoot_sound.set_volume(1)
-        shoot_sound.play()
+        play_sound(sprites.SHOOT_SOUND)
         self.projectiles_group.add(arrow)
 
     def take_damage(self):

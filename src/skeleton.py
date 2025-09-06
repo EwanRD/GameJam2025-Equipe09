@@ -1,5 +1,6 @@
 import pygame
-from sprites import SKELETON_SPRITES, DEATH_SOUND
+import sprites
+from .utils import play_sound
 from settings import SKELETON_HEALTH
 from .enemy import Ennemi
 
@@ -7,11 +8,8 @@ from .enemy import Ennemi
 class Skeleton(Ennemi):
     def __init__(self, x, y, human, walls, all_sprites):
         self.human = human
+        super().__init__(x, y, sprites.SKELETON_SPRITES, walls, speed=3, all_sprites=all_sprites)
         self.health = SKELETON_HEALTH
-
-        sprites = SKELETON_SPRITES
-
-        super().__init__(x, y, sprites, walls, speed=3, all_sprites=all_sprites)
 
     def update(self):
         """Suit directement le joueur associé"""
@@ -19,10 +17,8 @@ class Skeleton(Ennemi):
         super().update(player_pos)
 
     def take_damage(self, amount=1):
+        """Réduit la vie du squelette et gère sa mort"""
         self.health -= amount        
         if self.health <= 0:
-            # TODO
-            death_sound = DEATH_SOUND
-            death_sound.set_volume(1)
-            death_sound.play()
+            play_sound(sprites.DEATH_SOUND)
             self.die()
