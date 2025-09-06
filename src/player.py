@@ -1,5 +1,7 @@
 import pygame
-from settings import PLAYER_HEALTH, PLAYER_COULDOWN, PLAYER_SPEED, PLAYER_DOMMAGE, DIRECTION, ARROW_DIRECTION
+from .utils import play_sound
+import settings 
+import sprites 
 from .entity import Entity
 import time
 from src.projectiles.arrow import Arrow
@@ -7,37 +9,16 @@ from .pouvoir import Pouvoir
 
 class Player(Entity):
     def __init__(self, x, y, projectiles_group, walls):
-        sprites = {
-            "down": [
-                pygame.image.load("assets/sprites/Player/devant.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Player/devantmarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Player/devantmarche2.png").convert_alpha(),
-            ],
-            "up": [
-                pygame.image.load("assets/sprites/Player/derriere.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Player/derrieremarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Player/derrieremarche2.png").convert_alpha(),
-            ],
-            "left": [
-                pygame.image.load("assets/sprites/Player/gauche.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Player/gauchemarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Player/gauchemarche2.png").convert_alpha(),
-            ],
-            "right": [
-                pygame.image.load("assets/sprites/Player/droite.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Player/droitemarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Player/droitemarche2.png").convert_alpha(),
-            ],
-        }
-        super().__init__(x, y, sprites, PLAYER_SPEED)
+        sprite = sprites.PLAYER_SPRITES
+        super().__init__(x, y, sprite, settings.PLAYER_SPEED)
         self.projectiles_group = projectiles_group
         self.last_shot_time = 0
-        self.shoot_cooldown = PLAYER_COULDOWN
-        self.health = PLAYER_HEALTH
-        self.projectile_direction = DIRECTION.B.value
-        self.projectile_sprite = ARROW_DIRECTION.B.value
+        self.shoot_cooldown = settings.PLAYER_COULDOWN
+        self.health = settings.PLAYER_HEALTH
+        self.projectile_direction = settings.DIRECTION.B.value
+        self.projectile_sprite = settings.ARROW_DIRECTION.B.value
         self.walls = walls
-        self.speed = PLAYER_SPEED
+        self.speed = settings.PLAYER_SPEED
         self.speed_boost_end = 0
         self.projectile_damage = 1
         self.damage_boost_count = 0
@@ -66,12 +47,10 @@ class Player(Entity):
         if self.invincible_after_damage and time.time() - self.blink_timer > self.blink_interval:
             self.visible = not self.visible
             self.blink_timer = time.time()
-            print(time.time() - self.blink_timer)
-            print(self.blink_interval)
 
         # Boost de vitesse temporaire
         if self.speed_boost_end and time.time() > self.speed_boost_end:
-            self.speed = PLAYER_SPEED
+            self.speed = settings.PLAYER_SPEED
             self.speed_boost_end = 0
 
         # Mouvement horizontal
@@ -88,29 +67,29 @@ class Player(Entity):
 
         # Détermination direction projectile
         if dx < 0 and dy < 0:
-            self.projectile_direction = DIRECTION.HG.value
-            self.projectile_sprite = ARROW_DIRECTION.HG.value
+            self.projectile_direction = settings.DIRECTION.HG.value
+            self.projectile_sprite = settings.ARROW_DIRECTION.HG.value
         elif dx > 0 and dy < 0:
-            self.projectile_direction = DIRECTION.HD.value
-            self.projectile_sprite = ARROW_DIRECTION.HD.value
+            self.projectile_direction = settings.DIRECTION.HD.value
+            self.projectile_sprite = settings.ARROW_DIRECTION.HD.value
         elif dx < 0 and dy > 0:
-            self.projectile_direction = DIRECTION.BG.value
-            self.projectile_sprite = ARROW_DIRECTION.BG.value
+            self.projectile_direction = settings.DIRECTION.BG.value
+            self.projectile_sprite = settings.ARROW_DIRECTION.BG.value
         elif dx > 0 and dy > 0:
-            self.projectile_direction = DIRECTION.BD.value
-            self.projectile_sprite = ARROW_DIRECTION.BD.value
+            self.projectile_direction = settings.DIRECTION.BD.value
+            self.projectile_sprite = settings.ARROW_DIRECTION.BD.value
         elif dx < 0:
-            self.projectile_direction = DIRECTION.G.value
-            self.projectile_sprite = ARROW_DIRECTION.G.value
+            self.projectile_direction = settings.DIRECTION.G.value
+            self.projectile_sprite = settings.ARROW_DIRECTION.G.value
         elif dx > 0:
-            self.projectile_direction = DIRECTION.D.value
-            self.projectile_sprite = ARROW_DIRECTION.D.value
+            self.projectile_direction = settings.DIRECTION.D.value
+            self.projectile_sprite = settings.ARROW_DIRECTION.D.value
         elif dy < 0:
-            self.projectile_direction = DIRECTION.H.value
-            self.projectile_sprite = ARROW_DIRECTION.H.value
+            self.projectile_direction = settings.DIRECTION.H.value
+            self.projectile_sprite = settings.ARROW_DIRECTION.H.value
         elif dy > 0:
-            self.projectile_direction = DIRECTION.B.value
-            self.projectile_sprite = ARROW_DIRECTION.B.value
+            self.projectile_direction = settings.DIRECTION.B.value
+            self.projectile_sprite = settings.ARROW_DIRECTION.B.value
 
         # Tir
         if keys[pygame.K_SPACE]:
@@ -123,10 +102,8 @@ class Player(Entity):
         self.move(dx, dy)
 
     def shoot(self):
-        arrow = Arrow(self.rect.center, self.projectile_direction, PLAYER_DOMMAGE,self.projectile_sprite,self)
-        shoot_sound = pygame.mixer.Sound("assets/sounds/shoot.ogg")
-        shoot_sound.set_volume(1)
-        shoot_sound.play()
+        arrow = Arrow(self.rect.center, self.projectile_direction, settings.PLAYER_DOMMAGE,self.projectile_sprite, self)
+        play_sound(sprites.SHOOT_SOUND)
         self.projectiles_group.add(arrow)
 
     def take_damage(self):

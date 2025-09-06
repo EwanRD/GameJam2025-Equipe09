@@ -1,35 +1,15 @@
 import pygame
+import sprites
+from .utils import play_sound
+from settings import SKELETON_HEALTH
 from .enemy import Ennemi
 
 
 class Skeleton(Ennemi):
     def __init__(self, x, y, human, walls, all_sprites):
         self.human = human
-        self.health = 2
-
-        sprites = {
-            "down": [
-                pygame.image.load("assets/sprites/Enemies/Squelette/devant.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Squelette/devantmarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Squelette/devantmarche2.png").convert_alpha(),
-            ],
-            "up": [
-                pygame.image.load("assets/sprites/Enemies/Squelette/derriere.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Squelette/derrieremarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Squelette/derrieremarche2.png").convert_alpha(),
-            ],            "left": [
-                pygame.image.load("assets/sprites/Enemies/Squelette/gauche.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Squelette/gauchemarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Squelette/gauchemarche2.png").convert_alpha(),
-            ],
-            "right": [
-                pygame.image.load("assets/sprites/Enemies/Squelette/droite.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Squelette/droitemarche1.png").convert_alpha(),
-                pygame.image.load("assets/sprites/Enemies/Squelette/droitemarche2.png").convert_alpha(),
-            ],
-        }
-
-        super().__init__(x, y, sprites, walls, speed=3, all_sprites=all_sprites)
+        super().__init__(x, y, sprites.SKELETON_SPRITES, walls, speed=3, all_sprites=all_sprites)
+        self.health = SKELETON_HEALTH
 
     def update(self):
         """Suit directement le joueur associé"""
@@ -37,9 +17,8 @@ class Skeleton(Ennemi):
         super().update(player_pos)
 
     def take_damage(self, amount=1):
+        """Réduit la vie du squelette et gère sa mort"""
         self.health -= amount        
         if self.health <= 0:
-            death_sound = pygame.mixer.Sound("assets/sounds/skeleton_death.mp3")
-            death_sound.set_volume(1)
-            death_sound.play()
+            play_sound(sprites.DEATH_SOUND)
             self.die()

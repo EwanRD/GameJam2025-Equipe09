@@ -4,15 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ccbc09c9-569c-478b-aadb-41e493ae74ef" name="Changes" comment="feat: add screen game over">
-      <change afterPath="$PROJECT_DIR$/assets/images/Game_Over.png" afterDir="false" />
+    <list default="true" id="ccbc09c9-569c-478b-aadb-41e493ae74ef" name="Changes" comment="feat use play_sound from utils to play a sound">
+      <change afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/cinematique2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/cinematique2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/cinematique3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/cinematique3.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/jpeg(3)" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/credits.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ghost.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ghost.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/orc.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/orc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/player.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/projectiles/arrow.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/projectiles/arrow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/projectiles/fireball.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/projectiles/fireball.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/skeleton.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/skeleton.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,18 +31,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;mn-manohisoa&quot;
-  }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://mn-manohisoa@github.com/EwanRD/GameJam2025-Equipe09.git&quot;,
-    &quot;accountId&quot;: &quot;5f3f9a9a-af1a-4059-bc34-e8a6e279acdb&quot;
-  }
-}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -55,9 +48,8 @@
     &quot;Python.menu.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Manou&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/mn-manohisoa/PycharmProjects/GameJam2025-Equipe09&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.intellij.pycharm.community.ide.impl.configuration.PythonContentEntriesConfigurable&quot;
+    &quot;git-widget-placeholder&quot;: &quot;Eliot&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/michele/GamesJam/GameJam2025-Equipe09&quot;
   }
 }</component>
   <component name="RunManager">
@@ -105,18 +97,86 @@
       <option name="presentableId" value="Default" />
       <updated>1756996534904</updated>
     </task>
-    <task id="LOCAL-00001" summary="feat: add screens and cinematic">
+    <task id="LOCAL-00001" summary="add get_direction_vector in utils">
       <option name="closed" value="true" />
-      <created>1757074380522</created>
+      <created>1757162337152</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1757074380522</updated>
+      <updated>1757162337152</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="fix load sprites">
+      <option name="closed" value="true" />
+      <created>1757162389777</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1757162389777</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fix sprites">
+      <option name="closed" value="true" />
+      <created>1757162433650</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1757162433650</updated>
+    </task>
+    <task id="LOCAL-00004" summary="fix add import">
+      <option name="closed" value="true" />
+      <created>1757164711474</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1757164711474</updated>
+    </task>
+    <task id="LOCAL-00005" summary="fixdouble player">
+      <option name="closed" value="true" />
+      <created>1757164752665</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1757164752665</updated>
+    </task>
+    <task id="LOCAL-00006" summary="!fix">
+      <option name="closed" value="true" />
+      <created>1757164772532</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1757164772532</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat use play_sound from utils to play a sound">
+      <option name="closed" value="true" />
+      <created>1757166770357</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1757166770357</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/Eliot" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/main" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
@@ -128,9 +188,13 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: add screens and cinematic" />
-    <MESSAGE value="fix: fix double player&#10;&#10;fix: fix double player" />
-    <MESSAGE value="feat: add screen game over" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: add screen game over" />
+    <MESSAGE value="add get_direction_vector in utils" />
+    <MESSAGE value="fix load sprites" />
+    <MESSAGE value="fix sprites" />
+    <MESSAGE value="fix add import" />
+    <MESSAGE value="fixdouble player" />
+    <MESSAGE value="!fix" />
+    <MESSAGE value="feat use play_sound from utils to play a sound" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat use play_sound from utils to play a sound" />
   </component>
 </project>

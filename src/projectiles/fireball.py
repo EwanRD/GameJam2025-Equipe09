@@ -1,18 +1,19 @@
 import pygame
+import sprites
+from ..utils import play_sound
 from src.projectiles.projectile import Projectile
 
 class Fireball(Projectile):
     def __init__(self, position, velocity, damage):
         super().__init__(position, velocity, damage)
-        self.image = pygame.image.load("assets/sprites/Projectiles/Ghost_burst/ghost_burst.png").convert_alpha()
+        self.image = sprites.FIREBALL_SPRITE
         self.rect = self.image.get_rect(topleft=position)
+        play_sound(sprites.FIREBALL_SOUND)
 
     def on_hit(self, target):
         target.take_damage()
-        hit_sound = pygame.mixer.Sound("assets/sounds/hurt.mp3")
-        hit_sound.set_volume(1)
-        hit_sound.play()
+        play_sound(sprites.FIREBALL_HIT_SOUND)
 
-    def update(self, dt=2):
+    def update(self, dt=1):
         self.position += self.velocity * dt
         self.rect.topleft = self.position
