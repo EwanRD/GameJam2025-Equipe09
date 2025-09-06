@@ -4,17 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ccbc09c9-569c-478b-aadb-41e493ae74ef" name="Changes" comment="feat use play_sound from utils to play a sound">
-      <change afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
+    <list default="true" id="ccbc09c9-569c-478b-aadb-41e493ae74ef" name="Changes" comment="fix import error for utils.py">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ghost.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ghost.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/orc.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/orc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/player.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/projectiles/arrow.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/projectiles/arrow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/projectiles/fireball.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/projectiles/fireball.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/skeleton.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/skeleton.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites.py" beforeDir="false" afterPath="$PROJECT_DIR$/sprites.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/boss.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/boss.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,10 +149,23 @@
       <option name="project" value="LOCAL" />
       <updated>1757166770357</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="fix import error for utils.py">
+      <option name="closed" value="true" />
+      <created>1757168005704</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1757168005704</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="de6200ab-aec0-416d-a3e5-d1911d937639" value="TOOL_WINDOW" />
+      </map>
+    </option>
     <option name="RECENT_FILTERS">
       <map>
         <entry key="Branch">
@@ -184,6 +193,11 @@
             <State />
           </value>
         </entry>
+        <entry key="de6200ab-aec0-416d-a3e5-d1911d937639">
+          <value>
+            <State />
+          </value>
+        </entry>
       </map>
     </option>
   </component>
@@ -195,6 +209,7 @@
     <MESSAGE value="fixdouble player" />
     <MESSAGE value="!fix" />
     <MESSAGE value="feat use play_sound from utils to play a sound" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat use play_sound from utils to play a sound" />
+    <MESSAGE value="fix import error for utils.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix import error for utils.py" />
   </component>
 </project>
