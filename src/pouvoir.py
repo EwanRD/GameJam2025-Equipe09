@@ -1,6 +1,6 @@
 import pygame
 import time
-import sprites
+import media
 from .utils import play_sound
 
 class Pouvoir:
@@ -35,7 +35,7 @@ class Pouvoir:
     def activate(self):
         """Active le pouvoir d'invisibilité"""
         if self.invisibility_available and not self.invisible:
-            play_sound(sprites.PLAYER_POWER_SOUND)
+            play_sound(media.PLAYER_POWER_SOUND)
             self.invisible = True
             self.invisibility_end_time = time.time() + self.invisibility_duration
             self.invisibility_available = False

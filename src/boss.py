@@ -1,7 +1,7 @@
 import pygame
 import time
 import random
-import sprites
+import media
 from .utils import play_sound, get_direction_vector
 import settings
 from .projectiles.magic_missile import Magic_Missile
@@ -11,7 +11,7 @@ class Boss(pygame.sprite.Sprite):
     def __init__(self, human, projectiles):
         super().__init__()
         self.human = human
-        self.image = sprites.BOSS_SPRITES[0]
+        self.image = media.BOSS_SPRITES[0]
         self.rect = self.image.get_rect(topleft=(632, 86))
         self.rect.inflate_ip(-25, -25)
 
@@ -52,8 +52,8 @@ class Boss(pygame.sprite.Sprite):
             self.anim_timer += 1
             if self.anim_timer >= self.anim_speed:
                 self.anim_timer = 0
-                self.anim_index = (self.anim_index + 1) % len(sprites.BOSS_SPRITES)
-                self.image = sprites.BOSS_SPRITES[self.anim_index]
+                self.anim_index = (self.anim_index + 1) % len(media.BOSS_SPRITES)
+                self.image = media.BOSS_SPRITES[self.anim_index]
             if now - self.last_teleport > 4:
                 self.state = "teleport"
                 self.teleport()
@@ -71,7 +71,7 @@ class Boss(pygame.sprite.Sprite):
         while actual_position == self.rect.topleft:
             self.x, self.y = random.choice(self.corners)
             self.rect.topleft = (self.x, self.y)
-        play_sound(sprites.LICH_TP_SOUND)
+        play_sound(media.LICH_TP_SOUND)
 
     def shoot_at_player(self):
         magic_missile = Magic_Missile(self.rect.center, self.projectiles_direction, settings.PLAYER_DOMMAGE)
@@ -81,7 +81,7 @@ class Boss(pygame.sprite.Sprite):
         self.health -= amount
         if self.health <= 0:
             self.kill()
-            play_sound(sprites.DEATH_SOUND)
+            play_sound(media.DEATH_SOUND)
     
     def move(self, dx, dy, direction=None):
         None

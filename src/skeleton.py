@@ -1,5 +1,5 @@
 import pygame
-import sprites
+import media
 from .utils import play_sound
 from settings import SKELETON_HEALTH
 from .enemy import Ennemi
@@ -8,7 +8,7 @@ from .enemy import Ennemi
 class Skeleton(Ennemi):
     def __init__(self, x, y, human, walls, all_sprites):
         self.human = human
-        super().__init__(x, y, sprites.SKELETON_SPRITES, walls, speed=3, all_sprites=all_sprites)
+        super().__init__(x, y, media.SKELETON_SPRITES, walls, speed=3, all_sprites=all_sprites)
         self.health = SKELETON_HEALTH
 
     def update(self):
@@ -20,5 +20,5 @@ class Skeleton(Ennemi):
         """Réduit la vie du squelette et gère sa mort"""
         self.health -= amount        
         if self.health <= 0:
-            play_sound(sprites.DEATH_SOUND)
+            play_sound(media.DEATH_SOUND)
             self.die()

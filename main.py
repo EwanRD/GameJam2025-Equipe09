@@ -1,7 +1,7 @@
 import pygame
 import sys
 import time
-import sprites
+import media
 
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, COLORS, FPS, DIFFICULTY_LEVEL, set_difficulty
 from menu import Menu, QuitPopup
@@ -16,7 +16,7 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("TOMB BOUND")
 
-    sprites.load_sprites()
+    media.load_sprites()
 
     # Cinématique
     cinematic_index = 0
@@ -45,12 +45,12 @@ def main():
     game = Game()
 
     # Menus
-    main_menu = Menu(screen, " ", sprites.TITLE_FONT, sprites.BUTTON_FONT, COLORS, sprites.BACKGROUND_IMAGE)
-    pause_menu = Menu(screen, "Pause", sprites.TITLE_FONT, sprites.BUTTON_FONT, COLORS, None, with_overlay=True)
+    main_menu = Menu(screen, " ", media.TITLE_FONT, media.BUTTON_FONT, COLORS, media.BACKGROUND_IMAGE)
+    pause_menu = Menu(screen, "Pause", media.TITLE_FONT, media.BUTTON_FONT, COLORS, None, with_overlay=True)
     quit_popup = None
 
     # Credits
-    credits_screen = Credits(screen, sprites.TITLE_FONT, sprites.BUTTON_FONT, COLORS, lambda: set_state(STATE_MENU), sprites.CREDIT_BACKGROUND)
+    credits_screen = Credits(screen, media.TITLE_FONT, media.BUTTON_FONT, COLORS, lambda: set_state(STATE_MENU), media.CREDIT_BACKGROUND)
 
     # Tutoriel
     def on_tutorial_complete():
@@ -58,7 +58,7 @@ def main():
         tutorial_played = True
         start_game()
 
-    tutoriel = Tutoriel(screen, sprites.TITLE_FONT, sprites.BUTTON_FONT, COLORS, sprites.BACKGROUND_IMAGE, on_tutorial_complete)
+    tutoriel = Tutoriel(screen, media.TITLE_FONT, media.BUTTON_FONT, COLORS, media.BACKGROUND_IMAGE, on_tutorial_complete)
 
     # Menu de difficulté (modifié pour inclure le mode infini)
     def on_difficulty_selected(difficulty):
@@ -82,7 +82,7 @@ def main():
             else:
                 start_game()
 
-    difficulty = Difficulty(screen, sprites.TITLE_FONT, sprites.BUTTON_FONT, COLORS, sprites.BACKGROUND_IMAGE, on_difficulty_selected)
+    difficulty = Difficulty(screen, media.TITLE_FONT, media.BUTTON_FONT, COLORS, media.BACKGROUND_IMAGE, on_difficulty_selected)
 
     # Fonctions pour changer d'état
     def set_state(new_state):
@@ -128,7 +128,7 @@ def main():
                 set_state(STATE_MENU)
         def on_no():
             set_state(origin)
-        quit_popup = QuitPopup(screen, sprites.BUTTON_FONT, COLORS, origin, on_yes, on_no)
+        quit_popup = QuitPopup(screen, media.BUTTON_FONT, COLORS, origin, on_yes, on_no)
         state = STATE_QUIT
 
     # Ajouter boutons
@@ -159,7 +159,7 @@ def main():
         pygame.draw.rect(screen, button_color, rect, border_radius=15)
 
         # Texte
-        surf = sprites.BUTTON_FONT.render(text, True, (255, 255, 255))
+        surf = media.BUTTON_FONT.render(text, True, (255, 255, 255))
         surf_rect = surf.get_rect(center=center)
         screen.blit(surf, surf_rect)
 
@@ -189,18 +189,18 @@ def main():
 
         # Gestion des états
         if state == STATE_CINEMATIC:
-            screen.blit(sprites.CINEMATIC_IMAGES[cinematic_index], (0, 0))
+            screen.blit(media.CINEMATIC_IMAGES[cinematic_index], (0, 0))
             for event in events:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     cinematic_index += 1
-                    if cinematic_index >= len(sprites.CINEMATIC_IMAGES):
+                    if cinematic_index >= len(media.CINEMATIC_IMAGES):
                         set_state(STATE_GAME)
         elif state == STATE_END_CINEMATIC:
-            screen.blit(sprites.ENDCINEMATIC_IMAGES[endcinematic_index], (0, 0))
+            screen.blit(media.ENDCINEMATIC_IMAGES[endcinematic_index], (0, 0))
             for event in events:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     endcinematic_index += 1
-                    if endcinematic_index >= len(sprites.ENDCINEMATIC_IMAGES):
+                    if endcinematic_index >= len(media.ENDCINEMATIC_IMAGES):
                         set_state(STATE_MENU) 
 
         elif state == STATE_MENU:

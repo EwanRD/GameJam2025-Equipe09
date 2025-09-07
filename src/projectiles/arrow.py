@@ -1,5 +1,5 @@
 import pygame
-import sprites
+import media
 import settings
 from src.utils import play_sound
 from src.projectiles.projectile import Projectile
@@ -50,7 +50,7 @@ class Arrow(Projectile):
             damage_to_deal = base_damage
             
         target.take_damage(damage_to_deal)
-        play_sound(sprites.HIT_SOUND)
+        play_sound(media.HIT_SOUND)
     
     def update(self, dt=2):
         self.position += self.velocity * dt
