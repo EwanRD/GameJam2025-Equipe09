@@ -2,8 +2,6 @@ import pygame
 import sys
 import time
 import sprites
-
-from pygame.examples.sprite_texture import sprite
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, COLORS, FPS, DIFFICULTY_LEVEL, set_difficulty
 from menu import Menu, QuitPopup
 from credits import Credits
@@ -13,8 +11,11 @@ from tutoriel import Tutoriel
 
 def main():
     pygame.init()
+    
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("TOMB BOUND")
+    
+    sprites.load_sprites()
 
     # Cinématique
     cinematic_index = 0
