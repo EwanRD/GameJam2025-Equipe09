@@ -14,7 +14,7 @@ CURRENT_DIFFICULTY = DIFFICULTY_LEVEL.NORMAL
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 900
 FPS = 60
-TOTAL_TIME = 60
+TOTAL_TIME = 10
 COLORS = {
     "black": (0, 0, 0),
     "brown": (139, 69, 19),
@@ -55,6 +55,28 @@ def get_player_stats(difficulty):
     }
     return stats[difficulty]
 
+# Statistiques de la liche basées sur la difficulté
+def get_lich_stats(difficulty):
+    """Retourne les statistiques de la liche en fonction de la difficulté"""
+    stats = {
+        DIFFICULTY_LEVEL.EASY: {
+            "health": 25,
+            "velocity": 3,
+            "cooldown": 1.2
+        },
+        DIFFICULTY_LEVEL.NORMAL: {
+            "health": 50,
+            "velocity": 4,
+            "cooldown": 1
+        },
+        DIFFICULTY_LEVEL.HARD: {
+            "health": 50,
+            "velocity": 4,
+            "cooldown": 0.85
+        }
+    }
+    return stats[difficulty]
+
 # Fonction pour définir la difficulté
 def set_difficulty(difficulty):
     """Définit le niveau de difficulté actuel"""
@@ -65,6 +87,11 @@ def set_difficulty(difficulty):
 def get_current_player_stats():
     """Retourne les statistiques du joueur pour la difficulté actuelle"""
     return get_player_stats(CURRENT_DIFFICULTY)
+
+# Fonction pour obtenir les statistiques actuelles de la liche
+def get_current_lich_stats():
+    """Retourne les statistiques de la liche pour la difficulté actuelle"""
+    return get_lich_stats(CURRENT_DIFFICULTY)
 
 # Valeurs par défaut (peuvent être remplacées par get_current_player_stats())
 PLAYER_HEALTH = 3
@@ -99,6 +126,10 @@ class ARROW_DIRECTION(Enum):
 #Fireball
 FIREBALL_SPEED = 3
 FIREBALL_DIAG_SPEED = FIREBALL_SPEED/math.sqrt(2)
+
+#Magic Missile
+MAGIC_SPEED = 3
+MAGIC_DIAG_SPEED = MAGIC_SPEED/math.sqrt(2)
 
 class DIRECTION(Enum):
     H = (0, -ARROW_SPEED) # Haut

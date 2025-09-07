@@ -3,6 +3,7 @@ import random
 import settings
 import sprites 
 import time
+import sys
 from src.utils import play_sound
 from src.player import Player
 from src.enemy import Ennemi
@@ -25,14 +26,11 @@ class Game:
             (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT)
         )
         self.heart_full = sprites.HEART_FULL
-        self.heart_empty =sprites.HEART_EMPTY
+        self.heart_empty = sprites.HEART_EMPTY
         self.font = pygame.font.SysFont(None, 48)
         self.start_time = time.time()
         self.spawn_zones = settings.SPAWN_ZONE
-        pygame.mixer.music.load(sprites.BACKGROUND_MUSIC)
-        pygame.mixer.music.set_volume(0.3)
-        pygame.mixer.music.play(-1)
-
+        self.boss_spawned = False
 
         # --- Groupes ---
         self.all_sprites = pygame.sprite.Group()
@@ -44,6 +42,9 @@ class Game:
         # --- Joueur ---
         self.player = Player(625, 410, self.player_projectiles, self.wall_list_player)
         self.all_sprites.add(self.player)
+
+        # --- Joueur ---
+        self.boss = Boss(self.player, self.enemy_projectiles)
 
         # --- Initialisation des vagues ---
         self.wave = 1
@@ -174,7 +175,8 @@ class Game:
         for projectile in self.player_projectiles:
 
             for enemy in self.all_sprites:
-                if enemy != self.player and isinstance(enemy, Ennemi) and projectile.rect.colliderect(enemy.rect):
+                if enemy != self.player and isinstance(enemy, Ennemi) and projectile.rect.colliderect(enemy.rect) \
+                    or enemy != self.player and isinstance(enemy, Boss) and projectile.rect.colliderect(enemy.rect):
                     projectile.on_hit(enemy)
                     projectile.kill()
 
@@ -213,9 +215,6 @@ class Game:
                 knockback_y = int(knockback_strength * dy / distance)
                 enemy.move(knockback_x, knockback_y)
                 play_sound(sprites.HURT_SOUND)
-                if self.player.health <= 0:
-                    pygame.mixer.music.stop()
-                    return "game_over"
 
         # Collisions avec les items
         for sprite in self.all_sprites:
@@ -252,13 +251,20 @@ class Game:
             no_more_to_spawn = (not hasattr(self, 'enemies_to_spawn') or self.enemies_to_spawn == 0)
             no_more_enemies = not any(isinstance(s, (Skeleton, Orc, Ghost, Boss)) for s in self.all_sprites)
 
-            if no_more_to_spawn and no_more_enemies:
+            if no_more_to_spawn and no_more_enemies and not self.boss_spawned:
                 # Spawn du boss
-                spawn_x, spawn_y = random.choice(self.spawn_zones)
-                boss = Boss(spawn_x, spawn_y, self.player)
-                self.all_sprites.add(boss)
-
-                print("⚔️ Boss spawned !")
+                self.boss.last_teleport = time.time()
+                self.all_sprites.add(self.boss)
+                self.boss_spawned = True
+                pygame.mixer.music.load(sprites.BOSS_MUSIC)
+                pygame.mixer.music.set_volume(0.3)
+                pygame.mixer.music.play(-1)
+            elif no_more_enemies and self.boss_spawned:
+                return "game_over"
+            
+        if self.player.health <= 0:
+            pygame.mixer.music.stop()
+            return "game_over"
 
     def run(self):
         while self.running:
@@ -322,6 +328,8 @@ class Game:
         self.screen.blit(timer_text, (settings.SCREEN_WIDTH // 2, 20))
 
         self.player.invisibility.draw_power_bar(self.screen, 10, 100)
+        if self.boss_spawned:
+            self.boss.draw_boss_health_bar(self.screen, 500)
 
         player_pos = self.player.rect.center
         pos_text = self.font.render(f"X: {player_pos[0]}  Y: {player_pos[1]}", True, (255, 255, 0))

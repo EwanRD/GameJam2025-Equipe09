@@ -3,7 +3,6 @@ import sys
 import time
 import sprites
 
-from pygame.examples.sprite_texture import sprite
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT, COLORS, FPS, DIFFICULTY_LEVEL, set_difficulty
 from menu import Menu, QuitPopup
 from credits import Credits
@@ -15,15 +14,7 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("TOMB BOUND")
-
-    button_font = pygame.font.SysFont("Arial", 32)
-    title_font = pygame.font.Font("assets/the_centurion/The Centurion .ttf", 78)
-
-    # Backgrounds
-    background = pygame.image.load("assets/images/screen.png")
-    background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
-    credits_bg = pygame.image.load("assets/images/credits.png")
-    credits_bg = pygame.transform.scale(credits_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    sprites.load_sprites()
 
     # Cinématique
     cinematic_index = 0

@@ -1,4 +1,3 @@
-import pygame
 import sprites
 from ..utils import play_sound
 from src.projectiles.projectile import Projectile
@@ -8,7 +7,7 @@ class Magic_Missile(Projectile):
         super().__init__(position, velocity, damage)
         self.image = sprites.FIREBALL_SPRITE
         self.rect = self.image.get_rect(topleft=position)
-        play_sound(sprites.FIREBALL_SOUND)
+        play_sound(sprites.MAGIC_SOUND)
 
     def on_hit(self, target):
         target.take_damage()
