@@ -15,12 +15,15 @@ class Difficulty:
         screen_width, screen_height = screen.get_size()
         button_width, button_height = 300, 80
         
-        # Position des boutons (réajustée pour 5 boutons)
-        easy_y = screen_height // 2 - 150
-        normal_y = screen_height // 2 - 75
-        hard_y = screen_height // 2
-        infinite_y = screen_height // 2 + 75
-        back_y = screen_height // 2 + 150
+        # Position des boutons avec plus d'espacement (100px entre chaque bouton)
+        spacing = 100
+        start_y = screen_height // 2 - 200  # Position de départ plus haute
+        
+        easy_y = start_y
+        normal_y = start_y + spacing
+        hard_y = start_y + spacing * 2
+        infinite_y = start_y + spacing * 3
+        back_y = start_y + spacing * 4
         
         # Boutons avec leurs descriptions
         self.buttons = [
@@ -86,7 +89,7 @@ class Difficulty:
         # Titre
         title_font_large = pygame.font.SysFont("Arial", 48)
         title_text = title_font_large.render("CHOISIR LA DIFFICULTÉ", True, self.colors['white'])
-        title_rect = title_text.get_rect(center=(self.screen.get_width() // 2, 150))
+        title_rect = title_text.get_rect(center=(self.screen.get_width() // 2, 120))
         self.screen.blit(title_text, title_rect)
         
         # Dessiner les boutons
