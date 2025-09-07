@@ -17,6 +17,7 @@ HEART_EMPTY = None
 
 # Sons (chargés directement, pas besoin de display.init pour ça)
 BACKGROUND_MUSIC = "assets/sounds/crypt_loop.wav"
+BOSS_MUSIC = "assets/sounds/BossMusic.mp3"
 BACKGROUND_IMAGE = None
 CREDIT_BACKGROUND = None
 
@@ -28,6 +29,9 @@ DEATH_SOUND = None
 HIT_SOUND = None
 FIREBALL_HIT_SOUND = None
 FIREBALL_SOUND = None
+MAGIC_SOUND = None
+PLAYER_POWER_SOUND = None
+LICH_TP_SOUND = None
 
 TITLE_FONT = None
 BUTTON_FONT = None
@@ -36,7 +40,8 @@ def load_sprites():
     global PLAYER_SPRITES, SKELETON_SPRITES, ORC_SPRITES, GHOST_SPRITES, BOSS_SPRITES,\
         CINEMATIC_IMAGES, FIREBALL_SPRITE, BACKGROUND_IMAGE, CREDIT_BACKGROUND, ENDCINEMATIC_IMAGES
     global MAP, HEART_FULL, HEART_EMPTY
-    global HURT_SOUND, GAMEOVER_SOUND, ORC_DEATH, SHOOT_SOUND, DEATH_SOUND, HIT_SOUND, FIREBALL_SOUND, FIREBALL_HIT_SOUND
+    global HURT_SOUND, GAMEOVER_SOUND, ORC_DEATH, SHOOT_SOUND, DEATH_SOUND, HIT_SOUND, FIREBALL_SOUND, FIREBALL_HIT_SOUND, MAGIC_SOUND, \
+        PLAYER_POWER_SOUND, LICH_TP_SOUND
     global TITLE_FONT, BUTTON_FONT
 
     # --- Joueur ---
@@ -136,27 +141,11 @@ def load_sprites():
     }
 
     # --- Boss ---
-    BOSS_SPRITES = {
-        "down": [
+    BOSS_SPRITES = [
             pygame.image.load("assets/sprites/Enemies/Liche/devant.png").convert_alpha(),
-            pygame.image.load("assets/sprites/Enemies/Liche/devantmarche1.png").convert_alpha(),
             pygame.image.load("assets/sprites/Enemies/Liche/devantmarche2.png").convert_alpha(),
-        ],
-        "up": [
-            pygame.image.load("assets/sprites/Enemies/Liche/derriere.png").convert_alpha(),
-            pygame.image.load("assets/sprites/Enemies/Liche/derrieremarche1.png").convert_alpha(),
-            pygame.image.load("assets/sprites/Enemies/Liche/derrieremarche2.png").convert_alpha(),
-        ],            "left": [
-            pygame.image.load("assets/sprites/Enemies/Liche/gauche.png").convert_alpha(),
-            pygame.image.load("assets/sprites/Enemies/Liche/gauchemarche1.png").convert_alpha(),
-            pygame.image.load("assets/sprites/Enemies/Liche/gauchemarche2.png").convert_alpha(),
-        ],
-        "right": [
-            pygame.image.load("assets/sprites/Enemies/Liche/droite.png").convert_alpha(),
-            pygame.image.load("assets/sprites/Enemies/Liche/droitemarche1.png").convert_alpha(),
-            pygame.image.load("assets/sprites/Enemies/Liche/droitemarche2.png").convert_alpha(),
-        ],
-    }
+            pygame.image.load("assets/sprites/Enemies/Liche/devantmarche1.png").convert_alpha(),
+        ]
 
     CINEMATIC_IMAGES =  [
         pygame.transform.scale(pygame.image.load("assets/images/cinematique1.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)),
@@ -188,6 +177,9 @@ def load_sprites():
     HIT_SOUND = pygame.mixer.Sound("assets/sounds/hurt.mp3")
     FIREBALL_SOUND = pygame.mixer.Sound("assets/sounds/shoot.ogg")
     FIREBALL_HIT_SOUND = pygame.mixer.Sound("assets/sounds/hurt.mp3")
+    MAGIC_SOUND = pygame.mixer.Sound("assets/sounds/Lich_fireball.mp3")
+    PLAYER_POWER_SOUND = pygame.mixer.Sound("assets/sounds/player_power.mp3")
+    LICH_TP_SOUND = pygame.mixer.Sound("assets/sounds/Lich_tp.mp3")
 
     # -- Font --
     TITLE_FONT = pygame.font.Font("assets/the_centurion/The Centurion .ttf", 78)

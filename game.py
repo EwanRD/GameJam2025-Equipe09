@@ -3,6 +3,7 @@ import random
 import settings
 import sprites 
 import time
+import sys
 from src.utils import play_sound
 from src.player import Player
 from src.enemy import Ennemi
@@ -11,7 +12,7 @@ from src.item import Item
 from src.walls import Wall
 from src.orc import Orc
 from src.ghost import Ghost
-
+from src.boss import Boss
 
 class Game:
     def __init__(self):
@@ -28,6 +29,7 @@ class Game:
         self.font = pygame.font.SysFont(None, 48)
         self.start_time = time.time()
         self.spawn_zones = settings.SPAWN_ZONE
+        self.boss_spawned = False
         
         # Utiliser le temps total basé sur la difficulté
         self.total_time = settings.get_current_total_time()
@@ -47,6 +49,9 @@ class Game:
         # --- Joueur ---
         self.player = Player(625, 410, self.player_projectiles, self.wall_list_player)
         self.all_sprites.add(self.player)
+
+        # --- Joueur ---
+        self.boss = Boss(self.player, self.enemy_projectiles)
 
         # --- Initialisation des vagues ---
         self.wave = 1
@@ -189,7 +194,8 @@ class Game:
         # Collisions projectiles-ennemis
         for projectile in self.player_projectiles:
             for enemy in self.all_sprites:
-                if enemy != self.player and isinstance(enemy, Ennemi) and projectile.rect.colliderect(enemy.rect):
+                if enemy != self.player and isinstance(enemy, Ennemi) and projectile.rect.colliderect(enemy.rect) \
+                    or enemy != self.player and isinstance(enemy, Boss) and projectile.rect.colliderect(enemy.rect):
                     projectile.on_hit(enemy)
                     projectile.kill()
 
@@ -228,9 +234,6 @@ class Game:
                 knockback_y = int(knockback_strength * dy / distance)
                 enemy.move(knockback_x, knockback_y)
                 play_sound(sprites.HURT_SOUND)
-                if self.player.health <= 0:
-                    pygame.mixer.music.stop()
-                    return "game_over"
 
         # Collisions avec les items
         for sprite in self.all_sprites:
@@ -240,6 +243,7 @@ class Game:
 
         # --- Gestion des vagues ---
         enemies_alive = any(isinstance(s, (Skeleton, Orc, Ghost)) for s in self.all_sprites)
+
         
         # En mode normal, calculer le temps restant
         if not self.is_infinite:
@@ -277,6 +281,34 @@ class Game:
 
                 self.spawn_enemies(self.wave_enemy_count)
                 self.wave += 1  # passe à la vague suivante
+
+        # --- Vérif pour spawn le Boss ---
+        if remaining == 0:  # le timer global est terminé
+            no_more_to_spawn = (not hasattr(self, 'enemies_to_spawn') or self.enemies_to_spawn == 0)
+            no_more_enemies = not any(isinstance(s, (Skeleton, Orc, Ghost, Boss)) for s in self.all_sprites)
+
+            if no_more_to_spawn and no_more_enemies and not self.boss_spawned:
+                # Spawn du boss
+                self.boss.last_teleport = time.time()
+                self.all_sprites.add(self.boss)
+                self.boss_spawned = True
+                pygame.mixer.music.load(sprites.BOSS_MUSIC)
+                pygame.mixer.music.set_volume(0.3)
+                pygame.mixer.music.play(-1)
+            elif no_more_enemies and self.boss_spawned:
+                return "game_over"
+            
+        if self.player.health <= 0:
+            pygame.mixer.music.stop()
+            return "game_over"
+
+    def run(self):
+        while self.running:
+            events = pygame.event.get()
+            self.handle_events(events)
+            self.update()
+            self.draw()
+            self.clock.tick(settings.FPS)
 
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))
@@ -339,6 +371,8 @@ class Game:
         
         self.screen.blit(timer_text, (settings.SCREEN_WIDTH // 2, 20))
         self.player.invisibility.draw_power_bar(self.screen, 10, 100)
+        if self.boss_spawned:
+            self.boss.draw_boss_health_bar(self.screen, 500)
 
         player_pos = self.player.rect.center
         pos_text = self.font.render(f"X: {player_pos[0]}  Y: {player_pos[1]}", True, (255, 255, 0))
