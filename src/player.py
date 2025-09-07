@@ -1,7 +1,7 @@
 import pygame
 from .utils import play_sound
 import settings 
-import sprites 
+import media 
 from .entity import Entity
 import time
 from src.projectiles.arrow import Arrow
@@ -9,7 +9,7 @@ from .pouvoir import Pouvoir
 
 class Player(Entity):
     def __init__(self, x, y, projectiles_group, walls):
-        sprite = sprites.PLAYER_SPRITES
+        sprite = media.PLAYER_SPRITES
         super().__init__(x, y, sprite, settings.PLAYER_SPEED)
         self.projectiles_group = projectiles_group
         self.last_shot_time = 0
@@ -109,7 +109,7 @@ class Player(Entity):
 
     def shoot(self):
         arrow = Arrow(self.rect.center, self.projectile_direction, settings.PLAYER_DOMMAGE,self.projectile_sprite, self)
-        play_sound(sprites.SHOOT_SOUND)
+        play_sound(media.SHOOT_SOUND)
         self.projectiles_group.add(arrow)
 
     def take_damage(self):

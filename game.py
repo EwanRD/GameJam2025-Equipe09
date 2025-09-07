@@ -1,7 +1,7 @@
 import pygame
 import random
 import settings
-import sprites 
+import media 
 import time
 import sys
 from src.utils import play_sound
@@ -18,14 +18,14 @@ class Game:
     def __init__(self):
         self.screen = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
         pygame.display.set_caption("TOMB BOUND")
-        sprites.load_sprites()
+        media.load_sprites()
         self.clock = pygame.time.Clock()
         self.running = True
-        self.bg_image = pygame.transform.scale(sprites.MAP,
+        self.bg_image = pygame.transform.scale(media.MAP,
             (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT)
         )
-        self.heart_full = sprites.HEART_FULL
-        self.heart_empty = sprites.HEART_EMPTY
+        self.heart_full = media.HEART_FULL
+        self.heart_empty = media.HEART_EMPTY
         self.font = pygame.font.SysFont(None, 48)
         self.start_time = time.time()
         self.spawn_zones = settings.SPAWN_ZONE
@@ -35,7 +35,7 @@ class Game:
         self.total_time = settings.get_current_total_time()
         self.is_infinite = settings.is_infinite_mode()
         
-        pygame.mixer.music.load(sprites.BACKGROUND_MUSIC)
+        pygame.mixer.music.load(media.BACKGROUND_MUSIC)
         pygame.mixer.music.set_volume(0.3)
         pygame.mixer.music.play(-1)
 
@@ -64,7 +64,7 @@ class Game:
         self.spawn_enemies(self.wave_enemy_count)
 
         # --- Musique ---
-        pygame.mixer.music.load(sprites.BACKGROUND_MUSIC)
+        pygame.mixer.music.load(media.BACKGROUND_MUSIC)
         pygame.mixer.music.set_volume(0.3)
         pygame.mixer.music.play(-1)
 
@@ -216,10 +216,10 @@ class Game:
                     knockback_x = int(knockback_strength * dx / distance)
                     knockback_y = int(knockback_strength * dy / distance)
                     enemy.move(knockback_x, knockback_y)
-                    play_sound(sprites.HURT_SOUND)
+                    play_sound(media.HURT_SOUND)
                     if self.player.health <= 0:
                         pygame.mixer.music.stop()
-                        play_sound(sprites.GAMEOVER_SOUND)
+                        play_sound(media.GAMEOVER_SOUND)
                         return "game_over"
 
         # --- Player collision with enemies ---
@@ -233,7 +233,7 @@ class Game:
                 knockback_x = int(knockback_strength * dx / distance)
                 knockback_y = int(knockback_strength * dy / distance)
                 enemy.move(knockback_x, knockback_y)
-                play_sound(sprites.HURT_SOUND)
+                play_sound(media.HURT_SOUND)
 
         # Collisions avec les items
         for sprite in self.all_sprites:
@@ -292,7 +292,7 @@ class Game:
                 self.boss.last_teleport = time.time()
                 self.all_sprites.add(self.boss)
                 self.boss_spawned = True
-                pygame.mixer.music.load(sprites.BOSS_MUSIC)
+                pygame.mixer.music.load(media.BOSS_MUSIC)
                 pygame.mixer.music.set_volume(0.3)
                 pygame.mixer.music.play(-1)
             elif no_more_enemies and self.boss_spawned:
@@ -316,7 +316,7 @@ class Game:
         self.player_projectiles.draw(self.screen)
         self.enemy_projectiles.draw(self.screen)
 
-        # Dessiner tous les sprites avec gestion de l'invisibilité et du clignotement
+        # Dessiner tous les media avec gestion de l'invisibilité et du clignotement
         for sprite in self.all_sprites:
             if not isinstance(sprite, Item):
                 # Si c'est le joueur
@@ -334,7 +334,7 @@ class Game:
                     else:
                         self.screen.blit(sprite.image, sprite.rect)
                 else:
-                    # Affichage normal pour tous les autres sprites (ennemis, etc.)
+                    # Affichage normal pour tous les autres media (ennemis, etc.)
                     self.screen.blit(sprite.image, sprite.rect)
 
         # Dessiner les items avec leur logique de clignotement
@@ -381,7 +381,7 @@ class Game:
         pygame.display.flip()
 
     def spawn_enemies(self, count, cooldown=0.3):
-        import sprites  # Assure que sprites.load_sprites() a déjà été appelé
+        import media  # Assure que media.load_sprites() a déjà été appelé
 
         self.spawned = 0
         self.next_spawn_time = time.time()
@@ -396,20 +396,20 @@ class Game:
         else:
             self.wave_types = [Skeleton, Orc, Ghost]
 
-        # Filtrer les types d'ennemis dont les sprites sont chargés
+        # Filtrer les types d'ennemis dont les media sont chargés
         valid_wave_types = []
         for enemy_type in self.wave_types:
             sprite_attr = f"{enemy_type.__name__.upper()}_SPRITES"
-            enemy_sprites = getattr(sprites, sprite_attr, None)
+            enemy_sprites = getattr(media, sprite_attr, None)
             if enemy_sprites and "down" in enemy_sprites:
                 valid_wave_types.append(enemy_type)
             else:
-                print(f"Warning: {enemy_type.__name__} sprites not loaded or missing 'down', skipping this type")
+                print(f"Warning: {enemy_type.__name__} media not loaded or missing 'down', skipping this type")
 
         self.wave_types = valid_wave_types
 
         if not self.wave_types:
-            print("Error: No valid enemy types to spawn! Make sure sprites are loaded.")
+            print("Error: No valid enemy types to spawn! Make sure media are loaded.")
 
     def reset(self):
         if self.all_sprites:
