@@ -41,7 +41,6 @@ def main():
 
     # Jeu
     game = Game()
-    final_score = 0  # Pour stocker le score final en mode infini
 
     # Menus
     main_menu = Menu(screen, " ", sprites.TITLE_FONT, sprites.BUTTON_FONT, COLORS, sprites.BACKGROUND_IMAGE)
@@ -184,11 +183,6 @@ def main():
         # Statistiques
         stats_font = pygame.font.SysFont("Arial", 36)
         
-        # Score final
-        score_text = stats_font.render(f"Score Final: {final_score}", True, (255, 215, 0))
-        score_rect = score_text.get_rect(center=(SCREEN_WIDTH // 2, 300))
-        screen.blit(score_text, score_rect)
-        
         # Vague atteinte
         wave_text = stats_font.render(f"Vague Atteinte: {game.wave}", True, (255, 255, 255))
         wave_rect = wave_text.get_rect(center=(SCREEN_WIDTH // 2, 350))
@@ -250,12 +244,7 @@ def main():
             game.handle_events()
             result = game.update()
             if result == "game_over":
-                if game.is_infinite:
-                    # En mode infini, calculer le score final
-                    final_score = game.get_final_score()
-                    set_state(STATE_INFINITE_GAME_OVER)
-                else:
-                    set_state(STATE_GAME_OVER)
+                set_state(STATE_GAME_OVER)
             game.draw()
 
         elif state == STATE_PAUSE:
