@@ -8,6 +8,7 @@ ORC_SPRITES = {}
 GHOST_SPRITES = {}
 BOSS_SPRITES = {}
 CINEMATIC_IMAGES = []
+ENDCINEMATIC_IMAGES = []
 FIREBALL_SPRITE = None
 
 MAP = None
@@ -37,7 +38,7 @@ BUTTON_FONT = None
 
 def load_sprites():
     global PLAYER_SPRITES, SKELETON_SPRITES, ORC_SPRITES, GHOST_SPRITES, BOSS_SPRITES,\
-        CINEMATIC_IMAGES, FIREBALL_SPRITE, BACKGROUND_IMAGE, CREDIT_BACKGROUND
+        CINEMATIC_IMAGES, FIREBALL_SPRITE, BACKGROUND_IMAGE, CREDIT_BACKGROUND, ENDCINEMATIC_IMAGES
     global MAP, HEART_FULL, HEART_EMPTY
     global HURT_SOUND, GAMEOVER_SOUND, ORC_DEATH, SHOOT_SOUND, DEATH_SOUND, HIT_SOUND, FIREBALL_SOUND, FIREBALL_HIT_SOUND, MAGIC_SOUND, \
         PLAYER_POWER_SOUND, LICH_TP_SOUND
@@ -151,6 +152,12 @@ def load_sprites():
         pygame.transform.scale(pygame.image.load("assets/images/cinematique2.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)),
         pygame.transform.scale(pygame.image.load("assets/images/cinematique3.png"), (SCREEN_WIDTH, SCREEN_HEIGHT))
     ]
+
+    ENDCINEMATIC_IMAGES = [
+        pygame.transform.scale(pygame.image.load("assets/images/cinematiquefin1.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)),
+        pygame.transform.scale(pygame.image.load("assets/images/cinematiquefin2.png"), (SCREEN_WIDTH, SCREEN_HEIGHT)),
+        pygame.transform.scale(pygame.image.load("assets/images/cinematiquefin3.png"), (SCREEN_WIDTH, SCREEN_HEIGHT))
+    ] 
 
     FIREBALL_SPRITE = pygame.image.load("assets/sprites/Projectiles/Ghost_burst/ghost_burst.png").convert_alpha()
 

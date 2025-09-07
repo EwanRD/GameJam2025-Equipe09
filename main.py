@@ -12,12 +12,15 @@ from tutoriel import Tutoriel
 
 def main():
     pygame.init()
+    
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("TOMB BOUND")
+
     sprites.load_sprites()
 
     # Cinématique
     cinematic_index = 0
+    endcinematic_index = 0
     cinematic_played = False
     tutorial_played = False
 
@@ -31,6 +34,7 @@ def main():
     STATE_MENU = "menu"
     STATE_GAME_OVER = "game_over"
     STATE_CINEMATIC = "cinematic"
+    STATE_END_CINEMATIC = "end_cinematic"
     STATE_GAME = "game"
     STATE_PAUSE = "pause"
     STATE_CREDITS = "credits"
@@ -56,7 +60,7 @@ def main():
 
     tutoriel = Tutoriel(screen, sprites.TITLE_FONT, sprites.BUTTON_FONT, COLORS, sprites.BACKGROUND_IMAGE, on_tutorial_complete)
 
-    # Menu de difficulté (modifié)
+    # Menu de difficulté (modifié pour inclure le mode infini)
     def on_difficulty_selected(difficulty):
         nonlocal tutorial_played
         if difficulty == 'back':
@@ -69,9 +73,11 @@ def main():
                 set_difficulty(DIFFICULTY_LEVEL.NORMAL)
             elif difficulty == 'hard':
                 set_difficulty(DIFFICULTY_LEVEL.HARD)
+            elif difficulty == 'infinite':
+                set_difficulty(DIFFICULTY_LEVEL.INFINITE)
 
-            # Vérifier si on doit montrer le tutoriel
-            if not tutorial_played:
+            # En mode infini, pas besoin de tutoriel (ou l'afficher quand même si souhaité)
+            if not tutorial_played and difficulty != 'infinite':
                 set_state(STATE_TUTORIAL)
             else:
                 start_game()
@@ -80,19 +86,21 @@ def main():
 
     # Fonctions pour changer d'état
     def set_state(new_state):
-        nonlocal state, cinematic_index
+        nonlocal state, cinematic_index, endcinematic_index
         old_state = state
         state = new_state
         if new_state == STATE_CINEMATIC:
             cinematic_index = 0
+        if new_state == STATE_END_CINEMATIC:
+            endcinematic_index = 0
         if new_state == STATE_CREDITS:
             credits_screen.reset()
-
         if new_state == STATE_GAME and old_state == STATE_MENU:
             game.__init__()
 
     def start_game():
-        nonlocal cinematic_played
+        nonlocal cinematic_played, game
+        game = Game()    
         if not cinematic_played:
             cinematic_played = True
             set_state(STATE_CINEMATIC)
@@ -125,7 +133,6 @@ def main():
 
     # Ajouter boutons
     main_menu.add_button("Jouer", (SCREEN_WIDTH // 2, 400), (240, 70), show_difficulty)  
-
     main_menu.add_button("Crédits", (SCREEN_WIDTH // 2, 500), (240, 70), show_credits)
     main_menu.add_button("Quitter", (SCREEN_WIDTH // 2, 600), (240, 70), ask_quit)
 
@@ -137,16 +144,19 @@ def main():
     running = True
 
     # Fonction pour dessiner un bouton stylisé avec hover
-    def draw_button(text, center, width, height, mouse_pos, callback):
+    def draw_button(text, center, width, height, mouse_pos, callback, color=None):
         rect = pygame.Rect(0, 0, width, height)
         rect.center = center
 
         # Couleur de fond
-        base_color = (50, 50, 50)
-        hover_color = (100, 100, 100)
-        color = hover_color if rect.collidepoint(mouse_pos) else base_color
-
-        pygame.draw.rect(screen, color, rect, border_radius=15)
+        if color:
+            base_color, hover_color = color
+        else:
+            base_color = (50, 50, 50)
+            hover_color = (100, 100, 100)
+        
+        button_color = hover_color if rect.collidepoint(mouse_pos) else base_color
+        pygame.draw.rect(screen, button_color, rect, border_radius=15)
 
         # Texte
         surf = sprites.BUTTON_FONT.render(text, True, (255, 255, 255))
@@ -185,6 +195,13 @@ def main():
                     cinematic_index += 1
                     if cinematic_index >= len(sprites.CINEMATIC_IMAGES):
                         set_state(STATE_GAME)
+        elif state == STATE_END_CINEMATIC:
+            screen.blit(sprites.ENDCINEMATIC_IMAGES[endcinematic_index], (0, 0))
+            for event in events:
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    endcinematic_index += 1
+                    if endcinematic_index >= len(sprites.ENDCINEMATIC_IMAGES):
+                        set_state(STATE_MENU) 
 
         elif state == STATE_MENU:
             main_menu.handle_events(events)
@@ -199,7 +216,6 @@ def main():
             tutoriel.draw()
 
         elif state == STATE_GAME:
-
             game.handle_events()
             result = game.update()
             if result == "game_over":

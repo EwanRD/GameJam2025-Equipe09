@@ -12,17 +12,18 @@ class Credits:
         # Texte des crédits avec flag titre et espacement après
         self.lines = [
             ("Equipe", True, 20),
-            ("BENHADADA Tejeddine : blablabla", False, 0),
-            ("DASSAC Noah : blablabla", False, 0),
-            ("MICHEL Eliot : blablabla", False, 0),
-            ("RENE-DAGUET Ewan : blablabla", False, 0),
-            ("MBELO NDRIAMANAMPY Manohisoa : blablabla", False, 30),
+            ("RENE-DAGUET Ewan : Chef de projet", False, 0),
+            ("BENHADADA Tejeddine : Narrateur", False, 0),
+            ("DASSAC Noah : Designer", False, 0),
+            ("MICHEL Eliot : Maître du temps", False, 0),
+            ("MBELO NDRIAMANAMPY Manohisoa : Secrétaire", False, 30),
             ("Assets et ressources :", True, 20),
             ("https://www.rpg-maker.fr/ressources/vxchar/Monster2.png-par-MonkeySoul.png", False, 0),
             ("https://www.rpg-maker.fr/ressources/vxchar/down2chara.png",  False, 0),
             ("https://www.rpg-maker.fr/ressources/vxchar/$darkrufus.png",  False, 0),
             ("https://nicolemariet.itch.io/pixel-heart-animation-32x32-16x16-freebie", False, 0),
             ("https://www.reddit.com/r/PixelArt/comments/cbuzjc/crypt/#lightbox", False, 0),
+            ("https://www.rpg-maker.fr/ressources/battleanims/invocs/14751_1114538629.png", False, 0),
             ("https://pixel-poem.itch.io/dungeon-assetpuck", False, 0),
             ("https://www.mapeditor.org", False, 30),
             ("Sons:", True, 20),
@@ -31,7 +32,8 @@ class Credits:
             ("https://opengameart.org/content/game-over-soundold-school", False, 0),
             ("https://pixabay.com/sound-effects/search/hurt/",  False, 0),
             ("https://opengameart.org/content/boss-battle-2-8-bit-re-upload", False, 0),
-            ("https://opengameart.org/content/retro-monster-roar", False, 30)
+            ("https://opengameart.org/content/retro-monster-roar", False, 30),
+            ("https://opengameart.org/content/spell-4-fire", False, 30)
         ]
 
         self.scroll_y = 0

@@ -6,6 +6,7 @@ class DIFFICULTY_LEVEL(Enum):
     EASY = "easy"
     NORMAL = "normal"
     HARD = "hard"
+    INFINITE = "infinite"  # Nouveau mode infini
 
 # Variable globale pour le niveau de difficulté actuel
 CURRENT_DIFFICULTY = DIFFICULTY_LEVEL.NORMAL
@@ -14,7 +15,6 @@ CURRENT_DIFFICULTY = DIFFICULTY_LEVEL.NORMAL
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 900
 FPS = 60
-TOTAL_TIME = 10
 COLORS = {
     "black": (0, 0, 0),
     "brown": (139, 69, 19),
@@ -49,6 +49,11 @@ def get_player_stats(difficulty):
         },
         DIFFICULTY_LEVEL.HARD: {
             "health": 1,
+            "damage": 1,
+            "cooldown": 0.5
+        },
+        DIFFICULTY_LEVEL.INFINITE: {
+            "health": 3,
             "damage": 1,
             "cooldown": 0.5
         }
@@ -123,6 +128,16 @@ class ARROW_DIRECTION(Enum):
     BG = "assets/sprites/Projectiles/Arrow/flechebasgauche.png" # Bas-Gauche
     BD = "assets/sprites/Projectiles/Arrow/flechebasdroite.png" # Bas-Droite
 
+class GOLDARROW_DIRECTION(Enum):
+    H = "assets/sprites/Projectiles/Arrow/flecheorhaut.png" # Haut
+    B = "assets/sprites/Projectiles/Arrow/flecheorbas.png" # Bas
+    G = "assets/sprites/Projectiles/Arrow/flecheorgauche.png" # Gauche
+    D = "assets/sprites/Projectiles/Arrow/flecheordroite.png" # Droite
+    HG = "assets/sprites/Projectiles/Arrow/flecheorhautgauche.png" # Haut-Gauche
+    HD = "assets/sprites/Projectiles/Arrow/flecheorhautdroite.png" # Haut-Droite
+    BG = "assets/sprites/Projectiles/Arrow/flecheorbasgauche.png" # Bas-Gauche
+    BD = "assets/sprites/Projectiles/Arrow/flecheorbasdroite.png" # Bas-Droite
+
 #Fireball
 FIREBALL_SPEED = 3
 FIREBALL_DIAG_SPEED = FIREBALL_SPEED/math.sqrt(2)
@@ -146,3 +161,21 @@ FIRST_WAVE = 1
 WAVE_INTERVAL = 10
 ENEMY_COUNT = 3
 MAX_ENEMY_COUNT = 8
+
+def get_total_time(difficulty):
+    """Retourne le temps total du jeu en fonction de la difficulté"""
+    times = {
+        DIFFICULTY_LEVEL.EASY: 180, # 3 minutes
+        DIFFICULTY_LEVEL.NORMAL: 300, # 5 minutes
+        DIFFICULTY_LEVEL.HARD: 300, # 5 minutes
+        DIFFICULTY_LEVEL.INFINITE: -1 # Temps infini (-1 indique pas de limite)
+    }
+    return times[difficulty]
+
+def get_current_total_time():
+    """Retourne le temps total pour la difficulté actuelle"""
+    return get_total_time(CURRENT_DIFFICULTY)
+
+def is_infinite_mode():
+    """Vérifie si le mode actuel est le mode infini"""
+    return CURRENT_DIFFICULTY == DIFFICULTY_LEVEL.INFINITE

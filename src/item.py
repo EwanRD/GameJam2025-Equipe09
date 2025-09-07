@@ -10,7 +10,7 @@ class Item(pygame.sprite.Sprite):
         elif item_type == "speed":
             self.image = pygame.image.load("assets/sprites/item/boots.png").convert_alpha()
         elif item_type == "damage":
-            self.image = pygame.image.load("assets/sprites/item/flechehautdroite.png").convert_alpha()
+            self.image = pygame.image.load("assets/sprites/item/flecheorhautdroite.png").convert_alpha()
         self.rect = self.image.get_rect(topleft=(x, y))
         self.spawn_time = time.time()
         self.visible = True
