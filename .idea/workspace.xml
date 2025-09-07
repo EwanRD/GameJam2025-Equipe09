@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ccbc09c9-569c-478b-aadb-41e493ae74ef" name="Changes" comment="fix import error for utils.py">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites.py" beforeDir="false" afterPath="$PROJECT_DIR$/sprites.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/boss.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/boss.py" afterDir="false" />
-    </list>
+    <list default="true" id="ccbc09c9-569c-478b-aadb-41e493ae74ef" name="Changes" comment="!fix" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -157,7 +150,31 @@
       <option name="project" value="LOCAL" />
       <updated>1757168005704</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="fix import">
+      <option name="closed" value="true" />
+      <created>1757172992896</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1757172992896</updated>
+    </task>
+    <task id="LOCAL-00010" summary="add global variable in settings.py and sprites.py">
+      <option name="closed" value="true" />
+      <created>1757173029783</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1757173029783</updated>
+    </task>
+    <task id="LOCAL-00011" summary="!fix">
+      <option name="closed" value="true" />
+      <created>1757173042553</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1757173042553</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -207,9 +224,11 @@
     <MESSAGE value="fix sprites" />
     <MESSAGE value="fix add import" />
     <MESSAGE value="fixdouble player" />
-    <MESSAGE value="!fix" />
     <MESSAGE value="feat use play_sound from utils to play a sound" />
     <MESSAGE value="fix import error for utils.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix import error for utils.py" />
+    <MESSAGE value="fix import" />
+    <MESSAGE value="add global variable in settings.py and sprites.py" />
+    <MESSAGE value="!fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="!fix" />
   </component>
 </project>
