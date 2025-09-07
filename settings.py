@@ -15,7 +15,6 @@ CURRENT_DIFFICULTY = DIFFICULTY_LEVEL.NORMAL
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 900
 FPS = 60
-TOTAL_TIME = 300
 
 COLORS = {
     "black": (0, 0, 0),
@@ -102,6 +101,16 @@ class ARROW_DIRECTION(Enum):
     HD = "assets/sprites/Projectiles/Arrow/flechehautdroite.png" # Haut-Droite
     BG = "assets/sprites/Projectiles/Arrow/flechebasgauche.png" # Bas-Gauche
     BD = "assets/sprites/Projectiles/Arrow/flechebasdroite.png" # Bas-Droite
+
+class GOLDARROW_DIRECTION(Enum):
+    H = "assets/sprites/Projectiles/Arrow/flecheorhaut.png" # Haut
+    B = "assets/sprites/Projectiles/Arrow/flecheorbas.png" # Bas
+    G = "assets/sprites/Projectiles/Arrow/flecheorgauche.png" # Gauche
+    D = "assets/sprites/Projectiles/Arrow/flecheordroite.png" # Droite
+    HG = "assets/sprites/Projectiles/Arrow/flecheorhautgauche.png" # Haut-Gauche
+    HD = "assets/sprites/Projectiles/Arrow/flecheorhautdroite.png" # Haut-Droite
+    BG = "assets/sprites/Projectiles/Arrow/flecheorbasgauche.png" # Bas-Gauche
+    BD = "assets/sprites/Projectiles/Arrow/flecheorbasdroite.png" # Bas-Droite
 
 #Fireball
 FIREBALL_SPEED = 3

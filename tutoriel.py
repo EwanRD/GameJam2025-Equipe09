@@ -14,10 +14,42 @@ class Tutoriel:
         self.current_page = 0
         self.total_pages = 4
         
-        # Contenu du tutoriel
+        # Animation du personnage
+        try:
+            # Charger les deux images du personnage
+            self.character_image1 = pygame.image.load("assets/images/blanchon2.png").convert_alpha()
+            self.character_image2 = pygame.image.load("assets/images/blanchon1.png").convert_alpha()
+            
+            # Redimensionner les images si nécessaire
+            desired_size = (120, 120)
+            self.character_image1 = pygame.transform.scale(self.character_image1, desired_size)
+            self.character_image2 = pygame.transform.scale(self.character_image2, desired_size)
+            
+            self.character_images = [self.character_image1, self.character_image2]
+            self.has_character_images = True
+        except pygame.error:
+            print("Impossible de charger les images du personnage")
+            self.has_character_images = False
+        
+        # Variables pour l'animation
+        self.current_character_frame = 0
+        self.last_animation_time = 0
+        self.animation_speed = 600  # Temps en millisecondes entre chaque frame
+        
+        # Variables pour l'animation de "parole"
+        self.is_talking = True
+        self.talk_pause_timer = 0
+        self.talk_duration = 2000  # Durée de parole en ms
+        self.pause_duration = 500  # Durée de pause en ms
+        
+        # Position du personnage
+        self.character_x = 30
+        
+        # Contenu du tutoriel avec dialogues du personnage
         self.tutorial_content = [
             {
                 "title": "DÉPLACEMENT",
+                "dialogue": "Salut ! Je vais t'apprendre à te déplacer !",
                 "content": [
                     "Utilisez les touches suivantes pour vous déplacer :",
                     "",
@@ -32,6 +64,7 @@ class Tutoriel:
             },
             {
                 "title": "COMBAT",
+                "dialogue": "Maintenant, apprenons à nous battre !",
                 "content": [
                     "Défendez-vous contre les ennemis :",
                     "",
@@ -46,6 +79,7 @@ class Tutoriel:
             },
             {
                 "title": "POUVOIR SPÉCIAL",
+                "dialogue": "Tu as un pouvoir secret très utile !",
                 "content": [
                     "La malédiction vous a donné un pouvoir:",
                     "",
@@ -59,6 +93,7 @@ class Tutoriel:
             },
             {
                 "title": "OBJETS",
+                "dialogue": "N'oublie pas les objets, ils sont précieux !",
                 "content": [
                     "Les ennemis peuvent lâcher des objets à leurs morts:",
                     "",
@@ -70,7 +105,31 @@ class Tutoriel:
                 ]
             }
         ]
+    
+    def update_animation(self):
+        """Met à jour l'animation du personnage"""
+        current_time = pygame.time.get_ticks()
         
+        if self.has_character_images:
+            # Animation de parole/pause
+            if self.is_talking:
+                # Le personnage "parle" - animation rapide
+                if current_time - self.last_animation_time >= self.animation_speed:
+                    self.current_character_frame = (self.current_character_frame + 1) % len(self.character_images)
+                    self.last_animation_time = current_time
+                
+                # Vérifier si la durée de parole est écoulée
+                if current_time - self.talk_pause_timer >= self.talk_duration:
+                    self.is_talking = False
+                    self.talk_pause_timer = current_time
+                    self.current_character_frame = 0  # Image de repos
+            else:
+                # Le personnage fait une pause - reste sur la première image
+                if current_time - self.talk_pause_timer >= self.pause_duration:
+                    self.is_talking = True
+                    self.talk_pause_timer = current_time
+
+    
     def handle_events(self, events):
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -78,7 +137,7 @@ class Tutoriel:
                     self.next_page()
                 elif event.key == pygame.K_ESCAPE:
                     self.skip_tutorial()
-                elif event.key == pygame.K_BACKSPACE:  # Ajout de la touche retour
+                elif event.key == pygame.K_BACKSPACE:
                     self.previous_page()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Clic gauche
@@ -94,17 +153,74 @@ class Tutoriel:
     def next_page(self):
         if self.current_page < self.total_pages - 1:
             self.current_page += 1
+            # Redémarrer l'animation de parole pour la nouvelle page
+            self.is_talking = True
+            self.talk_pause_timer = pygame.time.get_ticks()
         else:
             self.on_tutorial_complete()
     
     def previous_page(self):
         if self.current_page > 0:
             self.current_page -= 1
+            # Redémarrer l'animation de parole pour la page précédente
+            self.is_talking = True
+            self.talk_pause_timer = pygame.time.get_ticks()
     
     def skip_tutorial(self):
         self.on_tutorial_complete()
     
+    def draw_speech_bubble(self, text, character_rect):
+        """Dessine une bulle de dialogue au-dessus du personnage"""
+        if not text:
+            return
+            
+        # Créer le texte de la bulle
+        bubble_font = pygame.font.SysFont("Arial", 20)
+        text_surface = bubble_font.render(text, True, (50, 50, 50))
+        text_rect = text_surface.get_rect()
+        
+        # Dimensions de la bulle
+        bubble_padding = 15
+        bubble_width = text_rect.width + bubble_padding * 2
+        bubble_height = text_rect.height + bubble_padding * 2
+        
+        # Position de la bulle (décalée vers la droite et plus haut)
+        bubble_x = character_rect.centerx + 40 
+        bubble_y = character_rect.top - bubble_height - 80
+        
+        # S'assurer que la bulle reste à l'écran
+        screen_width = self.screen.get_width()
+        if bubble_x < 10:
+            bubble_x = 10
+        elif bubble_x + bubble_width > screen_width - 10:
+            bubble_x = screen_width - bubble_width - 10
+        
+        bubble_rect = pygame.Rect(bubble_x, bubble_y, bubble_width, bubble_height)
+        
+        # Dessiner la bulle
+        pygame.draw.rect(self.screen, (255, 255, 255), bubble_rect, border_radius=10)
+        pygame.draw.rect(self.screen, (200, 200, 200), bubble_rect, 2, border_radius=10)
+        
+        # Position de la pointe
+        mouth_x = character_rect.right + -30
+        mouth_y = character_rect.centery + -10 
+        
+        # Dessiner la petite flèche de la bulle
+        arrow_tip = (mouth_x, mouth_y)
+        arrow_left = (bubble_rect.left + 15, bubble_rect.bottom)
+        arrow_right = (bubble_rect.left + 35, bubble_rect.bottom)
+        pygame.draw.polygon(self.screen, (255, 255, 255), [arrow_tip, arrow_left, arrow_right])
+        pygame.draw.lines(self.screen, (200, 200, 200), False, [arrow_left, arrow_tip, arrow_right], 2)
+        
+        # Dessiner le texte dans la bulle
+        text_x = bubble_rect.centerx - text_rect.width // 2
+        text_y = bubble_rect.centery - text_rect.height // 2
+        self.screen.blit(text_surface, (text_x, text_y))
+    
     def draw(self):
+        # Mettre à jour l'animation automatiquement
+        self.update_animation()
+        
         # Fond
         if self.background:
             self.screen.blit(self.background, (0, 0))
@@ -148,6 +264,19 @@ class Tutoriel:
             
             y_offset += 35
         
+        # Dessiner le personnage animé en bas à gauche
+        if self.has_character_images:
+            character_y = screen_height - 150
+            current_image = self.character_images[self.current_character_frame]
+            character_rect = current_image.get_rect()
+            character_rect.x = self.character_x
+            character_rect.y = character_y
+            
+            self.screen.blit(current_image, character_rect)
+            
+            # Dessiner la bulle de dialogue
+            self.draw_speech_bubble(current_content['dialogue'], character_rect)
+        
         # Boutons centrés
         button_y = screen_height - 200
         button_width = 200
@@ -160,19 +289,16 @@ class Tutoriel:
         total_width = back_button_width + spacing + button_width
         start_x = (screen_width - total_width) // 2
         
-        # Bouton Retour - toujours affiché
+        # Bouton Retour
         back_x = start_x
         self.back_button_rect = pygame.Rect(back_x, button_y, back_button_width, button_height)
         
-        # Déterminer la couleur du bouton retour
         if self.current_page > 0:
-            # Bouton actif
             back_button_color = self.colors['hover'] if self.back_button_rect.collidepoint(mouse_pos) else self.colors['button']
             back_text_color = self.colors['white']
         else:
-            # Bouton grisé sur la première page
-            back_button_color = (60, 60, 60)  # Gris foncé
-            back_text_color = (120, 120, 120)  # Gris plus clair pour le texte
+            back_button_color = (60, 60, 60)
+            back_text_color = (120, 120, 120)
         
         pygame.draw.rect(self.screen, back_button_color, self.back_button_rect)
         pygame.draw.rect(self.screen, back_text_color, self.back_button_rect, 2)
@@ -195,7 +321,7 @@ class Tutoriel:
         next_button_text_rect = next_button_text.get_rect(center=self.next_button_rect.center)
         self.screen.blit(next_button_text, next_button_text_rect)
         
-        # Bouton Passer (en bas à droite)
+        # Bouton Passer
         skip_button_width = 120
         self.skip_button_rect = pygame.Rect(screen_width - skip_button_width - 30, screen_height - 80, skip_button_width, 40)
         skip_button_color = self.colors['hover'] if self.skip_button_rect.collidepoint(mouse_pos) else self.colors['button']
@@ -207,7 +333,7 @@ class Tutoriel:
         skip_button_text_rect = skip_button_text.get_rect(center=self.skip_button_rect.center)
         self.screen.blit(skip_button_text, skip_button_text_rect)
         
-        # Instructions en bas (mises à jour)
+        # Instructions en bas
         instruction_text = "ESPACE/ENTRÉE: continuer • BACKSPACE: retour • ESC: passer"
         instruction = self.small_font.render(instruction_text, True, (150, 150, 150))
         instruction_rect = instruction.get_rect(center=(screen_width // 2, screen_height - 50))

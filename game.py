@@ -17,7 +17,6 @@ class Game:
     def __init__(self):
         self.screen = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
         pygame.display.set_caption("TOMB BOUND")
-        # Charger tous les sprites maintenant que la fenêtre est prête
         sprites.load_sprites()
         self.clock = pygame.time.Clock()
         self.running = True
