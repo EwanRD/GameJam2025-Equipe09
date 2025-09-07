@@ -6,6 +6,7 @@ class DIFFICULTY_LEVEL(Enum):
     EASY = "easy"
     NORMAL = "normal"
     HARD = "hard"
+    INFINITE = "infinite"  # Nouveau mode infini
 
 # Variable globale pour le niveau de difficulté actuel
 CURRENT_DIFFICULTY = DIFFICULTY_LEVEL.NORMAL
@@ -15,6 +16,7 @@ SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 900
 FPS = 60
 TOTAL_TIME = 300
+
 COLORS = {
     "black": (0, 0, 0),
     "brown": (139, 69, 19),
@@ -49,6 +51,11 @@ def get_player_stats(difficulty):
         },
         DIFFICULTY_LEVEL.HARD: {
             "health": 1,
+            "damage": 1,
+            "cooldown": 0.5
+        },
+        DIFFICULTY_LEVEL.INFINITE: {
+            "health": 3,
             "damage": 1,
             "cooldown": 0.5
         }
@@ -119,12 +126,17 @@ MAX_ENEMY_COUNT = 8
 def get_total_time(difficulty):
     """Retourne le temps total du jeu en fonction de la difficulté"""
     times = {
-        DIFFICULTY_LEVEL.EASY: 180,    # 3 minutes
-        DIFFICULTY_LEVEL.NORMAL: 300,  # 5 minutes  
-        DIFFICULTY_LEVEL.HARD: 300     # 5 minutes
+        DIFFICULTY_LEVEL.EASY: 180, # 3 minutes
+        DIFFICULTY_LEVEL.NORMAL: 300, # 5 minutes
+        DIFFICULTY_LEVEL.HARD: 300, # 5 minutes
+        DIFFICULTY_LEVEL.INFINITE: -1 # Temps infini (-1 indique pas de limite)
     }
     return times[difficulty]
 
 def get_current_total_time():
     """Retourne le temps total pour la difficulté actuelle"""
     return get_total_time(CURRENT_DIFFICULTY)
+
+def is_infinite_mode():
+    """Vérifie si le mode actuel est le mode infini"""
+    return CURRENT_DIFFICULTY == DIFFICULTY_LEVEL.INFINITE

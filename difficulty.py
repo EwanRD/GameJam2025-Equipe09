@@ -15,11 +15,12 @@ class Difficulty:
         screen_width, screen_height = screen.get_size()
         button_width, button_height = 300, 80
         
-        # Position des boutons
-        easy_y = screen_height // 2 - 100
-        normal_y = screen_height // 2
-        hard_y = screen_height // 2 + 100
-        back_y = screen_height // 2 + 200
+        # Position des boutons (réajustée pour 5 boutons)
+        easy_y = screen_height // 2 - 150
+        normal_y = screen_height // 2 - 75
+        hard_y = screen_height // 2
+        infinite_y = screen_height // 2 + 75
+        back_y = screen_height // 2 + 150
         
         # Boutons avec leurs descriptions
         self.buttons = [
@@ -27,28 +28,34 @@ class Difficulty:
                 'text': 'FACILE',
                 'rect': pygame.Rect(screen_width // 2 - button_width // 2, easy_y, button_width, button_height),
                 'difficulty': 'easy',
-                'hovered': False
+                'hovered': False,
             },
             {
                 'text': 'NORMAL',
                 'rect': pygame.Rect(screen_width // 2 - button_width // 2, normal_y, button_width, button_height),
                 'difficulty': 'normal',
-                'hovered': False
+                'hovered': False,
             },
             {
                 'text': 'DIFFICILE',
                 'rect': pygame.Rect(screen_width // 2 - button_width // 2, hard_y, button_width, button_height),
                 'difficulty': 'hard',
-                'hovered': False
+                'hovered': False,
+            },
+            {
+                'text': 'INFINI',
+                'rect': pygame.Rect(screen_width // 2 - button_width // 2, infinite_y, button_width, button_height),
+                'difficulty': 'infinite',
+                'hovered': False,
             },
             {
                 'text': 'RETOUR',
                 'rect': pygame.Rect(screen_width // 2 - button_width // 2, back_y, button_width, button_height),
                 'difficulty': 'back',
-                'hovered': False
+                'hovered': False,
             }
         ]
-    
+
     def handle_events(self, events):
         mouse_pos = pygame.mouse.get_pos()
         
@@ -62,7 +69,7 @@ class Difficulty:
                     for button in self.buttons:
                         if button['rect'].collidepoint(mouse_pos):
                             self.on_difficulty_selected(button['difficulty'])
-    
+
     def draw(self):
         # Fond
         if self.background:
@@ -76,10 +83,10 @@ class Difficulty:
         overlay.fill((0, 0, 0))
         self.screen.blit(overlay, (0, 0))
         
-        # Titre (font agrandie)
+        # Titre
         title_font_large = pygame.font.SysFont("Arial", 48)
         title_text = title_font_large.render("CHOISIR LA DIFFICULTÉ", True, self.colors['white'])
-        title_rect = title_text.get_rect(center=(self.screen.get_width() // 2, 200))
+        title_rect = title_text.get_rect(center=(self.screen.get_width() // 2, 150))
         self.screen.blit(title_text, title_rect)
         
         # Dessiner les boutons

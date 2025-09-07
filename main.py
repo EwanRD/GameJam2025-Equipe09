@@ -30,6 +30,7 @@ def main():
     STATE_TUTORIAL = "tutorial"
     STATE_MENU = "menu"
     STATE_GAME_OVER = "game_over"
+    STATE_INFINITE_GAME_OVER = "infinite_game_over"
     STATE_CINEMATIC = "cinematic"
     STATE_GAME = "game"
     STATE_PAUSE = "pause"
@@ -39,6 +40,7 @@ def main():
 
     # Jeu
     game = Game()
+    final_score = 0  # Pour stocker le score final en mode infini
 
     # Menus
     main_menu = Menu(screen, " ", sprites.TITLE_FONT, sprites.BUTTON_FONT, COLORS, sprites.BACKGROUND_IMAGE)
@@ -56,7 +58,7 @@ def main():
 
     tutoriel = Tutoriel(screen, sprites.TITLE_FONT, sprites.BUTTON_FONT, COLORS, sprites.BACKGROUND_IMAGE, on_tutorial_complete)
 
-    # Menu de difficulté (modifié)
+    # Menu de difficulté (modifié pour inclure le mode infini)
     def on_difficulty_selected(difficulty):
         nonlocal tutorial_played
         if difficulty == 'back':
@@ -69,9 +71,11 @@ def main():
                 set_difficulty(DIFFICULTY_LEVEL.NORMAL)
             elif difficulty == 'hard':
                 set_difficulty(DIFFICULTY_LEVEL.HARD)
+            elif difficulty == 'infinite':
+                set_difficulty(DIFFICULTY_LEVEL.INFINITE)
 
-            # Vérifier si on doit montrer le tutoriel
-            if not tutorial_played:
+            # En mode infini, pas besoin de tutoriel (ou l'afficher quand même si souhaité)
+            if not tutorial_played and difficulty != 'infinite':
                 set_state(STATE_TUTORIAL)
             else:
                 start_game()
@@ -126,7 +130,6 @@ def main():
 
     # Ajouter boutons
     main_menu.add_button("Jouer", (SCREEN_WIDTH // 2, 400), (240, 70), show_difficulty)  
-
     main_menu.add_button("Crédits", (SCREEN_WIDTH // 2, 500), (240, 70), show_credits)
     main_menu.add_button("Quitter", (SCREEN_WIDTH // 2, 600), (240, 70), ask_quit)
 
@@ -138,16 +141,19 @@ def main():
     running = True
 
     # Fonction pour dessiner un bouton stylisé avec hover
-    def draw_button(text, center, width, height, mouse_pos, callback):
+    def draw_button(text, center, width, height, mouse_pos, callback, color=None):
         rect = pygame.Rect(0, 0, width, height)
         rect.center = center
 
         # Couleur de fond
-        base_color = (50, 50, 50)
-        hover_color = (100, 100, 100)
-        color = hover_color if rect.collidepoint(mouse_pos) else base_color
-
-        pygame.draw.rect(screen, color, rect, border_radius=15)
+        if color:
+            base_color, hover_color = color
+        else:
+            base_color = (50, 50, 50)
+            hover_color = (100, 100, 100)
+        
+        button_color = hover_color if rect.collidepoint(mouse_pos) else base_color
+        pygame.draw.rect(screen, button_color, rect, border_radius=15)
 
         # Texte
         surf = sprites.BUTTON_FONT.render(text, True, (255, 255, 255))
@@ -159,6 +165,46 @@ def main():
         if clicked:
             callback()
         return rect
+
+    def draw_infinite_game_over():
+        """Dessine l'écran de game over spécifique au mode infini"""
+        # Fond semi-transparent
+        overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        overlay.set_alpha(180)
+        overlay.fill((0, 0, 0))
+        screen.blit(overlay, (0, 0))
+
+        # Titre "GAME OVER"
+        title_font = pygame.font.SysFont("Arial", 72, bold=True)
+        title_text = title_font.render("GAME OVER", True, (255, 50, 50))
+        title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 200))
+        screen.blit(title_text, title_rect)
+
+        # Statistiques
+        stats_font = pygame.font.SysFont("Arial", 36)
+        
+        # Score final
+        score_text = stats_font.render(f"Score Final: {final_score}", True, (255, 215, 0))
+        score_rect = score_text.get_rect(center=(SCREEN_WIDTH // 2, 300))
+        screen.blit(score_text, score_rect)
+        
+        # Vague atteinte
+        wave_text = stats_font.render(f"Vague Atteinte: {game.wave}", True, (255, 255, 255))
+        wave_rect = wave_text.get_rect(center=(SCREEN_WIDTH // 2, 350))
+        screen.blit(wave_text, wave_rect)
+        
+        # Ennemis tués
+        kills_text = stats_font.render(f"Ennemis Éliminés: {game.enemies_killed}", True, (255, 255, 255))
+        kills_rect = kills_text.get_rect(center=(SCREEN_WIDTH // 2, 400))
+        screen.blit(kills_text, kills_rect)
+        
+        # Temps survécu
+        time_survived = int(time.time() - game.start_time)
+        minutes = time_survived // 60
+        seconds = time_survived % 60
+        time_text = stats_font.render(f"Temps Survécu: {minutes:02d}:{seconds:02d}", True, (255, 255, 255))
+        time_rect = time_text.get_rect(center=(SCREEN_WIDTH // 2, 450))
+        screen.blit(time_text, time_rect)
 
     while running:
         events = pygame.event.get()
@@ -200,11 +246,15 @@ def main():
             tutoriel.draw()
 
         elif state == STATE_GAME:
-
             game.handle_events()
             result = game.update()
             if result == "game_over":
-                set_state(STATE_GAME_OVER)
+                if game.is_infinite:
+                    # En mode infini, calculer le score final
+                    final_score = game.get_final_score()
+                    set_state(STATE_INFINITE_GAME_OVER)
+                else:
+                    set_state(STATE_GAME_OVER)
             game.draw()
 
         elif state == STATE_PAUSE:
@@ -221,6 +271,17 @@ def main():
                         lambda: (game.__init__(), set_state(STATE_GAME)))
             draw_button("Menu", (3*SCREEN_WIDTH//4, SCREEN_HEIGHT - 80), 200, 60, mouse_pos,
                         lambda: (game.__init__(), set_state(STATE_MENU)))
+
+        elif state == STATE_INFINITE_GAME_OVER:
+            draw_infinite_game_over()
+            # Boutons avec couleurs spéciales
+            gold_colors = ((200, 150, 50), (255, 215, 0))  # Or pour rejouer
+            silver_colors = ((100, 100, 100), (180, 180, 180))  # Argent pour menu
+            
+            draw_button("Rejouer", (SCREEN_WIDTH//4, SCREEN_HEIGHT - 80), 200, 60, mouse_pos,
+                        lambda: (game.__init__(), set_state(STATE_GAME)), gold_colors)
+            draw_button("Menu", (3*SCREEN_WIDTH//4, SCREEN_HEIGHT - 80), 200, 60, mouse_pos,
+                        lambda: (game.__init__(), set_state(STATE_MENU)), silver_colors)
 
         elif state == STATE_QUIT and quit_popup:
             quit_popup.handle_events(events)

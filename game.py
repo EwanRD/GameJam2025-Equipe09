@@ -25,18 +25,18 @@ class Game:
             (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT)
         )
         self.heart_full = sprites.HEART_FULL
-        self.heart_empty =sprites.HEART_EMPTY
+        self.heart_empty = sprites.HEART_EMPTY
         self.font = pygame.font.SysFont(None, 48)
         self.start_time = time.time()
         self.spawn_zones = settings.SPAWN_ZONE
         
         # Utiliser le temps total basé sur la difficulté
         self.total_time = settings.get_current_total_time()
+        self.is_infinite = settings.is_infinite_mode()
         
         pygame.mixer.music.load(sprites.BACKGROUND_MUSIC)
         pygame.mixer.music.set_volume(0.3)
         pygame.mixer.music.play(-1)
-
 
         # --- Groupes ---
         self.all_sprites = pygame.sprite.Group()
@@ -123,13 +123,14 @@ class Game:
         while self.running:
             self.handle_events()
             
-            # Vérifier si le temps est écoulé
-            elapsed = int(time.time() - self.start_time)
-            if elapsed >= self.total_time:
-                # Le joueur a survécu au temps imparti - victoire !
-                pygame.mixer.music.stop()
-                # Vous pouvez ajouter ici un son de victoire ou retourner un état de victoire
-                return "victory"
+            # Vérifier si le temps est écoulé (seulement si pas en mode infini)
+            if not self.is_infinite:
+                elapsed = int(time.time() - self.start_time)
+                if elapsed >= self.total_time:
+                    # Le joueur a survécu au temps imparti - victoire !
+                    pygame.mixer.music.stop()
+                    # Vous pouvez ajouter ici un son de victoire ou retourner un état de victoire
+                    return "victory"
             
             result = self.update()
             if result == "game_over":
@@ -144,9 +145,17 @@ class Game:
                 self.spawn_enemies(self.wave_enemy_count)
             elif time.time() - self.wave_start_time > self.wave_interval:
                 self.wave += 1
-                if self.wave_interval < 20: 
-                    self.wave_interval += 5
-                self.wave_start_time = time.time()
+                
+                # En mode infini, l'intervalle diminue progressivement jusqu'à un minimum
+                if self.is_infinite:
+                    # Diminue l'intervalle progressivement jusqu'à 5 secondes minimum
+                    if self.wave_interval > 5:
+                        self.wave_interval = max(5, self.wave_interval - 0.5)
+                else:
+                    if self.wave_interval < 20: 
+                        self.wave_interval += 5
+                
+                self.wave_start_time = time.time()  
                 # Augmente le nombre d'ennemis à chaque vague
                 if self.wave_enemy_count < settings.ENEMY_COUNT:
                     self.wave_enemy_count += self.wave
@@ -159,7 +168,6 @@ class Game:
 
     def handle_events(self):
         for event in pygame.event.get():
-
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
@@ -189,7 +197,6 @@ class Game:
 
         # Collisions projectiles-ennemis
         for projectile in self.player_projectiles:
-
             for enemy in self.all_sprites:
                 if enemy != self.player and isinstance(enemy, Ennemi) and projectile.rect.colliderect(enemy.rect):
                     projectile.on_hit(enemy)
@@ -242,30 +249,46 @@ class Game:
 
         # --- Gestion des vagues ---
         enemies_alive = any(isinstance(s, (Skeleton, Orc, Ghost)) for s in self.all_sprites)
-        elapsed = int(time.time() - self.start_time)
-        remaining = max(0, self.total_time - elapsed)
+        
+        # En mode normal, calculer le temps restant
+        if not self.is_infinite:
+            elapsed = int(time.time() - self.start_time)
+            remaining = max(0, self.total_time - elapsed)
+        else:
+            remaining = 1  # Toujours > 0 en mode infini
 
         if remaining > 0:
             if not enemies_alive and (not hasattr(self, 'enemies_to_spawn') or self.enemies_to_spawn == 0):
                 self.wave_start_time = time.time()
-                # Définir les types et nombres selon la vague
-                if self.wave == 1:
-                    self.wave_enemy_count = 3
-                    self.player.add_kill()
-                    self.wave_types = [Skeleton]
-                elif self.wave == 2:
-                    self.wave_enemy_count = 5
-                    self.wave_types = [Skeleton, Orc]
+                
+                if self.is_infinite:
+                    # En mode infini, progression constante
+                    self.wave_enemy_count = min(15, 3 + self.wave // 2)
+                    # Tous les types dès la vague 3
+                    if self.wave >= 3:
+                        self.wave_types = [Skeleton, Orc, Ghost]
+                    elif self.wave >= 2:
+                        self.wave_types = [Skeleton, Orc]
+                    else:
+                        self.wave_types = [Skeleton]
                 else:
-                    self.wave_enemy_count = 8
-                    self.wave_types = [Skeleton, Orc, Ghost]
+                    # Définir les types et nombres selon la vague (mode normal)
+                    if self.wave == 1:
+                        self.wave_enemy_count = 3
+                        self.player.add_kill()
+                        self.wave_types = [Skeleton]
+                    elif self.wave == 2:
+                        self.wave_enemy_count = 5
+                        self.wave_types = [Skeleton, Orc]
+                    else:
+                        self.wave_enemy_count = 8
+                        self.wave_types = [Skeleton, Orc, Ghost]
 
                 self.spawn_enemies(self.wave_enemy_count)
                 self.wave += 1  # passe à la vague suivante
 
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))
-        
         
         self.player_projectiles.draw(self.screen)
         self.enemy_projectiles.draw(self.screen)
@@ -308,14 +331,22 @@ class Game:
             else:
                 self.screen.blit(self.heart_empty, (0 + i * 70, 10))
 
-        # Utiliser self.total_time au lieu de settings.TOTAL_TIME
+        # Affichage du timer selon le mode
         elapsed = int(time.time() - self.start_time)
-        remaining = max(0, self.total_time - elapsed)
-        minutes = remaining // 60
-        seconds = remaining % 60
-        timer_text = self.font.render(f"{minutes:02d}:{seconds:02d}", True, (255, 255, 255))
+        
+        if self.is_infinite:
+            # Mode infini : afficher le temps écoulé (timer qui augmente)
+            minutes = elapsed // 60
+            seconds = elapsed % 60
+            timer_text = self.font.render(f"{minutes:02d}:{seconds:02d}", True, (255, 255, 255))
+        else:
+            # Mode normal : afficher le temps restant (timer qui diminue)
+            remaining = max(0, self.total_time - elapsed)
+            minutes = remaining // 60
+            seconds = remaining % 60
+            timer_text = self.font.render(f"{minutes:02d}:{seconds:02d}", True, (255, 255, 255))
+        
         self.screen.blit(timer_text, (settings.SCREEN_WIDTH // 2, 20))
-
         self.player.invisibility.draw_power_bar(self.screen, 10, 100)
 
         player_pos = self.player.rect.center
