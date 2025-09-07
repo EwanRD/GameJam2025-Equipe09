@@ -180,27 +180,6 @@ def main():
         title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 200))
         screen.blit(title_text, title_rect)
 
-        # Statistiques
-        stats_font = pygame.font.SysFont("Arial", 36)
-        
-        # Vague atteinte
-        wave_text = stats_font.render(f"Vague Atteinte: {game.wave}", True, (255, 255, 255))
-        wave_rect = wave_text.get_rect(center=(SCREEN_WIDTH // 2, 350))
-        screen.blit(wave_text, wave_rect)
-        
-        # Ennemis tués
-        kills_text = stats_font.render(f"Ennemis Éliminés: {game.enemies_killed}", True, (255, 255, 255))
-        kills_rect = kills_text.get_rect(center=(SCREEN_WIDTH // 2, 400))
-        screen.blit(kills_text, kills_rect)
-        
-        # Temps survécu
-        time_survived = int(time.time() - game.start_time)
-        minutes = time_survived // 60
-        seconds = time_survived % 60
-        time_text = stats_font.render(f"Temps Survécu: {minutes:02d}:{seconds:02d}", True, (255, 255, 255))
-        time_rect = time_text.get_rect(center=(SCREEN_WIDTH // 2, 450))
-        screen.blit(time_text, time_rect)
-
     while running:
         events = pygame.event.get()
         mouse_pos = pygame.mouse.get_pos()
