@@ -10,6 +10,24 @@ from game import Game
 from difficulty import Difficulty
 from tutoriel import Tutoriel
 
+def play_menu_music():
+    """Joue la musique du menu"""
+    pygame.mixer.music.load(media.MENU_MUSIC)
+    pygame.mixer.music.set_volume(0.3)
+    pygame.mixer.music.play(-1)
+
+def play_game_music():
+    """Joue la musique de jeu"""
+    pygame.mixer.music.load(media.GAME_MUSIC)
+    pygame.mixer.music.set_volume(0.3)
+    pygame.mixer.music.play(-1)
+
+def play_boss_music():
+    """Joue la musique du boss"""
+    pygame.mixer.music.load(media.BOSS_MUSIC)
+    pygame.mixer.music.set_volume(0.3)
+    pygame.mixer.music.play(-1)
+
 def main():
     pygame.init()
     
@@ -17,6 +35,8 @@ def main():
     pygame.display.set_caption("TOMB BOUND")
 
     media.load_sprites()
+
+    play_menu_music()
 
     # Cinématique
     cinematic_index = 0
@@ -100,7 +120,8 @@ def main():
 
     def start_game():
         nonlocal cinematic_played, game
-        game = Game()    
+        game = Game()
+        play_game_music()
         if not cinematic_played:
             cinematic_played = True
             set_state(STATE_CINEMATIC)
@@ -111,6 +132,7 @@ def main():
         set_state(STATE_DIFFICULTY)
 
     def show_credits():
+        play_menu_music()
         set_state(STATE_CREDITS)
 
     def resume_game():
@@ -201,7 +223,11 @@ def main():
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     endcinematic_index += 1
                     if endcinematic_index >= len(media.ENDCINEMATIC_IMAGES):
-                        set_state(STATE_MENU) 
+                        # Reset des variables pour une nouvelle partie
+                        cinematic_played = False
+                        tutorial_played = False
+                        play_menu_music()
+                        set_state(STATE_MENU)
 
         elif state == STATE_MENU:
             main_menu.handle_events(events)
@@ -220,6 +246,10 @@ def main():
             result = game.update()
             if result == "game_over":
                 set_state(STATE_GAME_OVER)
+            elif result == "boss_defeated":
+                set_state(STATE_END_CINEMATIC)
+            elif result == "boss_spawned":
+                play_boss_music()
             game.draw()
 
         elif state == STATE_PAUSE:

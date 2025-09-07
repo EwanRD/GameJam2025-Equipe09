@@ -82,6 +82,8 @@ class Boss(pygame.sprite.Sprite):
         if self.health <= 0:
             self.kill()
             play_sound(media.DEATH_SOUND)
+            return "boss_defeated"
+        return
     
     def move(self, dx, dy, direction=None):
         None
