@@ -19,6 +19,7 @@ def main():
 
     # Cinématique
     cinematic_index = 0
+    endcinematic_index = 0
     cinematic_played = False
     tutorial_played = False
 
@@ -31,8 +32,8 @@ def main():
     STATE_TUTORIAL = "tutorial"
     STATE_MENU = "menu"
     STATE_GAME_OVER = "game_over"
-    STATE_INFINITE_GAME_OVER = "infinite_game_over"
     STATE_CINEMATIC = "cinematic"
+    STATE_END_CINEMATIC = "end_cinematic"
     STATE_GAME = "game"
     STATE_PAUSE = "pause"
     STATE_CREDITS = "credits"
@@ -84,14 +85,15 @@ def main():
 
     # Fonctions pour changer d'état
     def set_state(new_state):
-        nonlocal state, cinematic_index
+        nonlocal state, cinematic_index, endcinematic_index
         old_state = state
         state = new_state
         if new_state == STATE_CINEMATIC:
             cinematic_index = 0
+        if new_state == STATE_END_CINEMATIC:
+            endcinematic_index = 0
         if new_state == STATE_CREDITS:
             credits_screen.reset()
-
         if new_state == STATE_GAME and old_state == STATE_MENU:
             game.__init__()
 
@@ -166,20 +168,6 @@ def main():
             callback()
         return rect
 
-    def draw_infinite_game_over():
-        """Dessine l'écran de game over spécifique au mode infini"""
-        # Fond semi-transparent
-        overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        overlay.set_alpha(180)
-        overlay.fill((0, 0, 0))
-        screen.blit(overlay, (0, 0))
-
-        # Titre "GAME OVER"
-        title_font = pygame.font.SysFont("Arial", 72, bold=True)
-        title_text = title_font.render("GAME OVER", True, (255, 50, 50))
-        title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, 200))
-        screen.blit(title_text, title_rect)
-
     while running:
         events = pygame.event.get()
         mouse_pos = pygame.mouse.get_pos()
@@ -206,6 +194,13 @@ def main():
                     cinematic_index += 1
                     if cinematic_index >= len(sprites.CINEMATIC_IMAGES):
                         set_state(STATE_GAME)
+        elif state == STATE_END_CINEMATIC:
+            screen.blit(sprites.ENDCINEMATIC_IMAGES[endcinematic_index], (0, 0))
+            for event in events:
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    endcinematic_index += 1
+                    if endcinematic_index >= len(sprites.ENDCINEMATIC_IMAGES):
+                        set_state(STATE_MENU) 
 
         elif state == STATE_MENU:
             main_menu.handle_events(events)
@@ -240,17 +235,6 @@ def main():
                         lambda: (game.__init__(), set_state(STATE_GAME)))
             draw_button("Menu", (3*SCREEN_WIDTH//4, SCREEN_HEIGHT - 80), 200, 60, mouse_pos,
                         lambda: (game.__init__(), set_state(STATE_MENU)))
-
-        elif state == STATE_INFINITE_GAME_OVER:
-            draw_infinite_game_over()
-            # Boutons avec couleurs spéciales
-            gold_colors = ((200, 150, 50), (255, 215, 0))  # Or pour rejouer
-            silver_colors = ((100, 100, 100), (180, 180, 180))  # Argent pour menu
-            
-            draw_button("Rejouer", (SCREEN_WIDTH//4, SCREEN_HEIGHT - 80), 200, 60, mouse_pos,
-                        lambda: (game.__init__(), set_state(STATE_GAME)), gold_colors)
-            draw_button("Menu", (3*SCREEN_WIDTH//4, SCREEN_HEIGHT - 80), 200, 60, mouse_pos,
-                        lambda: (game.__init__(), set_state(STATE_MENU)), silver_colors)
 
         elif state == STATE_QUIT and quit_popup:
             quit_popup.handle_events(events)

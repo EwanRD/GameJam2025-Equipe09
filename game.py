@@ -126,9 +126,7 @@ class Game:
             if not self.is_infinite:
                 elapsed = int(time.time() - self.start_time)
                 if elapsed >= self.total_time:
-                    # Le joueur a survécu au temps imparti - victoire !
                     pygame.mixer.music.stop()
-                    # Vous pouvez ajouter ici un son de victoire ou retourner un état de victoire
                     return "victory"
             
             result = self.update()
@@ -145,14 +143,8 @@ class Game:
             elif time.time() - self.wave_start_time > self.wave_interval:
                 self.wave += 1
                 
-                # En mode infini, l'intervalle diminue progressivement jusqu'à un minimum
-                if self.is_infinite:
-                    # Diminue l'intervalle progressivement jusqu'à 5 secondes minimum
-                    if self.wave_interval > 5:
-                        self.wave_interval = max(5, self.wave_interval - 0.5)
-                else:
-                    if self.wave_interval < 20: 
-                        self.wave_interval += 5
+                if self.wave_interval < 20: 
+                    self.wave_interval += 5
                 
                 self.wave_start_time = time.time()  
                 # Augmente le nombre d'ennemis à chaque vague
