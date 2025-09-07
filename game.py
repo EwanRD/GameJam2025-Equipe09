@@ -11,7 +11,7 @@ from src.item import Item
 from src.walls import Wall
 from src.orc import Orc
 from src.ghost import Ghost
-
+from src.boss import Boss
 
 class Game:
     def __init__(self):
@@ -225,7 +225,7 @@ class Game:
 
         # --- Gestion des vagues ---
         enemies_alive = any(isinstance(s, (Skeleton, Orc, Ghost)) for s in self.all_sprites)
-        total_time = 300
+        total_time = settings.TOTAL_TIME
         elapsed = int(time.time() - self.start_time)
         remaining = max(0, total_time - elapsed)
 
@@ -246,6 +246,27 @@ class Game:
 
                 self.spawn_enemies(self.wave_enemy_count)
                 self.wave += 1  # passe à la vague suivante
+
+        # --- Vérif pour spawn le Boss ---
+        if remaining == 0:  # le timer global est terminé
+            no_more_to_spawn = (not hasattr(self, 'enemies_to_spawn') or self.enemies_to_spawn == 0)
+            no_more_enemies = not any(isinstance(s, (Skeleton, Orc, Ghost, Boss)) for s in self.all_sprites)
+
+            if no_more_to_spawn and no_more_enemies:
+                # Spawn du boss
+                spawn_x, spawn_y = random.choice(self.spawn_zones)
+                boss = Boss(spawn_x, spawn_y, self.player)
+                self.all_sprites.add(boss)
+
+                print("⚔️ Boss spawned !")
+
+    def run(self):
+        while self.running:
+            events = pygame.event.get()
+            self.handle_events(events)
+            self.update()
+            self.draw()
+            self.clock.tick(settings.FPS)
 
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))

@@ -16,6 +16,15 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("TOMB BOUND")
 
+    button_font = pygame.font.SysFont("Arial", 32)
+    title_font = pygame.font.Font("assets/the_centurion/The Centurion .ttf", 78)
+
+    # Backgrounds
+    background = pygame.image.load("assets/images/screen.png")
+    background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    credits_bg = pygame.image.load("assets/images/credits.png")
+    credits_bg = pygame.transform.scale(credits_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
     # Cinématique
     cinematic_index = 0
     cinematic_played = False

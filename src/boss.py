@@ -3,17 +3,16 @@ import time
 import random
 import sprites
 from .utils import play_sound
+import settings
 from .entity import Entity
+from .projectiles.magic_missile import Magic_Missile
 
 
 class Boss(Entity):
     def __init__(self, x, y, human):
         self.human = human
         self.health = 2
-
-        self.sprites = sprites.BOSS_SPRITES
-
-        super().__init__(x, y, sprites, speed=0)
+        super().__init__(x, y, sprites.BOSS_SPRITES, speed=0)
         self.spawn_time = time.time()
         self.state = "spawning"
         self.last_teleport = time.time()
@@ -46,8 +45,11 @@ class Boss(Entity):
         self.rect.topleft = (self.x, self.y)
 
     def shoot_at_player(self):
-        # Ajoute ici la logique pour tirer sur le joueur (human)
-        pass
+        magic_missile = Magic_Missile(self.rect.center, self.projectiles_direction, settings.PLAYER_DOMMAGE)
+        shoot_sound = pygame.mixer.Sound("assets/sounds/shoot.ogg")
+        shoot_sound.set_volume(1)
+        shoot_sound.play()
+        self.projectiles_group.add(magic_missile)
 
     def take_damage(self):
         self.health -= 1
