@@ -92,7 +92,8 @@ def main():
             game.__init__()
 
     def start_game():
-        nonlocal cinematic_played
+        nonlocal cinematic_played, game
+        game = Game()    
         if not cinematic_played:
             cinematic_played = True
             set_state(STATE_CINEMATIC)

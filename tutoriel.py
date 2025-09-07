@@ -12,7 +12,7 @@ class Tutoriel:
         self.on_tutorial_complete = on_tutorial_complete
         
         self.current_page = 0
-        self.total_pages = 3
+        self.total_pages = 4
         
         # Contenu du tutoriel
         self.tutorial_content = [
@@ -55,6 +55,18 @@ class Tutoriel:
                     "• Vous rend temporairement invisible",
                     "",
                     "Récupérez des objets au sol pour vous aider"   
+                ]
+            },
+            {
+                "title": "OBJETS",
+                "content": [
+                    "Les ennemis peuvent lâcher des objets à leurs morts:",
+                    "",
+                    "• Coeur - Restaure 1 point de vie",
+                    "• Botte - Augmente temporairement la vitesse",
+                    "• Flèche en or - Augmente temporairement les dégâts",
+                    "",
+                    "Bonne chance dans votre aventure !"   
                 ]
             }
         ]

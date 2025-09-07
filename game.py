@@ -29,6 +29,10 @@ class Game:
         self.font = pygame.font.SysFont(None, 48)
         self.start_time = time.time()
         self.spawn_zones = settings.SPAWN_ZONE
+        
+        # Utiliser le temps total basé sur la difficulté
+        self.total_time = settings.get_current_total_time()
+        
         pygame.mixer.music.load(sprites.BACKGROUND_MUSIC)
         pygame.mixer.music.set_volume(0.3)
         pygame.mixer.music.play(-1)
@@ -118,9 +122,22 @@ class Game:
     def run(self):
         while self.running:
             self.handle_events()
-            self.update()
+            
+            # Vérifier si le temps est écoulé
+            elapsed = int(time.time() - self.start_time)
+            if elapsed >= self.total_time:
+                # Le joueur a survécu au temps imparti - victoire !
+                pygame.mixer.music.stop()
+                # Vous pouvez ajouter ici un son de victoire ou retourner un état de victoire
+                return "victory"
+            
+            result = self.update()
+            if result == "game_over":
+                return result
+                
             self.draw()
             self.clock.tick(settings.FPS)
+            
             # Gestion des vagues
             # Démarre la première vague au lancement du jeu
             if self.wave == 1 and not hasattr(self, 'enemies_to_spawn'):
@@ -225,9 +242,8 @@ class Game:
 
         # --- Gestion des vagues ---
         enemies_alive = any(isinstance(s, (Skeleton, Orc, Ghost)) for s in self.all_sprites)
-        total_time = 300
         elapsed = int(time.time() - self.start_time)
-        remaining = max(0, total_time - elapsed)
+        remaining = max(0, self.total_time - elapsed)
 
         if remaining > 0:
             if not enemies_alive and (not hasattr(self, 'enemies_to_spawn') or self.enemies_to_spawn == 0):
@@ -292,9 +308,9 @@ class Game:
             else:
                 self.screen.blit(self.heart_empty, (0 + i * 70, 10))
 
-        total_time = settings.TOTAL_TIME 
+        # Utiliser self.total_time au lieu de settings.TOTAL_TIME
         elapsed = int(time.time() - self.start_time)
-        remaining = max(0, total_time - elapsed)
+        remaining = max(0, self.total_time - elapsed)
         minutes = remaining // 60
         seconds = remaining % 60
         timer_text = self.font.render(f"{minutes:02d}:{seconds:02d}", True, (255, 255, 255))

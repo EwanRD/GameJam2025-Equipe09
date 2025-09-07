@@ -115,3 +115,16 @@ FIRST_WAVE = 1
 WAVE_INTERVAL = 10
 ENEMY_COUNT = 3
 MAX_ENEMY_COUNT = 8
+
+def get_total_time(difficulty):
+    """Retourne le temps total du jeu en fonction de la difficulté"""
+    times = {
+        DIFFICULTY_LEVEL.EASY: 180,    # 3 minutes
+        DIFFICULTY_LEVEL.NORMAL: 300,  # 5 minutes  
+        DIFFICULTY_LEVEL.HARD: 300     # 5 minutes
+    }
+    return times[difficulty]
+
+def get_current_total_time():
+    """Retourne le temps total pour la difficulté actuelle"""
+    return get_total_time(CURRENT_DIFFICULTY)
