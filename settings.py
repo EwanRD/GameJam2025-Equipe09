@@ -170,7 +170,7 @@ MAX_ENEMY_COUNT = 8
 def get_total_time(difficulty):
     """Retourne le temps total du jeu en fonction de la difficulté"""
     times = {
-        DIFFICULTY_LEVEL.EASY: 5, # 3 minutes
+        DIFFICULTY_LEVEL.EASY: 180, # 3 minutes
         DIFFICULTY_LEVEL.NORMAL: 300, # 5 minutes
         DIFFICULTY_LEVEL.HARD: 300, # 5 minutes
         DIFFICULTY_LEVEL.INFINITE: -1 # Temps infini (-1 indique pas de limite)
