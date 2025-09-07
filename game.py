@@ -34,10 +34,6 @@ class Game:
         # Utiliser le temps total basé sur la difficulté
         self.total_time = settings.get_current_total_time()
         self.is_infinite = settings.is_infinite_mode()
-        
-        pygame.mixer.music.load(media.BACKGROUND_MUSIC)
-        pygame.mixer.music.set_volume(0.3)
-        pygame.mixer.music.play(-1)
 
         # --- Groupes ---
         self.all_sprites = pygame.sprite.Group()
@@ -62,12 +58,7 @@ class Game:
 
         # Spawn initial après avoir créé le joueur et les groupes
         self.spawn_enemies(self.wave_enemy_count)
-
-        # --- Musique ---
-        pygame.mixer.music.load(media.BACKGROUND_MUSIC)
-        pygame.mixer.music.set_volume(0.3)
-        pygame.mixer.music.play(-1)
-
+        
         # Murs
         # Mur à gauche : Haut
         wall = Wall(0,0,30,299)
@@ -185,7 +176,6 @@ class Game:
                     enemy = enemy_type(spawn_x, spawn_y, self.player, self.enemy_projectiles, self.wall_list_enemy, self.all_sprites)
                 else :
                     enemy = enemy_type(spawn_x, spawn_y, self.player, self.wall_list_enemy, self.all_sprites)
-                # IMPORTANT: Donner la référence du joueur à l'ennemi
                 enemy.set_player(self.player)
                 self.all_sprites.add(enemy)
                 self.enemies_to_spawn -= 1
@@ -194,9 +184,15 @@ class Game:
         # Collisions projectiles-ennemis
         for projectile in self.player_projectiles:
             for enemy in self.all_sprites:
-                if enemy != self.player and isinstance(enemy, Ennemi) and projectile.rect.colliderect(enemy.rect) \
-                    or enemy != self.player and isinstance(enemy, Boss) and projectile.rect.colliderect(enemy.rect):
+                if enemy != self.player and isinstance(enemy, Ennemi) and projectile.rect.colliderect(enemy.rect):
                     projectile.on_hit(enemy)
+                    projectile.kill()
+                elif enemy != self.player and isinstance(enemy, Boss) and projectile.rect.colliderect(enemy.rect):
+                    # Gérer spécifiquement les dégâts au boss
+                    result = enemy.take_damage(projectile.damage if hasattr(projectile, 'damage') else 1)
+                    if result == "boss_defeated":
+                        pygame.mixer.music.stop()
+                        return "boss_defeated"
                     projectile.kill()
 
         for projectile in self.enemy_projectiles:
@@ -292,9 +288,7 @@ class Game:
                 self.boss.last_teleport = time.time()
                 self.all_sprites.add(self.boss)
                 self.boss_spawned = True
-                pygame.mixer.music.load(media.BOSS_MUSIC)
-                pygame.mixer.music.set_volume(0.3)
-                pygame.mixer.music.play(-1)
+                return "boss_spawned"
             elif no_more_enemies and self.boss_spawned:
                 return "game_over"
             

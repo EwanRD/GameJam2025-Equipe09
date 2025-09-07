@@ -16,7 +16,8 @@ HEART_FULL = None
 HEART_EMPTY = None
 
 # Sons (chargés directement, pas besoin de display.init pour ça)
-BACKGROUND_MUSIC = "assets/sounds/crypt_loop.wav"
+MENU_MUSIC = "assets/sounds/crypt_loop.wav"
+GAME_MUSIC = "assets/sounds/combat.mp3"
 BOSS_MUSIC = "assets/sounds/BossMusic.mp3"
 BACKGROUND_IMAGE = None
 CREDIT_BACKGROUND = None
