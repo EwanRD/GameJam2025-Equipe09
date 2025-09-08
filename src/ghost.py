@@ -16,10 +16,7 @@ class Ghost(Ennemi):
         self.last_shot_time = 0
         self.shoot_cooldown = settings.GHOST_COULDOWN
         self.projectiles_direction = (0, 0)
-
         super().__init__(x, y, media.GHOST_SPRITES, walls, speed=4, all_sprites=all_sprites)
-
-        # Place self.health after super().__init__ to avoid overwriting
         self.health = settings.GHOST_HEALTH
 
     def update(self):
@@ -27,7 +24,7 @@ class Ghost(Ennemi):
             self.rect.x, self.rect.y, self.human.rect.x, self.human.rect.y, settings.FIREBALL_SPEED
         )
 
-        # Follow the player if far, else shoot
+        # Si le joueur est trop loin, le fantôme se déplace vers lui
         if abs(self.human.rect.x - self.rect.x) > 600 or abs(self.human.rect.y - self.rect.y) > 450:
             player_pos = (self.human.rect.x, self.human.rect.y)
             super().update(player_pos)

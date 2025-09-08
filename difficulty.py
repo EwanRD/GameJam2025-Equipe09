@@ -15,9 +15,9 @@ class Difficulty:
         screen_width, screen_height = screen.get_size()
         button_width, button_height = 300, 80
         
-        # Position des boutons avec plus d'espacement (100px entre chaque bouton)
+        # Position des boutons 
         spacing = 100
-        start_y = screen_height // 2 - 200  # Position de départ plus haute
+        start_y = screen_height // 2 - 200  
         
         easy_y = start_y
         normal_y = start_y + spacing

@@ -93,7 +93,7 @@ class Boss(pygame.sprite.Sprite):
         bar_width = 400
         bar_height = 25
         border_thickness = 3
-        segments = self.max_health  # each HP is a segment
+        segments = self.max_health 
 
         # Shadow
         shadow_offset = 2

@@ -34,13 +34,13 @@ class Tutoriel:
         # Variables pour l'animation
         self.current_character_frame = 0
         self.last_animation_time = 0
-        self.animation_speed = 600  # Temps en millisecondes entre chaque frame
+        self.animation_speed = 600  
         
-        # Variables pour l'animation de "parole"
+        # Variables pour l'animation de parole
         self.is_talking = True
         self.talk_pause_timer = 0
-        self.talk_duration = 2000  # Durée de parole en ms
-        self.pause_duration = 500  # Durée de pause en ms
+        self.talk_duration = 2000  
+        self.pause_duration = 500  
         
         # Position du personnage
         self.character_x = 30
@@ -113,7 +113,6 @@ class Tutoriel:
         if self.has_character_images:
             # Animation de parole/pause
             if self.is_talking:
-                # Le personnage "parle" - animation rapide
                 if current_time - self.last_animation_time >= self.animation_speed:
                     self.current_character_frame = (self.current_character_frame + 1) % len(self.character_images)
                     self.last_animation_time = current_time
@@ -122,7 +121,7 @@ class Tutoriel:
                 if current_time - self.talk_pause_timer >= self.talk_duration:
                     self.is_talking = False
                     self.talk_pause_timer = current_time
-                    self.current_character_frame = 0  # Image de repos
+                    self.current_character_frame = 0  
             else:
                 # Le personnage fait une pause - reste sur la première image
                 if current_time - self.talk_pause_timer >= self.pause_duration:
@@ -184,7 +183,7 @@ class Tutoriel:
         bubble_width = text_rect.width + bubble_padding * 2
         bubble_height = text_rect.height + bubble_padding * 2
         
-        # Position de la bulle (décalée vers la droite et plus haut)
+        # Position de la bulle 
         bubble_x = character_rect.centerx + 40 
         bubble_y = character_rect.top - bubble_height - 80
         

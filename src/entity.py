@@ -7,9 +7,8 @@ class Entity(pygame.sprite.Sprite):
         self.sprites = sprites
         self.direction = "down"
         self.image = self.sprites[self.direction][0]
-        # Réduire la hitbox de l'entity
         self.rect = self.image.get_rect(topleft=(x, y))
-        self.rect.inflate_ip(-25, -25)  # Réduit la hitbox de 8 pixels en largeur et hauteur
+        self.rect.inflate_ip(-25, -25) 
 
         # Animation
         self.speed = speed
@@ -17,13 +16,12 @@ class Entity(pygame.sprite.Sprite):
         self.anim_timer = 0
         self.anim_speed = 10
 
-        # Groupe de murs (assigné depuis l’extérieur ou une sous-classe)
         self.walls = None  
 
     def move(self, dx, dy, direction=None):
         moving = dx != 0 or dy != 0
 
-        # Diagonale → vitesse réduite
+        # Diagonale = vitesse réduite 
         if dx != 0 and dy != 0:
             dx *= 0.7
             dy *= 0.7
