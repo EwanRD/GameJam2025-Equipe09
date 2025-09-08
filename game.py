@@ -296,14 +296,6 @@ class Game:
             pygame.mixer.music.stop()
             return "game_over"
 
-    def run(self):
-        while self.running:
-            events = pygame.event.get()
-            self.handle_events(events)
-            self.update()
-            self.draw()
-            self.clock.tick(settings.FPS)
-
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))
         
