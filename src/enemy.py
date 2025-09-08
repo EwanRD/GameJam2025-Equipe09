@@ -8,7 +8,7 @@ class Ennemi(Entity):
         super().__init__(x, y, sprites, speed)
         self.all_sprites = all_sprites
         self.walls = walls
-        self.player = None  # Référence au joueur
+        self.player = None 
 
     def set_player(self, player):
         """Définit la référence au joueur"""

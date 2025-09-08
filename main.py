@@ -80,7 +80,7 @@ def main():
 
     tutoriel = Tutoriel(screen, media.TITLE_FONT, media.BUTTON_FONT, COLORS, media.BACKGROUND_IMAGE, on_tutorial_complete)
 
-    # Menu de difficulté (modifié pour inclure le mode infini)
+    # Menu de difficulté 
     def on_difficulty_selected(difficulty):
         nonlocal tutorial_played
         if difficulty == 'back':
@@ -96,7 +96,6 @@ def main():
             elif difficulty == 'infinite':
                 set_difficulty(DIFFICULTY_LEVEL.INFINITE)
 
-            # En mode infini, pas besoin de tutoriel (ou l'afficher quand même si souhaité)
             if not tutorial_played and difficulty != 'infinite':
                 set_state(STATE_TUTORIAL)
             else:
@@ -165,7 +164,6 @@ def main():
     clock = pygame.time.Clock()
     running = True
 
-    # Fonction pour dessiner un bouton stylisé avec hover
     def draw_button(text, center, width, height, mouse_pos, callback, color=None):
         rect = pygame.Rect(0, 0, width, height)
         rect.center = center
@@ -185,7 +183,6 @@ def main():
         surf_rect = surf.get_rect(center=center)
         screen.blit(surf, surf_rect)
 
-        # Retourne True si cliqué
         clicked = pygame.mouse.get_pressed()[0] and rect.collidepoint(mouse_pos)
         if clicked:
             callback()

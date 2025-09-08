@@ -24,7 +24,7 @@ class Player(Entity):
         # Utiliser les stats de difficulté
         player_stats = settings.get_current_player_stats()
         self.health = player_stats['health']
-        self.max_health = player_stats['health']  # Nouveau : HP maximum selon la difficulté
+        self.max_health = player_stats['health']  # HP maximum selon la difficulté
         self.projectile_damage = player_stats['damage']
         self.shoot_cooldown = player_stats['cooldown']
 

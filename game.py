@@ -46,7 +46,7 @@ class Game:
         self.player = Player(625, 410, self.player_projectiles, self.wall_list_player)
         self.all_sprites.add(self.player)
 
-        # --- Joueur ---
+        # --- Boss ---
         self.boss = Boss(self.player, self.enemy_projectiles)
 
         # --- Initialisation des vagues ---
@@ -167,7 +167,7 @@ class Game:
         self.enemy_projectiles.update()
         self.wall_list_player.update()
 
-        # --- Enemy spawn logic (non-blocking) ---
+        # --- Enemy spawn logic ---
         if hasattr(self, 'enemies_to_spawn') and self.enemies_to_spawn > 0:
             if time.time() >= self.next_spawn_time:
                 spawn_x, spawn_y = random.choice(self.spawn_zones)
@@ -296,14 +296,6 @@ class Game:
             pygame.mixer.music.stop()
             return "game_over"
 
-    def run(self):
-        while self.running:
-            events = pygame.event.get()
-            self.handle_events(events)
-            self.update()
-            self.draw()
-            self.clock.tick(settings.FPS)
-
     def draw(self):
         self.screen.blit(self.bg_image, (0, 0))
         
@@ -367,10 +359,6 @@ class Game:
         self.player.invisibility.draw_power_bar(self.screen, 10, 100)
         if self.boss_spawned:
             self.boss.draw_boss_health_bar(self.screen, 500)
-
-        player_pos = self.player.rect.center
-        pos_text = self.font.render(f"X: {player_pos[0]}  Y: {player_pos[1]}", True, (255, 255, 0))
-        self.screen.blit(pos_text, (20, settings.SCREEN_HEIGHT - 60))
 
         pygame.display.flip()
 

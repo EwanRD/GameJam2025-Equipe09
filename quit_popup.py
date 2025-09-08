@@ -19,7 +19,7 @@ class QuitPopup:
         self.oui_button = Button("Oui", (SCREEN_WIDTH//2 - 110, SCREEN_HEIGHT//2 + 50, 120, 50), font, colors, self._yes)
         self.non_button = Button("Non", (SCREEN_WIDTH//2 + 110, SCREEN_HEIGHT//2 + 50, 120, 50), font, colors, self._no)
 
-        # petit drapeau anti-reclic (pour éviter plusieurs triggers si l'utilisateur garde le clic)
+        # petit drapeau anti-reclic
         self._mouse_was_down = False
 
     def _yes(self):
@@ -30,7 +30,6 @@ class QuitPopup:
         self.on_no()
 
     def draw(self):
-        # Fond semi-transparent (le popup gère son overlay)
         overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 180))
         self.screen.blit(overlay, (0, 0))
@@ -44,6 +43,6 @@ class QuitPopup:
         text = self.font.render("Voulez-vous vraiment quitter ?", True, self.colors["white"])
         self.screen.blit(text, text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 40)))
 
-        # Dessin des boutons (Button.draw() gère le click directement)
+        # Dessin des boutons
         self.oui_button.draw(self.screen)
         self.non_button.draw(self.screen)

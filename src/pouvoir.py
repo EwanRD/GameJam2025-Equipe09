@@ -122,8 +122,8 @@ class Pouvoir:
                             pygame.draw.line(screen, (255, 255, 255, alpha), 
                                            (shine_x, y + 2), (shine_x, y + bar_height - 2))
                                            
-        else:  # charging
-            # Gradient progressif rouge -> orange -> jaune -> vert
+        else:  # charging power
+            # Dégradé progressif rouge -> orange -> jaune -> vert
             if progress < 0.3:
                 ratio = progress / 0.3
                 fill_color = (255, int(100 * ratio), 0)

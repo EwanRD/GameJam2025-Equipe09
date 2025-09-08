@@ -6,9 +6,9 @@ class DIFFICULTY_LEVEL(Enum):
     EASY = "easy"
     NORMAL = "normal"
     HARD = "hard"
-    INFINITE = "infinite"  # Nouveau mode infini
+    INFINITE = "infinite"  
 
-# Variable globale pour le niveau de difficulté actuel
+# niveau de difficulté actuel
 CURRENT_DIFFICULTY = DIFFICULTY_LEVEL.NORMAL
 
 # Paramètres globaux
@@ -21,15 +21,13 @@ COLORS = {
     "white": (240, 240, 240),
     "button": (60, 60, 80),
     "hover": (100, 100, 160),
-    "overlay": (0, 0, 0, 100) # pour les menus avec overlay, alpha moins noir
+    "overlay": (0, 0, 0, 100) 
 }
 
 # map
 SPAWN_ZONE = [(682,15), (1242,420), (562,855), (6, 419)]
 LEFT_WALL = []
 
-## Attributes for all entity
-# Entity attributes
 # player attributes
 PLAYER_SPEED = 5
 
@@ -122,7 +120,7 @@ GHOST_COULDOWN = 1.5
 ARROW_SPEED = 5
 ARROW_DIAG_SPEED = ARROW_SPEED / math.sqrt(2)
 
-# la liste des différent affichage d'une flèche
+# liste des différent affichage d'une flèche
 class ARROW_DIRECTION(Enum):
     H = "assets/sprites/Projectiles/Arrow/flechehaut.png" # Haut
     B = "assets/sprites/Projectiles/Arrow/flechebas.png" # Bas
@@ -173,7 +171,7 @@ def get_total_time(difficulty):
         DIFFICULTY_LEVEL.EASY: 180, # 3 minutes
         DIFFICULTY_LEVEL.NORMAL: 300, # 5 minutes
         DIFFICULTY_LEVEL.HARD: 300, # 5 minutes
-        DIFFICULTY_LEVEL.INFINITE: -1 # Temps infini (-1 indique pas de limite)
+        DIFFICULTY_LEVEL.INFINITE: -1 # Temps infini
     }
     return times[difficulty]
 
